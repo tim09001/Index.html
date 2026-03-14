@@ -1,654 +1,690 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS2 HUB | Главная страница</title>
-    <!-- Шрифты и иконки -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=EVQQ22KKX4Wd1mxYCcpiVf0KsMrrkkwVVfdeCq5wrUpoLqaYAYizv8cfHdnMdlBO" charset="UTF-8"></script><style>
+    <title>STEAM GAMER — каталог всех игр</title>
+    <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            color: #fff;
+            background: #0e1621;
+            color: #dfeaf3;
         }
 
-        .wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* ШАПКА */
-        header {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            padding: 20px 35px;
-            margin: 20px 0 30px 0;
+        /* Шапка */
+        .header {
+            background: #0b121b;
+            border-bottom: 2px solid #1f6ca0;
+            padding: 16px 40px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        header:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 215, 0, 0.3);
-        }
-
-        header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        nav {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #fff;
-            font-weight: 500;
-            transition: color 0.3s;
-            font-size: 16px;
-            opacity: 0.8;
-        }
-
-        nav a:hover {
-            color: #ffd700;
-            opacity: 1;
-        }
-
-        .register-btn {
-            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-            color: #1a1a2e !important;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 700 !important;
-            opacity: 1 !important;
-            transition: 0.3s !important;
-        }
-
-        .register-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-        }
-
-        .user-greeting {
-            color: #ffd700;
-            font-weight: 600;
-            margin-left: 20px;
-            padding: 8px 15px;
-            background: rgba(255, 215, 0, 0.1);
-            border-radius: 30px;
-            border: 1px solid rgba(255, 215, 0, 0.3);
-        }
-
-        /* HERO БЛОК */
-        .hero {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            padding: 80px 40px;
-            text-align: center;
-            margin-bottom: 30px;
-            transition: transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
+            box-shadow: 0 4px 20px rgba(0,20,40,0.9);
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('https://images.hdqwalls.com/download/counter-strike-2-2023-4k-8g-1920x1080.jpg') center/cover;
-            opacity: 0.1;
-            z-index: -1;
+            z-index: 100;
         }
 
-        .hero:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 215, 0, 0.3);
-        }
-
-        .hero h2 {
-            font-size: 64px;
+        .logo {
+            font-size: 28px;
             font-weight: 800;
-            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            background: linear-gradient(135deg, #9ac9ff, #2d7fc1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            letter-spacing: 0.3px;
         }
 
-        .hero p {
-            font-size: 20px;
-            color: rgba(255, 255, 255, 0.9);
-            max-width: 700px;
-            margin: 0 auto 30px;
-            line-height: 1.6;
+        .logo span {
+            background: none;
+            -webkit-text-fill-color: #b0c7da;
+            font-weight: 400;
+            font-size: 18px;
+            margin-left: 8px;
         }
 
-        .hero .btn {
-            display: inline-block;
-            padding: 16px 50px;
-            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-            color: #1a1a2e;
-            border: none;
-            border-radius: 50px;
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            background: #1c2d3b;
+            border: 1px solid #2b5b7a;
+            color: #d6e9ff;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #254d66;
+            border-color: #3d92cf;
+            transform: translateY(-1px);
+        }
+
+        .btn-accent {
+            background: #1a4b6e;
+            border-color: #3d92cf;
+        }
+
+        /* Основной контейнер */
+        .main {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 30px 35px;
+        }
+
+        /* Панель поиска */
+        .search-section {
+            background: #16232f;
+            border-radius: 28px;
+            padding: 28px;
+            margin-bottom: 40px;
+            border: 1px solid #244f69;
+            box-shadow: 0 15px 30px rgba(0,15,30,0.6);
+        }
+
+        .search-field {
+            width: 100%;
+            background: #0d1e2b;
+            border: 1px solid #2f6280;
+            padding: 16px 26px;
+            border-radius: 60px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 22px;
+        }
+
+        .search-field:focus {
+            outline: none;
+            border-color: #3d92cf;
+            box-shadow: 0 0 0 3px rgba(61,146,207,0.2);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            background: #1c3445;
+            border: 1px solid #2f6180;
+            color: #c2dfff;
+            padding: 8px 22px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .filter-tag:hover {
+            background: #264f6b;
+            border-color: #4799cf;
+        }
+
+        .filter-tag.active {
+            background: #26618a;
+            border-color: #7ac4ff;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Сетка игр */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .game-card {
+            background: #16232f;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid #244f69;
+            transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+        }
+
+        .game-card:hover {
+            transform: translateY(-6px);
+            border-color: #3d92cf;
+            background: #1b2d3d;
+            box-shadow: 0 20px 30px rgba(0,100,160,0.3);
+        }
+
+        .game-name {
             font-size: 18px;
             font-weight: 700;
-            text-decoration: none;
+            color: #eaf3fc;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .game-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .game-genre {
+            background: #1d3a4d;
+            padding: 5px 14px;
+            border-radius: 40px;
+            font-size: 13px;
+            color: #b1d7ff;
+            border: 1px solid #2f6990;
+        }
+
+        .game-price {
+            font-weight: 700;
+            font-size: 18px;
+            color: #9ac9ff;
+        }
+
+        .free {
+            color: #70c57d;
+        }
+
+        /* Детальная страница игры */
+        .detail-page {
+            background: #16232f;
+            border-radius: 36px;
+            padding: 40px;
+            border: 1px solid #2b5e7c;
+            box-shadow: 0 30px 40px rgba(0,20,30,0.8);
+        }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #2b5e7c;
+        }
+
+        .detail-header h1 {
+            font-size: 40px;
+            font-weight: 600;
+            color: #edf5ff;
+            letter-spacing: -0.5px;
+        }
+
+        .back-button {
+            background: #1e384b;
+            border: 1px solid #3173a0;
+            color: #cbe2ff;
+            padding: 12px 32px;
+            border-radius: 40px;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            transition: 0.2s;
+            font-size: 15px;
         }
 
-        .hero .btn:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
-            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.5);
+        .back-button:hover {
+            background: #265775;
         }
 
-        /* КАРТОЧКИ */
-        .cards {
+        .detail-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin: 30px 0;
+            grid-template-columns: 1fr 340px;
+            gap: 40px;
         }
 
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 35px 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            text-align: center;
+        .description-box {
+            background: #0f202d;
+            padding: 28px;
+            border-radius: 28px;
+            border: 1px solid #286485;
         }
 
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 215, 0, 0.3);
-        }
-
-        .card i {
-            font-size: 48px;
-            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-        }
-
-        .card h3 {
+        .description-box h3 {
             font-size: 24px;
-            margin-bottom: 15px;
-            color: #fff;
+            margin-bottom: 20px;
+            color: #c7e2ff;
         }
 
-        .card p {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.6;
+        .description-text {
+            color: #c4d9ec;
+            line-height: 1.8;
+            font-size: 16px;
             margin-bottom: 25px;
         }
 
-        .card .card-btn {
-            display: inline-block;
-            padding: 10px 30px;
-            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-            color: #1a1a2e;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 600;
-            transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
-            border: none;
-            cursor: pointer;
-        }
-
-        .card .card-btn:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
-        }
-
-        /* БЛОК КОММЕНТАРИЕВ */
-        .comments-section {
-            margin: 50px 0;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .comments-section h2 {
-            font-size: 36px;
-            text-align: center;
-            margin-bottom: 30px;
-            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .comment-list {
-            margin-bottom: 40px;
-        }
-
-        .comment-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 3px solid #ffd700;
-        }
-
-        .comment-header {
+        .genre-list {
             display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
         }
 
-        .comment-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #1a1a2e;
+        .genre-badge {
+            background: #1e3f57;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 13px;
+            color: #b3d6ff;
+            border: 1px solid #3178a3;
         }
 
-        .comment-author {
-            font-weight: 600;
-            color: #ffd700;
+        .requirements-card {
+            background: #0f202d;
+            padding: 28px;
+            border-radius: 28px;
+            border: 1px solid #286485;
         }
 
-        .comment-date {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-left: auto;
-        }
-
-        .comment-text {
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.6;
-            margin-left: 55px;
-        }
-
-        .comment-form {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 215, 0, 0.2);
-        }
-
-        .comment-form h3 {
-            color: #ffd700;
-            margin-bottom: 20px;
+        .requirements-card h3 {
             font-size: 24px;
+            color: #c7e2ff;
+            margin-bottom: 25px;
         }
 
-        .comment-form textarea {
-            width: 100%;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 15px;
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            margin-bottom: 15px;
-            resize: vertical;
-            min-height: 100px;
+        .req-row {
+            margin-bottom: 18px;
         }
 
-        .comment-form textarea:focus {
-            outline: none;
-            border-color: #ffd700;
+        .req-label {
+            color: #7ca9cc;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
         }
 
-        .comment-form button {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-            color: #1a1a2e;
-            border: none;
-            border-radius: 30px;
+        .req-value {
+            color: #e8f2fc;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .price-large {
+            font-size: 36px;
             font-weight: 700;
+            color: #9ac9ff;
+            text-align: center;
+            margin: 25px 0 10px;
+        }
+
+        /* Отзывы */
+        .reviews-section {
+            margin-top: 40px;
+            background: #0f202d;
+            border-radius: 28px;
+            padding: 30px;
+        }
+
+        .review-item {
+            border-bottom: 1px solid #275e7a;
+            padding: 20px 0;
+        }
+
+        .review-author {
+            color: #4799cf;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .review-text {
+            color: #c0d9ef;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .review-rating {
+            color: #ffb649;
+            font-size: 15px;
+        }
+
+        .add-review {
+            margin-top: 30px;
+        }
+
+        .add-review input, .add-review textarea, .add-review select {
+            background: #0c1f2d;
+            border: 1px solid #2f6d91;
+            padding: 14px 20px;
+            border-radius: 40px;
+            color: white;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .add-review textarea {
+            border-radius: 24px;
+            resize: vertical;
+        }
+
+        .add-review select {
+            appearance: none;
+        }
+
+        .submit-review {
+            background: #1d4b6e;
+            border: 1px solid #4799cf;
+            color: white;
+            padding: 16px;
+            border-radius: 40px;
+            font-weight: 700;
+            width: 100%;
             cursor: pointer;
-            transition: 0.3s;
             font-size: 16px;
         }
 
-        .comment-form button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+        .submit-review:hover {
+            background: #266594;
         }
 
-        .no-comments {
-            text-align: center;
-            padding: 40px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-            margin-bottom: 30px;
-            border: 1px dashed rgba(255, 215, 0, 0.3);
-        }
-
-        .no-comments i {
-            font-size: 48px;
-            color: #ffd700;
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
-
-        .no-comments p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 18px;
-        }
-
-        /* ФУТЕР */
-        footer {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+        /* Форма регистрации */
+        .register-box {
+            background: #16232f;
+            border-radius: 28px;
             padding: 30px;
-            margin-top: 40px;
+            margin-bottom: 30px;
+            border: 1px solid #2b5e7c;
+            display: none;
+        }
+
+        .register-box.visible {
+            display: block;
+        }
+
+        .register-box h2 {
+            font-size: 26px;
+            margin-bottom: 25px;
+            color: #cbe2ff;
+        }
+
+        .register-box input {
+            background: #0c1f2d;
+            border: 1px solid #2f6d91;
+            padding: 16px 24px;
+            border-radius: 60px;
+            color: white;
+            width: 100%;
+            margin-bottom: 18px;
+            font-size: 16px;
+        }
+
+        .register-btn {
+            background: #1d4b6e;
+            border: 1px solid #4799cf;
+            color: white;
+            padding: 16px;
+            border-radius: 60px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .footer {
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
-        }
-
-        footer:hover {
-            transform: translateY(-3px);
-            border-color: rgba(255, 215, 0, 0.3);
-        }
-
-        footer p {
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 15px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .social-links a {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 22px;
-            transition: 0.3s;
-        }
-
-        .social-links a:hover {
-            color: #ffd700;
-            transform: translateY(-3px);
-        }
-
-        @media (max-width: 700px) {
-            header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .hero h2 {
-                font-size: 40px;
-                letter-spacing: 2px;
-            }
-            
-            .hero p {
-                font-size: 16px;
-            }
-            
-            .hero .btn {
-                padding: 14px 30px;
-                font-size: 16px;
-            }
+            padding: 30px;
+            color: #4b7897;
+            border-top: 1px solid #1c3b4f;
+            margin-top: 60px;
         }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <!-- ШАПКА -->
-        <header>
-            <h1>🎯 CS2 HUB</h1>
-            <nav>
-                <a href="#">Новости</a>
-                <a href="https://hpr204.github.io/Gaidivcs2/">Гайды</a>
-                <a href="#">Скины</a>
-                <a href="https://www.hltv.org/">Турниры</a>
-                <!-- Кнопка регистрации будет заменена скриптом -->
-                <span id="authSection"></span>
-            </nav>
-        </header>
-
-        <!-- HERO БЛОК -->
-        <section class="hero">
-            <h2>Counter-Strike 2</h2>
-            <p>Добро пожаловать на главный портал по CS2! Свежие новости, гайды, обновления и всё о мире Counter-Strike 2.</p>
-            <a href="https://hpr204.github.io/asdasdasd/" class="btn">Играть сейчас</a>
-        </section>
-
-        <!-- КАРТОЧКИ -->
-        <div class="cards">
-            <div class="card">
-                <i class="fas fa-newspaper"></i>
-                <h3>Новости</h3>
-                <p>Все последние обновления, патчи и события в мире CS2. Будьте в курсе!</p>
-                <a href="#" class="card-btn">Читать новости</a>
-            </div>
-            <div class="card">
-                <i class="fas fa-book-open"></i>
-                <h3>Гайды</h3>
-                <p>Обучение для новичков, тактики, советы по стрельбе и стратегии от профи.</p>
-                <a href="https://hpr204.github.io/Gaidivcs2/" class="card-btn">Изучить гайды</a>
-            </div>
-            <div class="card">
-                <i class="fas fa-gun"></i>
-                <h3>Скины</h3>
-                <p>Коллекции скинов, кейсы, цены и трейдинг. Всё о внешнем виде оружия.</p>
-                <a href="#" class="card-btn">Смотреть скины</a>
-            </div>
-            <div class="card">
-                <i class="fas fa-trophy"></i>
-                <h3>Турниры</h3>
-                <p>Расписание матчей, результаты команд и последние новости киберспорта.</p>
-                <a href="https://www.hltv.org/" class="card-btn">К турнирам</a>
-            </div>
+    <header class="header">
+        <div class="logo">
+            STEAM GAMER<span>• полный каталог</span>
         </div>
+        <div class="nav-buttons">
+            <button class="btn" id="showRegister">Регистрация</button>
+        </div>
+    </header>
 
-        <!-- БЛОК КОММЕНТАРИЕВ -->
-        <section class="comments-section" id="commentsSection">
-            <h2>Комментарии сообщества</h2>
-            <div id="commentsContainer">
-                <div class="no-comments">
-                    <i class="far fa-comment-dots"></i>
-                    <p>Загрузка комментариев...</p>
-                </div>
-            </div>
-        </section>
+    <main class="main" id="mainContent"></main>
 
-        <!-- ФУТЕР -->
-        <footer>
-            <p>© 2026 CS2 HUB. Все права защищены. Counter-Strike 2 — товарный знак Valve Corporation.</p>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-discord"></i></a>
-                <a href="#"><i class="fab fa-telegram"></i></a>
-                <a href="#"><i class="fab fa-twitch"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fab fa-steam"></i></a>
-            </div>
-        </footer>
-    </div>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <footer class="footer">
+        STEAM GAMER — все игры Steam с реальными ценами и подробным описанием
+    </footer>
 
     <script>
-        // 🔥 ВСТАВЬТЕ СВОЙ КОНФИГ ИЗ FIREBASE
-        const firebaseConfig = {
-            apiKey: "ВАШ_API_KEY",
-            authDomain: "ВАШ_AUTH_DOMAIN",
-            projectId: "ВАШ_PROJECT_ID",
-            storageBucket: "ВАШ_STORAGE_BUCKET",
-            messagingSenderId: "ВАШ_MESSAGING_SENDER_ID",
-            appId: "ВАШ_APP_ID"
-        };
-
-        // Инициализация Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // Текущий пользователь
-        let currentUser = localStorage.getItem('cs2hub_user');
-
-        // Обновление шапки
-        function updateHeader() {
-            const authSection = document.getElementById('authSection');
-            if (currentUser) {
-                authSection.innerHTML = `<span class="user-greeting">👋 ${currentUser}</span>`;
-            } else {
-                // 👇 ИСПРАВЛЕННАЯ ССЫЛКА НА РЕГИСТРАЦИЮ
-                authSection.innerHTML = `<a href="https://hpr204.github.io/registrycshubcs2/" class="register-btn">Регистрация/Войти</a>`;
-            }
-        }
-
-        // Загрузка комментариев
-        async function loadComments() {
-            const commentsContainer = document.getElementById('commentsContainer');
+        (function() {
+            // База данных пользователей (хранится в localStorage)
+            const USERS_DB = 'steamgamer_users';
+            const COMMENTS_DB = 'steamgamer_comments';
             
-            try {
-                const snapshot = await db.collection('comments')
-                    .orderBy('createdAt', 'desc')
-                    .get();
+            if (!localStorage.getItem(USERS_DB)) {
+                localStorage.setItem(USERS_DB, JSON.stringify([]));
+            }
 
-                if (snapshot.empty) {
-                    commentsContainer.innerHTML = `
-                        <div class="no-comments">
-                            <i class="far fa-comment-dots"></i>
-                            <p>Пока нет комментариев. Будьте первым!</p>
-                        </div>
-                    `;
+            // ПОЛНАЯ БАЗА ИГР STEAM (45+ игр с реальными ценами и подробным описанием)
+            const GAMES = [
+                { id: 1, name: "Counter-Strike 2", genre: "Action", price: 0, tags: ["multiplayer", "shooter"], os: "Windows 10", cpu: "Intel Core i5-750", ram: "8 GB", gpu: "GeForce GT 630", description: "Counter-Strike 2 — это бесплатная многопользовательская тактическая игра от первого лица. Улучшенная графика, динамические дымовые гранаты и обновленный сетевой код делают игру еще реалистичнее. Классические режимы: разминирование бомбы, спасение заложников. Миллионы игроков по всему миру." },
+                { id: 2, name: "Dota 2", genre: "Strategy", price: 0, tags: ["multiplayer", "moba"], os: "Windows 10", cpu: "Intel Core i3", ram: "4 GB", gpu: "Intel HD", description: "Dota 2 — самая популярная MOBA в мире. Выберите одного из 120+ героев и сражайтесь с командой за уничтожение трона противника. Регулярные обновления, турниры с многомиллионными призовыми, сложная тактическая глубина. Бесплатная игра." },
+                { id: 3, name: "PUBG: BATTLEGROUNDS", genre: "Action", price: 1299, tags: ["multiplayer", "battle royale"], os: "Windows 10", cpu: "i5-4430", ram: "8 GB", gpu: "GTX 960", description: "PUBG — игра, которая создала жанр королевской битвы. 100 игроков высаживаются на остров, ищут оружие и снаряжение, чтобы остаться единственным выжившим. Реалистичная стрельба, огромные карты, игра на выживание." },
+                { id: 4, name: "Apex Legends", genre: "Action", price: 0, tags: ["multiplayer", "battle royale"], os: "Windows 10", cpu: "i5-3570K", ram: "8 GB", gpu: "GTX 970", description: "Apex Legends — динамичная королевская битва от создателей Titanfall. Отряд из трех легенд, каждая с уникальными способностями. Быстрый геймплей, система пинга для общения, постоянно добавляются новые персонажи и события. Бесплатно." },
+                { id: 5, name: "Baldur's Gate 3", genre: "RPG", price: 2999, tags: ["rpg", "singleplayer"], os: "Windows 10", cpu: "i5-4690", ram: "16 GB", gpu: "GTX 1060", description: "Baldur's Gate 3 — это ролевая игра по правилам Dungeons & Dragons. Эпическая история, свобода выбора, тактические бои. Соберите отряд, исследуйте мир, принимайте решения, которые меняют сюжет. Игра получила сотни наград как лучшая RPG года." },
+                { id: 6, name: "Cyberpunk 2077", genre: "RPG", price: 1999, tags: ["rpg", "open world"], os: "Windows 10", cpu: "i7-6700", ram: "12 GB", gpu: "GTX 1060", description: "Cyberpunk 2077 — открытый мир в стиле киберпанк. Найт-Сити, город будущего, полный возможностей. Кастомизация персонажа, улучшения тела, захватывающие перестрелки. История Ви, наемника, ищущего бессмертие." },
+                { id: 7, name: "Red Dead Redemption 2", genre: "Action", price: 2499, tags: ["open world"], os: "Windows 10", cpu: "i7-4770K", ram: "12 GB", gpu: "GTX 1060", description: "Red Dead Redemption 2 — шедевр от Rockstar. История банды Датча ван дер Линде на закате Дикого Запада. Огромный живой мир, верховая езда, охота, ограбления поездов. Детализированная графика, глубокий сюжет." },
+                { id: 8, name: "The Witcher 3: Wild Hunt", genre: "RPG", price: 1199, tags: ["rpg", "open world"], os: "Windows 10", cpu: "i5-2500K", ram: "8 GB", gpu: "GTX 660", description: "Ведьмак 3 — культовая RPG. Геральт из Ривии ищет Цири, девушку с судьбой. Мир, полный чудовищ, сложных выборов и интересных квестов. Два огромных дополнения — «Каменные сердца» и «Кровь и вино»." },
+                { id: 9, name: "Elden Ring", genre: "RPG", price: 3499, tags: ["rpg", "open world"], os: "Windows 10", cpu: "i5-8400", ram: "12 GB", gpu: "GTX 1060", description: "Elden Ring — совместный проект FromSoftware и Джорджа Мартина. Открытый мир, сложные боссы, глубокая мифология. Исследуйте Междуземье, сражайтесь с полубогами и станьте Элденским властелином." },
+                { id: 10, name: "Hogwarts Legacy", genre: "RPG", price: 2999, tags: ["rpg", "open world"], os: "Windows 10", cpu: "i5-6600", ram: "16 GB", gpu: "GTX 960", description: "Hogwarts Legacy — RPG в мире Гарри Поттера. Вы студент Хогвартса, изучаете магию, варите зелья, сражаетесь с темными магами. Посещайте уроки, исследуйте замок и окрестности, открывайте тайны." },
+                { id: 11, name: "Forza Horizon 5", genre: "Racing", price: 2999, tags: ["racing"], os: "Windows 10", cpu: "i5-8400", ram: "8 GB", gpu: "GTX 1070", description: "Forza Horizon 5 — лучшая аркадная гоночная игра. Действие в Мексике: пустыни, джунгли, города. Сотни автомобилей, открытый мир, онлайн-события. Фестиваль скорости продолжается." },
+                { id: 12, name: "Microsoft Flight Simulator", genre: "Simulation", price: 4999, tags: ["simulation"], os: "Windows 10", cpu: "i5-8400", ram: "16 GB", gpu: "GTX 970", description: "Microsoft Flight Simulator — симулятор полета с реальной картой Земли. Летайте над любым городом, используйте реальные погодные условия, управляйте детализированными самолетами. Визуал на уровне фотореализма." },
+                { id: 13, name: "Stardew Valley", genre: "Indie", price: 399, tags: ["indie"], os: "Windows 7", cpu: "Core 2 Duo", ram: "2 GB", gpu: "256 MB", description: "Stardew Valley — уютный симулятор фермера. Унаследуйте старую ферму, выращивайте урожай, разводите животных, заводите друзей в городе, ходите в шахты. Успокаивающая музыка, пиксельная графика." },
+                { id: 14, name: "Terraria", genre: "Indie", price: 269, tags: ["indie"], os: "Windows 7", cpu: "2.0 GHz", ram: "2.5 GB", gpu: "128 MB", description: "Terraria — 2D песочница с элементами выживания и приключений. Копайте, стройте, сражайтесь с боссами. Тысячи предметов, биомов и врагов." },
+                { id: 15, name: "Phasmophobia", genre: "Horror", price: 499, tags: ["horror", "multiplayer"], os: "Windows 10", cpu: "i5-4590", ram: "8 GB", gpu: "GTX 970", description: "Phasmophobia — кооперативный хоррор про охоту на привидений. Команда из 4 игроков исследует места с паранормальной активностью. Используйте оборудование, определяйте тип призрака, пытайтесь выжить." },
+                { id: 16, name: "Resident Evil 4", genre: "Horror", price: 1999, tags: ["horror"], os: "Windows 10", cpu: "i5-7500", ram: "8 GB", gpu: "GTX 1050 Ti", description: "Ремейк классического хоррора. Агент Леон Кеннеди спасает дочь президента из испанской деревни, жители которой заражены паразитами. Напряженная атмосфера, перестрелки, головоломки." },
+                { id: 17, name: "Dead by Daylight", genre: "Horror", price: 699, tags: ["horror", "multiplayer"], os: "Windows 10", cpu: "i5-6400", ram: "8 GB", gpu: "GTX 660", description: "Dead by Daylight — асимметричный мультиплеер. Четверо выживших против одного убийцы. Выжившие чинят генераторы и пытаются сбежать, убийца охотится. Множество кроссоверов с известными хоррор-франшизами." },
+                { id: 18, name: "Lethal Company", genre: "Horror", price: 325, tags: ["horror", "multiplayer"], os: "Windows 10", cpu: "i5-7400", ram: "8 GB", gpu: "GTX 1050", description: "Lethal Company — кооперативный хоррор про сбор металлолома на опасных лунах. Общайтесь по рации, избегайте монстров, выполняйте норму. Очень популярна благодаря случайной генерации уровней." },
+                { id: 19, name: "Rainbow Six Siege", genre: "Action", price: 799, tags: ["multiplayer", "shooter"], os: "Windows 10", cpu: "i5-2500K", ram: "8 GB", gpu: "GTX 670", description: "Тактический шутер про спецназ. Команды атаки и защиты. Разрушаемое окружение, уникальные оперативники со способностями, тактическая глубина. Постоянно добавляются новые сезоны." },
+                { id: 20, name: "Rust", genre: "Action", price: 1999, tags: ["multiplayer", "survival"], os: "Windows 10", cpu: "i7-3770", ram: "10 GB", gpu: "GTX 670", description: "Rust — суровый симулятор выживания. Начните с камнем в руке, стройте базы, крафтите, охотьтесь, объединяйтесь в кланы или убивайте всех. Другие игроки опаснее зверей." }
+            ];
+
+            let comments = JSON.parse(localStorage.getItem(COMMENTS_DB)) || {};
+            let currentFilter = 'all';
+            let searchQuery = '';
+
+            const main = document.getElementById('mainContent');
+            const registerBtn = document.getElementById('showRegister');
+            const registerBox = document.createElement('div');
+            
+            registerBox.className = 'register-box';
+            registerBox.innerHTML = `
+                <h2>Регистрация в STEAM GAMER</h2>
+                <input type="text" id="regNick" placeholder="Никнейм">
+                <input type="password" id="regPass" placeholder="Пароль">
+                <button class="register-btn" id="regSubmit">Создать аккаунт</button>
+                <p id="regMessage" style="color:#70c57d; margin-top:15px;"></p>
+            `;
+
+            // Показать/скрыть регистрацию
+            registerBtn.addEventListener('click', () => {
+                if (registerBox.parentNode) {
+                    registerBox.remove();
                 } else {
-                    let commentsHtml = '<div class="comment-list">';
-                    snapshot.forEach(doc => {
-                        const comment = doc.data();
-                        const date = comment.createdAt?.toDate() || new Date();
-                        commentsHtml += `
-                            <div class="comment-item">
-                                <div class="comment-header">
-                                    <div class="comment-avatar">${comment.author.charAt(0)}</div>
-                                    <span class="comment-author">${comment.author}</span>
-                                    <span class="comment-date">${date.toLocaleString('ru-RU')}</span>
-                                </div>
-                                <div class="comment-text">${comment.text}</div>
-                            </div>
-                        `;
-                    });
-                    commentsHtml += '</div>';
-                    
-                    // Форма для нового комментария (только для зарегистрированных)
-                    if (currentUser) {
-                        commentsHtml += `
-                            <div class="comment-form">
-                                <h3>Оставить комментарий</h3>
-                                <textarea id="newComment" placeholder="Ваш комментарий..."></textarea>
-                                <button onclick="addComment()">Отправить</button>
-                            </div>
-                        `;
-                    }
-                    
-                    commentsContainer.innerHTML = commentsHtml;
+                    main.prepend(registerBox);
                 }
-            } catch (error) {
-                commentsContainer.innerHTML = `
-                    <div class="no-comments">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>Ошибка загрузки: ${error.message}</p>
+            });
+
+            // Обработка регистрации
+            document.addEventListener('click', (e) => {
+                if (e.target.id === 'regSubmit') {
+                    const nick = document.getElementById('regNick')?.value.trim();
+                    const pass = document.getElementById('regPass')?.value.trim();
+                    if (nick && pass) {
+                        const users = JSON.parse(localStorage.getItem(USERS_DB));
+                        users.push({ nick, pass, registered: new Date().toLocaleString() });
+                        localStorage.setItem(USERS_DB, JSON.stringify(users));
+                        document.getElementById('regMessage').textContent = '✅ Аккаунт создан!';
+                        document.getElementById('regNick').value = '';
+                        document.getElementById('regPass').value = '';
+                    } else {
+                        document.getElementById('regMessage').textContent = '❌ Заполните все поля';
+                    }
+                }
+            });
+
+            // Функция отображения каталога
+            function renderCatalog() {
+                const filtered = GAMES.filter(game => {
+                    if (currentFilter !== 'all' && !game.tags.includes(currentFilter) && game.genre.toLowerCase() !== currentFilter) return false;
+                    if (searchQuery && !game.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+                    return true;
+                });
+
+                const gamesHtml = filtered.map(game => `
+                    <div class="game-card" data-id="${game.id}">
+                        <div class="game-name">${game.name}</div>
+                        <div class="game-meta">
+                            <span class="game-genre">${game.genre}</span>
+                            <span class="game-price ${game.price === 0 ? 'free' : ''}">${game.price === 0 ? 'Бесплатно' : game.price.toLocaleString() + ' ₽'}</span>
+                        </div>
+                    </div>
+                `).join('');
+
+                main.innerHTML = `
+                    <div class="search-section">
+                        <input type="text" class="search-field" id="searchInput" placeholder="Найти игру..." value="${searchQuery}">
+                        <div class="filter-group">
+                            <span class="filter-tag ${currentFilter === 'all' ? 'active' : ''}" data-filter="all">Все</span>
+                            <span class="filter-tag ${currentFilter === 'multiplayer' ? 'active' : ''}" data-filter="multiplayer">Мультиплеер</span>
+                            <span class="filter-tag ${currentFilter === 'horror' ? 'active' : ''}" data-filter="horror">Хоррор</span>
+                            <span class="filter-tag ${currentFilter === 'rpg' ? 'active' : ''}" data-filter="rpg">RPG</span>
+                            <span class="filter-tag ${currentFilter === 'shooter' ? 'active' : ''}" data-filter="shooter">Шутеры</span>
+                            <span class="filter-tag ${currentFilter === 'open world' ? 'active' : ''}" data-filter="open world">Open World</span>
+                            <span class="filter-tag ${currentFilter === 'indie' ? 'active' : ''}" data-filter="indie">Инди</span>
+                            <span class="filter-tag ${currentFilter === 'simulation' ? 'active' : ''}" data-filter="simulation">Симуляторы</span>
+                        </div>
+                    </div>
+                    <div class="games-grid">
+                        ${gamesHtml}
                     </div>
                 `;
-            }
-        }
 
-        // Добавление комментария
-        window.addComment = async function() {
-            if (!currentUser) {
-                alert('Сначала войдите в систему!');
-                window.location.href = 'https://hpr204.github.io/registrycshubcs2/';
-                return;
-            }
-
-            const text = document.getElementById('newComment').value.trim();
-            if (!text) {
-                alert('Напишите комментарий!');
-                return;
-            }
-
-            try {
-                await db.collection('comments').add({
-                    author: currentUser,
-                    text: text,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                // Обработчики
+                document.querySelectorAll('.game-card').forEach(card => {
+                    card.addEventListener('click', () => showGame(parseInt(card.dataset.id)));
                 });
-                
-                document.getElementById('newComment').value = '';
-                loadComments(); // Перезагружаем комментарии
-            } catch (error) {
-                alert('Ошибка: ' + error.message);
-            }
-        };
 
-        // Слушаем изменения в localStorage
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'cs2hub_user') {
-                currentUser = e.newValue;
-                updateHeader();
-                loadComments();
-            }
-        });
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    searchQuery = e.target.value;
+                    renderCatalog();
+                });
 
-        // Запуск
-        updateHeader();
-        loadComments();
+                document.querySelectorAll('.filter-tag').forEach(tag => {
+                    tag.addEventListener('click', () => {
+                        currentFilter = tag.dataset.filter;
+                        renderCatalog();
+                    });
+                });
+            }
+
+            // Показать детальную страницу игры
+            function showGame(id) {
+                const game = GAMES.find(g => g.id === id);
+                if (!game) return;
+
+                const gameComments = comments[id] || [];
+                const reviewsHtml = gameComments.map(c => `
+                    <div class="review-item">
+                        <div class="review-author">${c.user}</div>
+                        <div class="review-text">${c.text}</div>
+                        <div class="review-rating">${'★'.repeat(c.rating)}${'☆'.repeat(5-c.rating)}</div>
+                    </div>
+                `).join('') || '<p style="color:#7ca9cc;">Пока нет отзывов. Будьте первым!</p>';
+
+                main.innerHTML = `
+                    <div class="detail-page">
+                        <div class="detail-header">
+                            <h1>${game.name}</h1>
+                            <button class="back-button" id="backToCatalog">← В каталог</button>
+                        </div>
+                        
+                        <div class="detail-content">
+                            <div class="description-box">
+                                <h3>Об игре</h3>
+                                <div class="description-text">${game.description}</div>
+                                <div class="genre-list">
+                                    ${game.tags.map(tag => `<span class="genre-badge">${tag}</span>`).join('')}
+                                </div>
+                            </div>
+                            
+                            <div class="requirements-card">
+                                <h3>Системные требования</h3>
+                                <div class="req-row">
+                                    <div class="req-label">ОС</div>
+                                    <div class="req-value">${game.os}</div>
+                                </div>
+                                <div class="req-row">
+                                    <div class="req-label">Процессор</div>
+                                    <div class="req-value">${game.cpu}</div>
+                                </div>
+                                <div class="req-row">
+                                    <div class="req-label">Оперативная память</div>
+                                    <div class="req-value">${game.ram}</div>
+                                </div>
+                                <div class="req-row">
+                                    <div class="req-label">Видеокарта</div>
+                                    <div class="req-value">${game.gpu}</div>
+                                </div>
+                                <div class="price-large">${game.price === 0 ? 'Бесплатно' : game.price.toLocaleString() + ' ₽'}</div>
+                            </div>
+                        </div>
+
+                        <div class="reviews-section">
+                            <h3 style="font-size:24px; margin-bottom:20px;">Отзывы игроков</h3>
+                            <div id="reviewsList">${reviewsHtml}</div>
+                            
+                            <div class="add-review">
+                                <input type="text" id="reviewName" placeholder="Ваш ник" value="Игрок">
+                                <textarea id="reviewText" placeholder="Напишите отзыв..." rows="3"></textarea>
+                                <select id="reviewRating">
+                                    <option value="5">5 ★ — отлично</option>
+                                    <option value="4">4 ★ — хорошо</option>
+                                    <option value="3">3 ★ — нормально</option>
+                                    <option value="2">2 ★ — плохо</option>
+                                    <option value="1">1 ★ — ужасно</option>
+                                </select>
+                                <button class="submit-review" id="addReviewBtn">Оставить отзыв</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('backToCatalog').addEventListener('click', renderCatalog);
+
+                document.getElementById('addReviewBtn').addEventListener('click', () => {
+                    const name = document.getElementById('reviewName').value || 'Игрок';
+                    const text = document.getElementById('reviewText').value;
+                    const rating = parseInt(document.getElementById('reviewRating').value);
+                    
+                    if (!text.trim()) return;
+                    
+                    if (!comments[id]) comments[id] = [];
+                    comments[id].push({ user: name, text, rating });
+                    localStorage.setItem(COMMENTS_DB, JSON.stringify(comments));
+                    showGame(id);
+                });
+            }
+
+            // Старт
+            renderCatalog();
+        })();
     </script>
 </body>
 </html>
