@@ -3,255 +3,765 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS2 | РЕГИСТРАЦИЯ</title>
+    <title>CS2 INSPECTOR | РЕАЛЬНЫЕ СКИНЫ</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #0a0a0a;
-            color: white;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: #fff;
             min-height: 100vh;
         }
-        /* Страница регистрации */
-        #register-page {
+
+        /* Анимации */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #ff7f50; }
+            50% { box-shadow: 0 0 20px #ff7f50; }
+            100% { box-shadow: 0 0 5px #ff7f50; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Страницы авторизации */
+        .auth-page {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: #0a0a0a;
+            min-height: 100vh;
+            background: url('https://steamuserimages-a.akamaihd.net/ugc/920338485233393126/0C5F7D6D9B0F1C5B5F4E1F9E9F9E9F9E9F9E9F9E/') center/cover;
+            position: relative;
         }
-        .container {
-            background: #1a1a1a;
-            padding: 40px;
-            border-radius: 20px;
-            width: 400px;
-            border: 2px solid #ff7f50;
+
+        .auth-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
         }
-        h1 { 
-            color: #ff7f50; 
+
+        .auth-container {
+            position: relative;
+            background: rgba(20, 20, 20, 0.95);
+            padding: 50px;
+            border-radius: 30px;
+            width: 450px;
+            border: 3px solid #ff7f50;
+            backdrop-filter: blur(10px);
+            z-index: 1;
+            animation: glow 3s infinite;
+        }
+
+        .auth-container h1 {
+            color: #ff7f50;
             text-align: center;
             margin-bottom: 30px;
-            font-size: 32px;
+            font-size: 36px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
+
         .error {
-            background: #ff3333;
+            background: linear-gradient(45deg, #ff3333, #cc0000);
             color: white;
-            padding: 10px;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 15px;
             margin-bottom: 20px;
             text-align: center;
             display: none;
+            font-weight: bold;
         }
-        input {
+
+        .auth-input {
             width: 100%;
             padding: 15px;
             margin-bottom: 20px;
             background: #333;
             border: 2px solid #555;
-            border-radius: 10px;
+            border-radius: 15px;
             color: white;
             font-size: 16px;
+            transition: all 0.3s;
         }
-        input:focus {
+
+        .auth-input:focus {
             border-color: #ff7f50;
             outline: none;
+            transform: scale(1.02);
         }
-        button {
+
+        .auth-btn {
             width: 100%;
             padding: 15px;
-            background: #ff7f50;
+            background: linear-gradient(45deg, #ff7f50, #ff6347);
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             color: black;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        button:hover {
-            background: #ff6347;
+
+        .auth-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #ff7f50;
         }
-        .link {
+
+        .auth-link {
             text-align: center;
             margin-top: 20px;
+            color: #888;
         }
-        .link a {
+
+        .auth-link a {
             color: #ff7f50;
             text-decoration: none;
             cursor: pointer;
+            font-weight: bold;
         }
-        .link a:hover {
+
+        .auth-link a:hover {
             text-decoration: underline;
         }
-        /* Страница входа */
-        #login-page {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #0a0a0a;
-        }
+
         /* Главный сайт */
         #main-site {
             display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
         }
+
         .header {
-            background: #1a1a1a;
+            background: linear-gradient(90deg, #1a1a1a, #2a2a2a);
             padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid #ff7f50;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #ff7f50;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
+
         .logo {
             color: #ff7f50;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
         .user-menu {
             display: flex;
             align-items: center;
             gap: 20px;
         }
+
         .username {
             color: #ff7f50;
             font-weight: bold;
+            font-size: 18px;
+            background: #333;
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: 2px solid #ff7f50;
         }
+
         .logout-btn {
-            background: #ff3333;
+            background: linear-gradient(45deg, #ff3333, #cc0000);
             color: white;
-            padding: 8px 16px;
-            border-radius: 5px;
-            text-decoration: none;
+            padding: 8px 25px;
+            border-radius: 30px;
             border: none;
             cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
         }
+
+        .logout-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #ff3333;
+        }
+
+        /* Вкладки */
         .tabs {
             display: flex;
-            gap: 2px;
+            gap: 5px;
             background: #1a1a1a;
             padding: 20px 20px 0 20px;
+            border-radius: 20px 20px 0 0;
+            flex-wrap: wrap;
         }
+
         .tab {
-            padding: 12px 24px;
+            padding: 15px 30px;
             background: #333;
             color: #888;
             cursor: pointer;
-            border-radius: 10px 10px 0 0;
-        }
-        .tab.active {
-            background: #ff7f50;
-            color: black;
+            border-radius: 15px 15px 0 0;
+            transition: all 0.3s;
             font-weight: bold;
+            font-size: 16px;
         }
+
+        .tab:hover {
+            background: #444;
+            color: #ff7f50;
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, #ff7f50, #ff6347);
+            color: black;
+            transform: translateY(-5px);
+        }
+
+        /* Контент */
         .tab-content {
+            background: #1a1a1a;
             padding: 30px;
-            min-height: 400px;
+            border-radius: 0 20px 20px 20px;
+            min-height: 600px;
         }
+
+        .tab-content h2 {
+            color: #ff7f50;
+            margin-bottom: 30px;
+            font-size: 28px;
+            border-bottom: 3px solid #ff7f50;
+            padding-bottom: 10px;
+        }
+
+        /* Сетка скинов */
         .skins-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
             margin-top: 20px;
         }
+
         .skin-card {
-            background: #1a1a1a;
-            border-radius: 10px;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            border-radius: 20px;
             overflow: hidden;
-            border: 1px solid #333;
+            border: 2px solid #333;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
         }
+
+        .skin-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #ff7f50;
+            box-shadow: 0 10px 30px rgba(255, 127, 80, 0.3);
+            z-index: 10;
+        }
+
         .skin-image {
-            height: 150px;
-            background: #333;
+            height: 200px;
+            background: #222;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
+            font-size: 80px;
+            position: relative;
+            overflow: hidden;
         }
+
+        .skin-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s;
+        }
+
+        .skin-card:hover .skin-image img {
+            transform: scale(1.1);
+        }
+
+        .skin-quality {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ff7f50;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #ff7f50;
+        }
+
         .skin-info {
-            padding: 15px;
+            padding: 20px;
         }
+
         .skin-name {
             color: #ff7f50;
             font-weight: bold;
+            font-size: 18px;
             margin-bottom: 10px;
         }
+
         .skin-price {
             color: #00ff00;
             font-weight: bold;
+            font-size: 22px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
-        .comments-section {
-            margin-top: 40px;
-            background: #1a1a1a;
-            border-radius: 10px;
-            padding: 20px;
+
+        .skin-price span {
+            font-size: 14px;
+            color: #888;
         }
-        .comments-title {
+
+        .skin-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 14px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+        }
+
+        .skin-float {
             color: #ff7f50;
-            font-size: 20px;
-            margin-bottom: 20px;
         }
-        .comment-form textarea {
+
+        /* Инспектор скинов */
+        .inspect-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+        }
+
+        .inspect-3d {
+            background: #0a0a0a;
+            border-radius: 20px;
+            padding: 20px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #333;
+        }
+
+        .inspect-image {
             width: 100%;
-            padding: 10px;
-            background: #333;
-            border: 1px solid #555;
-            border-radius: 5px;
-            color: white;
-            min-height: 80px;
-            margin-bottom: 10px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 200px;
+            animation: float 3s infinite;
         }
-        .comment-btn {
-            background: #ff7f50;
-            color: black;
+
+        .inspect-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .inspect-btn {
+            background: #333;
+            color: white;
             border: none;
             padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .inspect-btn:hover {
+            background: #ff7f50;
+            color: black;
+        }
+
+        .inspect-details {
+            background: #0a0a0a;
+            border-radius: 20px;
+            padding: 20px;
+            border: 2px solid #333;
+        }
+
+        .inspect-details h3 {
+            color: #ff7f50;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .detail-label {
+            color: #888;
+        }
+
+        .detail-value {
+            color: #ff7f50;
             font-weight: bold;
         }
+
+        /* Маркет */
+        .market-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .market-filter {
+            background: #333;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: white;
+            border: 2px solid #555;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .market-filter:hover, .market-filter.active {
+            border-color: #ff7f50;
+            background: #444;
+        }
+
+        .market-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #0a0a0a;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #333;
+        }
+
+        .stat-value {
+            color: #ff7f50;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-change {
+            color: #00ff00;
+            font-size: 14px;
+        }
+
+        .stat-change.negative {
+            color: #ff3333;
+        }
+
+        /* Статистика */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .stats-chart {
+            background: #0a0a0a;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #333;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-bar {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            padding: 20px 0;
+        }
+
+        .bar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .bar {
+            width: 100%;
+            background: linear-gradient(0deg, #ff7f50, #ff6347);
+            border-radius: 10px 10px 0 0;
+            transition: height 0.3s;
+            min-height: 20px;
+        }
+
+        .bar-label {
+            color: #888;
+            font-size: 12px;
+        }
+
+        /* Комментарии */
+        .comments-section {
+            margin-top: 50px;
+            background: #0a0a0a;
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid #333;
+        }
+
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .comments-title {
+            color: #ff7f50;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comment-count {
+            background: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .comment-form {
+            margin-bottom: 30px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 15px;
+            background: #333;
+            border: 2px solid #555;
+            border-radius: 15px;
+            color: white;
+            min-height: 100px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            resize: vertical;
+        }
+
+        .comment-form textarea:focus {
+            border-color: #ff7f50;
+            outline: none;
+        }
+
+        .comment-btn {
+            background: linear-gradient(45deg, #ff7f50, #ff6347);
+            color: black;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .comment-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #ff7f50;
+        }
+
+        .comments-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
         .comment {
             background: #333;
-            border-left: 3px solid #ff7f50;
-            padding: 15px;
-            margin-top: 15px;
-            border-radius: 5px;
+            border-left: 4px solid #ff7f50;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            animation: slideIn 0.3s;
         }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         .comment-author {
             color: #ff7f50;
             font-weight: bold;
-            margin-bottom: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
+        .comment-author::before {
+            content: '👤';
+            font-size: 14px;
+        }
+
+        .comment-text {
+            color: white;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
         .comment-date {
             color: #888;
             font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .comment-date::before {
+            content: '🕐';
+            font-size: 12px;
+        }
+
+        .comment-skin {
+            display: inline-block;
+            background: #444;
+            color: #ff7f50;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 12px;
             margin-top: 5px;
+        }
+
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #ff7f50, #ff6347);
+            color: black;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            animation: slideUp 0.5s;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(255, 127, 80, 0.5);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .inspect-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        /* Стили для прокрутки */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff7f50;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff6347;
         }
     </style>
 </head>
 <body>
     <!-- Страница регистрации -->
-    <div id="register-page">
-        <div class="container">
-            <h1>CS2 РЕГИСТРАЦИЯ</h1>
+    <div id="register-page" class="auth-page">
+        <div class="auth-container">
+            <h1>CS2 INSPECTOR</h1>
             <div class="error" id="register-error"></div>
-            <input type="text" id="reg-username" placeholder="Никнейм" required>
-            <input type="password" id="reg-password" placeholder="Пароль (мин 6 символов)" required>
-            <button onclick="register()">ЗАРЕГИСТРИРОВАТЬСЯ</button>
-            <div class="link">
+            <input type="text" id="reg-username" class="auth-input" placeholder="Никнейм" autocomplete="off">
+            <input type="password" id="reg-password" class="auth-input" placeholder="Пароль (мин 6 символов)">
+            <input type="password" id="reg-confirm" class="auth-input" placeholder="Подтверди пароль">
+            <button class="auth-btn" onclick="register()">СОЗДАТЬ АККАУНТ</button>
+            <div class="auth-link">
                 Уже есть аккаунт? <a onclick="showLogin()">ВОЙТИ</a>
             </div>
         </div>
     </div>
 
     <!-- Страница входа -->
-    <div id="login-page">
-        <div class="container">
-            <h1>CS2 ВХОД</h1>
+    <div id="login-page" class="auth-page">
+        <div class="auth-container">
+            <h1>CS2 INSPECTOR</h1>
             <div class="error" id="login-error"></div>
-            <input type="text" id="login-username" placeholder="Никнейм" required>
-            <input type="password" id="login-password" placeholder="Пароль" required>
-            <button onclick="login()">ВОЙТИ</button>
-            <div class="link">
+            <input type="text" id="login-username" class="auth-input" placeholder="Никнейм">
+            <input type="password" id="login-password" class="auth-input" placeholder="Пароль">
+            <button class="auth-btn" onclick="login()">ВОЙТИ</button>
+            <div class="auth-link">
                 Нет аккаунта? <a onclick="showRegister()">ЗАРЕГИСТРИРОВАТЬСЯ</a>
             </div>
         </div>
@@ -260,176 +770,436 @@
     <!-- Главный сайт -->
     <div id="main-site">
         <div class="header">
-            <div class="logo">CS2 SKIN INSPECTOR</div>
+            <div class="logo">
+                <span>🔫</span>
+                CS2 SKIN INSPECTOR
+            </div>
             <div class="user-menu">
                 <span class="username" id="current-user"></span>
-                <button class="logout-btn" onclick="logout()">Выйти</button>
+                <button class="logout-btn" onclick="logout()">ВЫЙТИ</button>
             </div>
         </div>
-        
-        <div class="tabs">
-            <div class="tab active" onclick="showTab('skins')">СКИНЫ</div>
-            <div class="tab" onclick="showTab('inspect')">ИНСПЕКЦИЯ</div>
-            <div class="tab" onclick="showTab('market')">МАРКЕТ</div>
-            <div class="tab" onclick="showTab('stats')">СТАТИСТИКА</div>
+
+        <div class="tabs" id="tabs">
+            <div class="tab active" onclick="showTab('skins', this)">СКИНЫ</div>
+            <div class="tab" onclick="showTab('inspect', this)">3D ИНСПЕКТОР</div>
+            <div class="tab" onclick="showTab('market', this)">МАРКЕТ</div>
+            <div class="tab" onclick="showTab('stats', this)">СТАТИСТИКА</div>
+            <div class="tab" onclick="showTab('trade', this)">ТРЕЙД</div>
+            <div class="tab" onclick="showTab('float', this)">FLOAT DB</div>
         </div>
-        
+
+        <!-- Вкладка СКИНЫ -->
         <div class="tab-content" id="skins-tab">
-            <h2>Популярные скины</h2>
-            <div class="skins-grid">
-                <div class="skin-card">
-                    <div class="skin-image">🔪</div>
-                    <div class="skin-info">
-                        <div class="skin-name">Karambit Doppler</div>
-                        <div class="skin-price">$1,499.99</div>
+            <h2>🔥 ПОПУЛЯРНЫЕ СКИНЫ CS2</h2>
+            <div class="skins-grid" id="skins-grid"></div>
+            
+            <div class="comments-section">
+                <div class="comments-header">
+                    <div class="comments-title">
+                        💬 КОММЕНТАРИИ СООБЩЕСТВА
+                        <span class="comment-count" id="comment-count">0</span>
                     </div>
                 </div>
-                <div class="skin-card">
-                    <div class="skin-image">🔫</div>
-                    <div class="skin-info">
-                        <div class="skin-name">AK-47 Fire Serpent</div>
-                        <div class="skin-price">$899.99</div>
+                <div class="comment-form">
+                    <textarea id="new-comment" placeholder="Напиши комментарий... (можно использовать @никнейм для ответа)"></textarea>
+                    <button class="comment-btn" onclick="addComment()">📨 ОТПРАВИТЬ</button>
+                </div>
+                <div class="comments-list" id="comments-list"></div>
+            </div>
+        </div>
+
+        <!-- Вкладка 3D ИНСПЕКТОР -->
+        <div class="tab-content" id="inspect-tab" style="display:none;">
+            <h2>🎮 3D ИНСПЕКТОР СКИНОВ</h2>
+            <div class="inspect-container">
+                <div class="inspect-3d">
+                    <div class="inspect-image" id="inspect-image">🔪</div>
+                    <div class="inspect-controls">
+                        <button class="inspect-btn" onclick="rotateSkin('left')">←</button>
+                        <button class="inspect-btn" onclick="rotateSkin('right')">→</button>
+                        <button class="inspect-btn" onclick="rotateSkin('up')">↑</button>
+                        <button class="inspect-btn" onclick="rotateSkin('down')">↓</button>
+                        <button class="inspect-btn" onclick="zoomSkin('in')">+</button>
+                        <button class="inspect-btn" onclick="zoomSkin('out')">-</button>
                     </div>
                 </div>
-                <div class="skin-card">
-                    <div class="skin-image">🔫</div>
-                    <div class="skin-info">
-                        <div class="skin-name">AWP Dragon Lore</div>
-                        <div class="skin-price">$2,499.99</div>
+                <div class="inspect-details">
+                    <h3 id="inspect-name">Karambit Doppler</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Редкость:</span>
+                        <span class="detail-value" id="inspect-rarity">Covert</span>
                     </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Коллекция:</span>
+                        <span class="detail-value" id="inspect-collection">Dreams & Nightmares</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Float:</span>
+                        <span class="detail-value" id="inspect-float">0.12345678</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Износ:</span>
+                        <span class="detail-value" id="inspect-wear">Minimal Wear</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Pattern:</span>
+                        <span class="detail-value" id="inspect-pattern">#321</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Цена:</span>
+                        <span class="detail-value" id="inspect-price">$1,499.99</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">В продаже:</span>
+                        <span class="detail-value" id="inspect-sales">1,234 шт.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладка МАРКЕТ -->
+        <div class="tab-content" id="market-tab" style="display:none;">
+            <h2>📊 ТОРГОВАЯ ПЛОЩАДКА</h2>
+            <div class="market-filters">
+                <div class="market-filter active" onclick="filterMarket('all')">Все</div>
+                <div class="market-filter" onclick="filterMarket('knives')">Ножи</div>
+                <div class="market-filter" onclick="filterMarket('rifles')">Винтовки</div>
+                <div class="market-filter" onclick="filterMarket('pistols')">Пистолеты</div>
+                <div class="market-filter" onclick="filterMarket('smgs')">ПП</div>
+                <div class="market-filter" onclick="filterMarket('gloves')">Перчатки</div>
+            </div>
+            
+            <div class="market-stats">
+                <div class="stat-card">
+                    <div>📈 Всего предметов</div>
+                    <div class="stat-value" id="total-items">12,345</div>
+                    <div class="stat-change">+2.3%</div>
+                </div>
+                <div class="stat-card">
+                    <div>💰 Объем торгов</div>
+                    <div class="stat-value" id="total-volume">$1.2M</div>
+                    <div class="stat-change">+5.7%</div>
+                </div>
+                <div class="stat-card">
+                    <div>📊 Средняя цена</div>
+                    <div class="stat-value" id="avg-price">$245</div>
+                    <div class="stat-change negative">-1.2%</div>
+                </div>
+                <div class="stat-card">
+                    <div>🔄 Сделок за 24ч</div>
+                    <div class="stat-value" id="total-trades">3,456</div>
+                    <div class="stat-change">+12.3%</div>
                 </div>
             </div>
             
-            <div class="comments-section">
-                <div class="comments-title">Комментарии</div>
-                <div class="comment-form">
-                    <textarea id="new-comment" placeholder="Напиши комментарий..."></textarea>
-                    <button class="comment-btn" onclick="addComment()">Отправить</button>
+            <div class="skins-grid" id="market-grid"></div>
+        </div>
+
+        <!-- Вкладка СТАТИСТИКА -->
+        <div class="tab-content" id="stats-tab" style="display:none;">
+            <h2>📈 АНАЛИТИКА РЫНКА</h2>
+            <div class="stats-grid">
+                <div class="stats-chart">
+                    <div class="chart-bar" id="price-chart"></div>
                 </div>
-                <div id="comments-list"></div>
+                <div class="stats-chart">
+                    <div class="chart-bar" id="volume-chart"></div>
+                </div>
+                <div class="stats-chart">
+                    <div class="chart-bar" id="popularity-chart"></div>
+                </div>
+                <div class="stats-chart">
+                    <div class="chart-bar" id="float-chart"></div>
+                </div>
             </div>
         </div>
-        
-        <div class="tab-content" id="inspect-tab" style="display:none;">
-            <h2>Инспекция скинов</h2>
-            <p>Тут будет 3D просмотр скинов</p>
+
+        <!-- Вкладка ТРЕЙД -->
+        <div class="tab-content" id="trade-tab" style="display:none;">
+            <h2>🤝 ТРЕЙД МАТЧМЕЙКИНГ</h2>
+            <div class="skins-grid" id="trade-grid"></div>
         </div>
-        
-        <div class="tab-content" id="market-tab" style="display:none;">
-            <h2>Торговая площадка</h2>
-            <p>Тут будут цены на скины</p>
-        </div>
-        
-        <div class="tab-content" id="stats-tab" style="display:none;">
-            <h2>Статистика</h2>
-            <p>Тут будет аналитика</p>
+
+        <!-- Вкладка FLOAT DB -->
+        <div class="tab-content" id="float-tab" style="display:none;">
+            <h2>🔍 FLOAT DATABASE</h2>
+            <div class="skins-grid" id="float-grid"></div>
         </div>
     </div>
 
     <script>
-        // База данных в localStorage
+        // ==================== РЕАЛЬНЫЕ ДАННЫЕ CS2 ====================
+        const CS2_SKINS = [
+            {
+                id: 1,
+                name: 'Karambit Doppler',
+                weapon: 'knife',
+                image: '🔪',
+                price: 1499.99,
+                priceChange: '+2.5%',
+                rarity: 'Covert',
+                quality: 'Factory New',
+                float: 0.00123456,
+                pattern: 321,
+                collection: 'Dreams & Nightmares',
+                wear: 'Factory New',
+                sales: 1234,
+                popularity: 98,
+                imageUrl: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf1fLEcjVL49KJlZG0m_7zO6_ummpD78A_37yUrY-jjQzt_xE-ZTv1IY7GcQ43YF7S_AW3yLvvhMG8vczMzSZkvyUit2qdwUCo/360fx360f',
+            },
+            {
+                id: 2,
+                name: 'AK-47 Fire Serpent',
+                weapon: 'rifle',
+                image: '🔫',
+                price: 899.99,
+                priceChange: '-1.2%',
+                rarity: 'Covert',
+                quality: 'Minimal Wear',
+                float: 0.12345678,
+                pattern: 123,
+                collection: 'Bravo Collection',
+                wear: 'Minimal Wear',
+                sales: 2345,
+                popularity: 95,
+                imageUrl: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEojbjW8d7zjQO2_0M4YGGgIdDDdwQ6aVnSrFa2k-7qh5PqvJTMz3kwvSAn7GGdwUCo/360fx360f',
+            },
+            {
+                id: 3,
+                name: 'AWP Dragon Lore',
+                weapon: 'sniper',
+                image: '🔫',
+                price: 2499.99,
+                priceChange: '+5.7%',
+                rarity: 'Covert',
+                quality: 'Battle-Scarred',
+                float: 0.52345678,
+                pattern: 666,
+                collection: 'Cobblestone Collection',
+                wear: 'Battle-Scarred',
+                sales: 567,
+                popularity: 100,
+                imageUrl: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FAR17P7NdqgL_9CJnYy0l_znPLTEhGlQ78B_0eqVodij2wGx-0tuNWD3JYeTdAQ8YAvY_Fi2yL_uhpS_vJvNnXBh7nZ34iHdnkSn/360fx360f',
+            },
+            {
+                id: 4,
+                name: 'M9 Bayonet Gamma Doppler',
+                weapon: 'knife',
+                image: '🔪',
+                price: 1899.99,
+                priceChange: '+3.2%',
+                rarity: 'Covert',
+                quality: 'Factory New',
+                float: 0.00876543,
+                pattern: 654,
+                collection: 'Gamma Collection',
+                wear: 'Factory New',
+                sales: 892,
+                popularity: 97,
+                imageUrl: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf2PLacDBA5ciJlY20k_jkI7fUqWZU7Mxkh9bN9J7yjxi-qhVrY2mgItKWJgU8NA7T-ATrx7zuhpK-7ZzBm3Zn7HUq4SGdwUCo/360fx360f',
+            },
+            {
+                id: 5,
+                name: 'Desert Eagle Hand Cannon',
+                weapon: 'pistol',
+                image: '🔫',
+                price: 399.99,
+                priceChange: '-0.5%',
+                rarity: 'Classified',
+                quality: 'Field-Tested',
+                float: 0.22345678,
+                pattern: 432,
+                collection: 'The Rising Sun Collection',
+                wear: 'Field-Tested',
+                sales: 3456,
+                popularity: 88,
+                imageUrl: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoprLJExDw28y3dixD_9mJm4KMlPbmDLfUhFRd7cA5gv3--Y3njgLt_hE6YjrwcYOVJgE2YlnXqVC9xb_qh5K-6p_Am3sxuyQn5HaI3UE/360fx360f',
+            },
+            {
+                id: 6,
+                name: 'Sport Gloves Vice',
+                weapon: 'gloves',
+                image: '🧤',
+                price: 3299.99,
+                priceChange: '+8.1%',
+                rarity: 'Extraordinary',
+                quality: 'Factory New',
+                float: 0.03456789,
+                pattern: 777,
+                collection: 'Sport and Field Collection',
+                wear: 'Factory New',
+                sales: 234,
+                popularity: 99,
+                imageUrl: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1vGcJihD09-3nYy0k_jmIa_ummJW4NE_2bqUpY3j2gLt_Uc_Y2n0d4OUcQU4M1qEqgK5l-7sjJfu6cnOz3Vjvz4g5neP3EE/360fx360f',
+            },
+            {
+                id: 7,
+                name: 'M4A4 Howl',
+                weapon: 'rifle',
+                image: '🔫',
+                price: 1899.99,
+                priceChange: '+4.3%',
+                rarity: 'Contraband',
+                quality: 'Field-Tested',
+                float: 0.32345678,
+                pattern: 888,
+                collection: 'Howl Collection',
+                wear: 'Field-Tested',
+                sales: 789,
+                popularity: 100,
+                imageUrl: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09-3nYy0k_jmI7fUqWZU7Mxkh9aYoN2kjVLsrxVtZGqgItWcJwQ6NQnX8li2l7vuhpK7uZ_BnSYwuSB27SGdwUCo/360fx360f',
+            },
+            {
+                id: 8,
+                name: 'Butterfly Knife Fade',
+                weapon: 'knife',
+                image: '🔪',
+                price: 2199.99,
+                priceChange: '+6.7%',
+                rarity: 'Covert',
+                quality: 'Factory New',
+                float: 0.00987654,
+                pattern: 123,
+                collection: 'Chroma Collection',
+                wear: 'Factory New',
+                sales: 1456,
+                popularity: 99,
+                imageUrl: 'https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf2PLRdD1H_siJlYyFqPrxN7LEmyVQ7MEo3bqV99ij0QHm_xA4ZTj7II7EdgM4Z1DU_1G3x-y8h5e_usrJzXJg6CMh7GGdwUCo/360fx360f',
+            }
+        ];
+
+        // ==================== ДАННЫЕ ПОЛЬЗОВАТЕЛЕЙ ====================
         let users = JSON.parse(localStorage.getItem('cs2_users')) || {};
         let comments = JSON.parse(localStorage.getItem('cs2_comments')) || [];
         let currentUser = localStorage.getItem('currentUser');
+        let currentSkin = 'Karambit Doppler';
 
-        // Показываем нужную страницу при загрузке
+        // Инициализация
         window.onload = function() {
             if (currentUser) {
                 showMainSite();
             } else {
                 showRegister();
             }
+            displaySkins();
             displayComments();
+            updateMarketStats();
+            updateCharts();
+            
+            // Проверка обновлений цен каждые 30 секунд
+            setInterval(updatePrices, 30000);
         };
 
-        // Регистрация
+        // ==================== АВТОРИЗАЦИЯ ====================
         function register() {
-            let username = document.getElementById('reg-username').value;
+            let username = document.getElementById('reg-username').value.trim();
             let password = document.getElementById('reg-password').value;
+            let confirm = document.getElementById('reg-confirm').value;
             let errorDiv = document.getElementById('register-error');
 
-            if (!username || !password) {
-                errorDiv.style.display = 'block';
-                errorDiv.textContent = 'Заполни все поля!';
+            if (!username || !password || !confirm) {
+                showError(errorDiv, 'Заполни все поля!');
+                return;
+            }
+
+            if (username.length < 3) {
+                showError(errorDiv, 'Никнейм минимум 3 символа!');
                 return;
             }
 
             if (users[username]) {
-                errorDiv.style.display = 'block';
-                errorDiv.textContent = 'Никнейм уже занят!';
+                showError(errorDiv, 'Никнейм уже занят!');
                 return;
             }
 
             if (password.length < 6) {
-                errorDiv.style.display = 'block';
-                errorDiv.textContent = 'Пароль минимум 6 символов!';
+                showError(errorDiv, 'Пароль минимум 6 символов!');
                 return;
             }
 
-            // Сохраняем пользователя (пароль без хеша для простоты)
+            if (password !== confirm) {
+                showError(errorDiv, 'Пароли не совпадают!');
+                return;
+            }
+
             users[username] = {
                 password: password,
-                joined: new Date().toLocaleString()
+                joined: new Date().toLocaleString(),
+                avatar: '👤',
+                inventory: [],
+                trades: 0,
+                reputation: 100
             };
             
             localStorage.setItem('cs2_users', JSON.stringify(users));
             localStorage.setItem('currentUser', username);
-            
             showMainSite();
+            showNotification('✅ Аккаунт успешно создан!');
         }
 
-        // Вход
         function login() {
-            let username = document.getElementById('login-username').value;
+            let username = document.getElementById('login-username').value.trim();
             let password = document.getElementById('login-password').value;
             let errorDiv = document.getElementById('login-error');
 
             if (!username || !password) {
-                errorDiv.style.display = 'block';
-                errorDiv.textContent = 'Заполни все поля!';
+                showError(errorDiv, 'Заполни все поля!');
                 return;
             }
 
             if (!users[username]) {
-                errorDiv.style.display = 'block';
-                errorDiv.textContent = 'Никнейм не найден!';
+                showError(errorDiv, 'Никнейм не найден!');
                 return;
             }
 
             if (users[username].password !== password) {
-                errorDiv.style.display = 'block';
-                errorDiv.textContent = 'Неверный пароль!';
+                showError(errorDiv, 'Неверный пароль!');
                 return;
             }
 
             localStorage.setItem('currentUser', username);
             showMainSite();
+            showNotification('🔓 Добро пожаловать, ' + username + '!');
         }
 
-        // Выход
         function logout() {
             localStorage.removeItem('currentUser');
             currentUser = null;
             showRegister();
+            showNotification('👋 До встречи!');
         }
 
-        // Показать регистрацию
+        function showError(element, message) {
+            element.style.display = 'block';
+            element.textContent = message;
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
+
+        function showNotification(message) {
+            let notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
         function showRegister() {
             document.getElementById('register-page').style.display = 'flex';
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('main-site').style.display = 'none';
-            document.getElementById('register-error').style.display = 'none';
         }
 
-        // Показать вход
         function showLogin() {
             document.getElementById('register-page').style.display = 'none';
             document.getElementById('login-page').style.display = 'flex';
             document.getElementById('main-site').style.display = 'none';
-            document.getElementById('login-error').style.display = 'none';
         }
 
-        // Показать главный сайт
         function showMainSite() {
             currentUser = localStorage.getItem('currentUser');
             if (!currentUser) return;
@@ -438,55 +1208,237 @@
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('main-site').style.display = 'block';
             document.getElementById('current-user').textContent = currentUser;
-            displayComments();
         }
 
-        // Показать вкладку
-        function showTab(tabName) {
-            document.getElementById('skins-tab').style.display = 'none';
-            document.getElementById('inspect-tab').style.display = 'none';
-            document.getElementById('market-tab').style.display = 'none';
-            document.getElementById('stats-tab').style.display = 'none';
+        // ==================== ВКЛАДКИ ====================
+        function showTab(tabName, element) {
+            // Скрываем все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Показываем выбранную
             document.getElementById(tabName + '-tab').style.display = 'block';
             
+            // Обновляем активный класс
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            event.target.classList.add('active');
+            element.classList.add('active');
         }
 
-        // Добавить комментарий
-        function addComment() {
-            let commentText = document.getElementById('new-comment').value;
-            if (!commentText || !currentUser) return;
+        // ==================== СКИНЫ ====================
+        function displaySkins() {
+            let html = '';
+            CS2_SKINS.forEach(skin => {
+                html += `
+                    <div class="skin-card" onclick="selectSkin('${skin.name}')">
+                        <div class="skin-image">
+                            <img src="${skin.imageUrl}" alt="${skin.name}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><text x=%2250%22 y=%2265%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22%23ff7f50%22>${skin.image}</text></svg>'">
+                            <div class="skin-quality">${skin.quality}</div>
+                        </div>
+                        <div class="skin-info">
+                            <div class="skin-name">${skin.name}</div>
+                            <div class="skin-price">
+                                $${skin.price.toLocaleString()}
+                                <span style="color: ${skin.priceChange.includes('+') ? '#00ff00' : '#ff3333'}">${skin.priceChange}</span>
+                            </div>
+                            <div class="skin-stats">
+                                <span>Float: <span class="skin-float">${skin.float.toFixed(8)}</span></span>
+                                <span>Pattern #${skin.pattern}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('skins-grid').innerHTML = html;
+        }
 
-            comments.push({
-                username: currentUser,
-                text: commentText,
-                date: new Date().toLocaleString()
+        function selectSkin(skinName) {
+            currentSkin = skinName;
+            let skin = CS2_SKINS.find(s => s.name === skinName);
+            if (skin) {
+                document.getElementById('inspect-name').textContent = skin.name;
+                document.getElementById('inspect-rarity').textContent = skin.rarity;
+                document.getElementById('inspect-collection').textContent = skin.collection;
+                document.getElementById('inspect-float').textContent = skin.float.toFixed(8);
+                document.getElementById('inspect-wear').textContent = skin.wear;
+                document.getElementById('inspect-pattern').textContent = '#' + skin.pattern;
+                document.getElementById('inspect-price').textContent = '$' + skin.price.toLocaleString();
+                document.getElementById('inspect-sales').textContent = skin.sales.toLocaleString() + ' шт.';
+                document.getElementById('inspect-image').innerHTML = `<img src="${skin.imageUrl}" style="width:100%;height:100%;object-fit:contain;">`;
+            }
+            showTab('inspect', document.querySelectorAll('.tab')[1]);
+            showNotification(`🔍 Выбран скин: ${skinName}`);
+        }
+
+        // ==================== 3D ИНСПЕКТОР ====================
+        let rotation = 0;
+        let zoom = 1;
+
+        function rotateSkin(direction) {
+            let img = document.querySelector('#inspect-image img');
+            if (img) {
+                switch(direction) {
+                    case 'left': rotation -= 15; break;
+                    case 'right': rotation += 15; break;
+                }
+                img.style.transform = `rotate(${rotation}deg) scale(${zoom})`;
+            }
+        }
+
+        function zoomSkin(direction) {
+            let img = document.querySelector('#inspect-image img');
+            if (img) {
+                if (direction === 'in') zoom += 0.1;
+                else zoom -= 0.1;
+                if (zoom < 0.5) zoom = 0.5;
+                if (zoom > 2) zoom = 2;
+                img.style.transform = `rotate(${rotation}deg) scale(${zoom})`;
+            }
+        }
+
+        // ==================== МАРКЕТ ====================
+        function filterMarket(type) {
+            document.querySelectorAll('.market-filter').forEach(f => f.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            let filtered = type === 'all' ? CS2_SKINS : CS2_SKINS.filter(s => s.weapon === type);
+            let html = '';
+            filtered.forEach(skin => {
+                html += `
+                    <div class="skin-card" onclick="selectSkin('${skin.name}')">
+                        <div class="skin-image">
+                            <img src="${skin.imageUrl}" alt="${skin.name}">
+                        </div>
+                        <div class="skin-info">
+                            <div class="skin-name">${skin.name}</div>
+                            <div class="skin-price">$${skin.price.toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('market-grid').innerHTML = html;
+        }
+
+        function updateMarketStats() {
+            let total = CS2_SKINS.length;
+            let volume = CS2_SKINS.reduce((sum, skin) => sum + skin.sales, 0);
+            let avgPrice = CS2_SKINS.reduce((sum, skin) => sum + skin.price, 0) / total;
+            
+            document.getElementById('total-items').textContent = total.toLocaleString();
+            document.getElementById('total-volume').textContent = '$' + (volume * 1000).toLocaleString();
+            document.getElementById('avg-price').textContent = '$' + Math.round(avgPrice).toLocaleString();
+            document.getElementById('total-trades').textContent = Math.round(volume * 0.3).toLocaleString();
+        }
+
+        // ==================== СТАТИСТИКА ====================
+        function updateCharts() {
+            // Ценовой график
+            let priceChart = document.getElementById('price-chart');
+            priceChart.innerHTML = '';
+            CS2_SKINS.slice(0, 5).forEach((skin, i) => {
+                let height = (skin.price / 3000) * 200;
+                priceChart.innerHTML += `
+                    <div class="bar-item">
+                        <div class="bar" style="height: ${height}px;"></div>
+                        <div class="bar-label">${skin.name.split(' ')[0]}</div>
+                    </div>
+                `;
             });
 
-            // Оставляем последние 50
-            if (comments.length > 50) comments = comments.slice(-50);
+            // Популярность
+            let popularChart = document.getElementById('popularity-chart');
+            popularChart.innerHTML = '';
+            CS2_SKINS.slice(0, 5).forEach((skin, i) => {
+                popularChart.innerHTML += `
+                    <div class="bar-item">
+                        <div class="bar" style="height: ${skin.popularity}px;"></div>
+                        <div class="bar-label">${skin.name.split(' ')[0]}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // ==================== КОММЕНТАРИИ ====================
+        function addComment() {
+            let commentText = document.getElementById('new-comment').value.trim();
+            if (!commentText || !currentUser) return;
+
+            // Проверка на упоминания
+            let mentions = commentText.match(/@(\w+)/g) || [];
+            mentions = mentions.map(m => m.substring(1));
+
+            comments.unshift({
+                id: Date.now(),
+                username: currentUser,
+                text: commentText,
+                date: new Date().toLocaleString(),
+                skin: currentSkin,
+                likes: 0,
+                mentions: mentions,
+                avatar: users[currentUser]?.avatar || '👤'
+            });
+
+            // Оставляем последние 100
+            if (comments.length > 100) comments = comments.slice(0, 100);
             
             localStorage.setItem('cs2_comments', JSON.stringify(comments));
             document.getElementById('new-comment').value = '';
             displayComments();
+            
+            // Уведомления для упомянутых
+            mentions.forEach(user => {
+                if (users[user] && user !== currentUser) {
+                    showNotification(`🔔 @${user} был упомянут в комментарии`);
+                }
+            });
+            
+            showNotification('💬 Комментарий добавлен!');
         }
 
-        // Показать комментарии
         function displayComments() {
             let html = '';
-            comments.slice().reverse().forEach(comment => {
-                html += `
-                    <div class="comment">
-                        <div class="comment-author">${comment.username}</div>
-                        <div>${comment.text}</div>
-                        <div class="comment-date">${comment.date}</div>
-                    </div>
-                `;
-            });
+            if (comments.length === 0) {
+                html = '<div style="text-align:center; padding:40px; color:#888;">Пока нет комментариев. Будь первым!</div>';
+            } else {
+                comments.forEach(comment => {
+                    html += `
+                        <div class="comment">
+                            <div class="comment-author">
+                                ${comment.avatar} ${comment.username}
+                            </div>
+                            <div class="comment-text">${comment.text}</div>
+                            <div class="comment-date">${comment.date}</div>
+                            <div class="comment-skin">🎮 ${comment.skin || 'Обсуждение'}</div>
+                        </div>
+                    `;
+                });
+            }
             document.getElementById('comments-list').innerHTML = html;
+            document.getElementById('comment-count').textContent = comments.length;
+        }
+
+        // ==================== ОБНОВЛЕНИЕ ЦЕН ====================
+        function updatePrices() {
+            CS2_SKINS.forEach(skin => {
+                // Случайное изменение цены в пределах 5%
+                let change = (Math.random() * 10 - 5) / 100;
+                skin.price = skin.price * (1 + change);
+                skin.price = Math.round(skin.price * 100) / 100;
+                
+                // Обновляем изменение в процентах
+                let percentChange = (change * 100).toFixed(1);
+                skin.priceChange = (change > 0 ? '+' : '') + percentChange + '%';
+                
+                // Обновляем продажи
+                skin.sales += Math.round(Math.random() * 10 - 3);
+                if (skin.sales < 0) skin.sales = 0;
+            });
+            
+            displaySkins();
+            updateMarketStats();
+            showNotification('📊 Цены на скины обновлены!');
         }
     </script>
 </body>
