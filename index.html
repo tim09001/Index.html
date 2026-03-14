@@ -9,7 +9,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = 'cs2-super-secret-key-123456789'
 
-# ========== ФАЙЛЫ ДЛЯ ХРАНЕНИЯ ДАННЫХ ==========
+# ========== ФАЙЛЫ ==========
 USERS_FILE = 'cs2_users.json'
 COMMENTS_FILE = 'cs2_comments.json'
 
@@ -22,7 +22,7 @@ if not os.path.exists(COMMENTS_FILE):
     with open(COMMENTS_FILE, 'w') as f:
         json.dump([], f)
 
-# ========== ДЕКОРАТОР ДЛЯ ЗАЩИТЫ СТРАНИЦ ==========
+# ========== ЗАЩИТА ==========
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -31,304 +31,101 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# ========== СТРАНИЦА РЕГИСТРАЦИИ ==========
+# ========== РЕГИСТРАЦИЯ ==========
 REGISTER_PAGE = """
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS2 | РЕГИСТРАЦИЯ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Anton&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: #000;
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            color: white;
             display: flex;
-            align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
+            align-items: center;
+            height: 100vh;
         }
-        
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #000 0%, #1a1a1a 100%);
-            z-index: 1;
-        }
-        
-        body::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 50%, #ff7f50 0%, transparent 70%);
-            opacity: 0.05;
-            z-index: 1;
-        }
-        
-        .cs2-logo {
-            position: absolute;
-            top: 30px;
-            left: 30px;
-            font-family: 'Anton', sans-serif;
-            font-size: 4rem;
-            background: linear-gradient(45deg, #ffb347, #ff7f50, #ff6347);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            text-shadow: 0 0 30px rgba(255, 99, 71, 0.5);
-            animation: logoPulse 2s infinite;
-            z-index: 10;
-        }
-        
-        @keyframes logoPulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.9; }
-        }
-        
-        .register-container {
-            position: relative;
-            z-index: 100;
-            width: 100%;
-            max-width: 500px;
-            background: rgba(20, 20, 30, 0.95);
-            backdrop-filter: blur(15px);
+        .container {
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 20px;
+            width: 400px;
             border: 2px solid #ff7f50;
-            border-radius: 30px;
-            padding: 50px 40px;
-            box-shadow: 0 0 50px rgba(255, 140, 0, 0.5);
-            animation: containerAppear 0.5s ease;
         }
-        
-        @keyframes containerAppear {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        h1 { 
+            color: #ff7f50; 
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
         }
-        
-        .register-container h1 {
-            font-family: 'Anton', sans-serif;
-            font-size: 3rem;
-            text-transform: uppercase;
-            background: linear-gradient(45deg, #fff, #ffb347);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .error {
+            background: #ff3333;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
             margin-bottom: 20px;
             text-align: center;
-            letter-spacing: 4px;
         }
-        
-        .register-container p {
-            color: #888;
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-            border-bottom: 2px solid #ff7f50;
-            padding-bottom: 20px;
-        }
-        
-        .error-message {
-            background: rgba(255, 0, 0, 0.2);
-            border: 2px solid #ff0000;
-            border-radius: 10px;
+        input {
+            width: 100%;
             padding: 15px;
             margin-bottom: 20px;
-            color: #ff6b6b;
-            text-align: center;
-            font-weight: bold;
+            background: #333;
+            border: 2px solid #555;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
         }
-        
-        .cs2-input {
-            margin-bottom: 25px;
-        }
-        
-        .cs2-input label {
-            display: block;
-            color: #ffb347;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-        }
-        
-        .cs2-input input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #333;
-            border-radius: 15px;
-            padding: 18px 20px;
-            font-size: 1.1rem;
-            color: #fff;
-            transition: all 0.3s;
-            font-family: 'Montserrat', sans-serif;
-        }
-        
-        .cs2-input input:focus {
+        input:focus {
             border-color: #ff7f50;
-            box-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
             outline: none;
-            background: rgba(0, 0, 0, 0.9);
         }
-        
-        .cs2-input input::placeholder {
-            color: #444;
-            font-style: italic;
-        }
-        
-        .cs2-button {
+        button {
             width: 100%;
-            background: linear-gradient(45deg, #ff7f50, #ff6347);
+            padding: 15px;
+            background: #ff7f50;
             border: none;
-            border-radius: 15px;
-            padding: 20px;
-            font-family: 'Anton', sans-serif;
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            color: #000;
-            letter-spacing: 3px;
+            border-radius: 10px;
+            color: black;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
         }
-        
-        .cs2-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
+        button:hover {
+            background: #ff6347;
         }
-        
-        .cs2-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255, 99, 71, 0.6);
-        }
-        
-        .cs2-button:hover::before {
-            left: 100%;
-        }
-        
-        .cs2-button:active {
-            transform: translateY(0);
-        }
-        
-        .login-link {
+        .link {
             text-align: center;
             margin-top: 20px;
         }
-        
-        .login-link a {
-            color: #ffb347;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            border-bottom: 2px solid transparent;
-        }
-        
-        .login-link a:hover {
+        .link a {
             color: #ff7f50;
-            border-bottom-color: #ff7f50;
+            text-decoration: none;
         }
-        
-        .online-counter {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #ff7f50;
-            border-radius: 30px;
-            padding: 10px 20px;
-            color: #fff;
-            font-weight: bold;
-            z-index: 10;
-            animation: glow 2s infinite;
+        .link a:hover {
+            text-decoration: underline;
         }
-        
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px #ff7f50; }
-            50% { box-shadow: 0 0 40px #ff4500; }
-        }
-        
-        .weapon {
-            position: absolute;
-            font-size: 3rem;
-            opacity: 0.1;
-            animation: float 10s infinite linear;
-            z-index: 5;
-        }
-        
-        @keyframes float {
-            from { transform: translateY(100vh) rotate(0deg); }
-            to { transform: translateY(-100vh) rotate(360deg); }
-        }
-        
-        .weapon1 { left: 10%; animation-duration: 15s; }
-        .weapon2 { left: 30%; animation-duration: 20s; }
-        .weapon3 { left: 50%; animation-duration: 12s; }
-        .weapon4 { left: 70%; animation-duration: 18s; }
-        .weapon5 { left: 90%; animation-duration: 14s; }
     </style>
 </head>
 <body>
-    <div class="cs2-logo">COUNTER-STRIKE 2</div>
-    
-    <div class="online-counter">
-        🔥 ONLINE: <span>24,876</span>
-    </div>
-    
-    <div class="weapon weapon1">🔫</div>
-    <div class="weapon weapon2">🔪</div>
-    <div class="weapon weapon3">💣</div>
-    <div class="weapon weapon4">🎯</div>
-    <div class="weapon weapon5">🔥</div>
-    
-    <div class="register-container">
-        <h1>ПРИСОЕДИНЯЙСЯ</h1>
-        <p>Создай аккаунт и стань легендой CS2</p>
+    <div class="container">
+        <h1>CS2 РЕГИСТРАЦИЯ</h1>
         
         {% if error %}
-        <div class="error-message">
-            ⚠️ {{ error }}
-        </div>
+        <div class="error">{{ error }}</div>
         {% endif %}
         
         <form action="/register" method="POST">
-            <div class="cs2-input">
-                <label>🔹 ИГРОВОЙ НИКНЕЙМ</label>
-                <input type="text" name="username" placeholder="s1mple, ZyWoo, dev1ce" required>
-            </div>
-            
-            <div class="cs2-input">
-                <label>🔹 ПАРОЛЬ</label>
-                <input type="password" name="password" placeholder="минимум 6 символов" required>
-            </div>
-            
-            <button type="submit" class="cs2-button">▶ ЗАРЕГИСТРИРОВАТЬСЯ</button>
+            <input type="text" name="username" placeholder="Никнейм" required>
+            <input type="password" name="password" placeholder="Пароль (мин 6 символов)" required>
+            <button type="submit">ЗАРЕГИСТРИРОВАТЬСЯ</button>
         </form>
         
-        <div class="login-link">
+        <div class="link">
             Уже есть аккаунт? <a href="/login">ВОЙТИ</a>
         </div>
     </div>
@@ -336,243 +133,102 @@ REGISTER_PAGE = """
 </html>
 """
 
-# ========== СТРАНИЦА ВХОДА ==========
+# ========== ВХОД ==========
 LOGIN_PAGE = """
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS2 | ВХОД</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Anton&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: #000;
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            color: white;
             display: flex;
-            align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
+            align-items: center;
+            height: 100vh;
         }
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(45deg, #000 0%, #1a1a1a 100%);
-            z-index: 1;
-        }
-        body::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, #ff7f50 0%, transparent 70%);
-            opacity: 0.05;
-            z-index: 1;
-        }
-        .cs2-logo {
-            position: absolute;
-            top: 30px; left: 30px;
-            font-family: 'Anton', sans-serif;
-            font-size: 4rem;
-            background: linear-gradient(45deg, #ffb347, #ff7f50, #ff6347);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            text-shadow: 0 0 30px rgba(255, 99, 71, 0.5);
-            animation: logoPulse 2s infinite;
-            z-index: 10;
-        }
-        @keyframes logoPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .login-container {
-            position: relative;
-            z-index: 100;
-            width: 100%;
-            max-width: 500px;
-            background: rgba(20, 20, 30, 0.95);
-            backdrop-filter: blur(15px);
+        .container {
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 20px;
+            width: 400px;
             border: 2px solid #ff7f50;
-            border-radius: 30px;
-            padding: 50px 40px;
-            box-shadow: 0 0 50px rgba(255, 140, 0, 0.5);
-            animation: containerAppear 0.5s ease;
         }
-        @keyframes containerAppear {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        h1 { 
+            color: #ff7f50; 
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
         }
-        .login-container h1 {
-            font-family: 'Anton', sans-serif;
-            font-size: 3rem;
-            text-transform: uppercase;
-            background: linear-gradient(45deg, #fff, #ffb347);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .error {
+            background: #ff3333;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
             margin-bottom: 20px;
             text-align: center;
-            letter-spacing: 4px;
         }
-        .login-container p {
-            color: #888;
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-            border-bottom: 2px solid #ff7f50;
-            padding-bottom: 20px;
-        }
-        .error-message {
-            background: rgba(255, 0, 0, 0.2);
-            border: 2px solid #ff0000;
-            border-radius: 10px;
+        input {
+            width: 100%;
             padding: 15px;
             margin-bottom: 20px;
-            color: #ff6b6b;
-            text-align: center;
-            font-weight: bold;
+            background: #333;
+            border: 2px solid #555;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
         }
-        .cs2-input { margin-bottom: 25px; }
-        .cs2-input label {
-            display: block;
-            color: #ffb347;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-        }
-        .cs2-input input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #333;
-            border-radius: 15px;
-            padding: 18px 20px;
-            font-size: 1.1rem;
-            color: #fff;
-            transition: all 0.3s;
-            font-family: 'Montserrat', sans-serif;
-        }
-        .cs2-input input:focus {
+        input:focus {
             border-color: #ff7f50;
-            box-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
             outline: none;
-            background: rgba(0, 0, 0, 0.9);
         }
-        .cs2-button {
+        button {
             width: 100%;
-            background: linear-gradient(45deg, #ff7f50, #ff6347);
+            padding: 15px;
+            background: #ff7f50;
             border: none;
-            border-radius: 15px;
-            padding: 20px;
-            font-family: 'Anton', sans-serif;
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            color: #000;
-            letter-spacing: 3px;
+            border-radius: 10px;
+            color: black;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
         }
-        .cs2-button::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
+        button:hover {
+            background: #ff6347;
         }
-        .cs2-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255, 99, 71, 0.6);
-        }
-        .cs2-button:hover::before { left: 100%; }
-        .register-link {
+        .link {
             text-align: center;
             margin-top: 20px;
         }
-        .register-link a {
-            color: #ffb347;
+        .link a {
+            color: #ff7f50;
             text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            border-bottom: 2px solid transparent;
         }
-        .register-link a:hover { color: #ff7f50; border-bottom-color: #ff7f50; }
-        .online-counter {
-            position: absolute;
-            top: 30px; right: 30px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #ff7f50;
-            border-radius: 30px;
-            padding: 10px 20px;
-            color: #fff;
-            font-weight: bold;
-            z-index: 10;
-            animation: glow 2s infinite;
+        .link a:hover {
+            text-decoration: underline;
         }
-        @keyframes glow { 0%,100% { box-shadow: 0 0 20px #ff7f50; } 50% { box-shadow: 0 0 40px #ff4500; } }
-        .weapon {
-            position: absolute;
-            font-size: 3rem;
-            opacity: 0.1;
-            animation: float 10s infinite linear;
-            z-index: 5;
-        }
-        @keyframes float {
-            from { transform: translateY(100vh) rotate(0deg); }
-            to { transform: translateY(-100vh) rotate(360deg); }
-        }
-        .weapon1 { left: 10%; animation-duration: 15s; }
-        .weapon2 { left: 30%; animation-duration: 20s; }
-        .weapon3 { left: 50%; animation-duration: 12s; }
-        .weapon4 { left: 70%; animation-duration: 18s; }
-        .weapon5 { left: 90%; animation-duration: 14s; }
     </style>
 </head>
 <body>
-    <div class="cs2-logo">COUNTER-STRIKE 2</div>
-    
-    <div class="online-counter">
-        🔥 ONLINE: <span>31,452</span>
-    </div>
-    
-    <div class="weapon weapon1">🔫</div>
-    <div class="weapon weapon2">🔪</div>
-    <div class="weapon weapon3">💣</div>
-    <div class="weapon weapon4">🎯</div>
-    <div class="weapon weapon5">🔥</div>
-    
-    <div class="login-container">
-        <h1>СНОВА В СТРОЮ</h1>
-        <p>Войди и продолжай уничтожать</p>
+    <div class="container">
+        <h1>CS2 ВХОД</h1>
         
         {% if error %}
-        <div class="error-message">
-            ⚠️ {{ error }}
-        </div>
+        <div class="error">{{ error }}</div>
         {% endif %}
         
         <form action="/login" method="POST">
-            <div class="cs2-input">
-                <label>🔹 НИКНЕЙМ</label>
-                <input type="text" name="username" placeholder="Твой ник в игре" required>
-            </div>
-            
-            <div class="cs2-input">
-                <label>🔹 ПАРОЛЬ</label>
-                <input type="password" name="password" placeholder="Введи пароль" required>
-            </div>
-            
-            <button type="submit" class="cs2-button">▶ ВОЙТИ</button>
+            <input type="text" name="username" placeholder="Никнейм" required>
+            <input type="password" name="password" placeholder="Пароль" required>
+            <button type="submit">ВОЙТИ</button>
         </form>
         
-        <div class="register-link">
-            Нет аккаунта? <a href="/">СОЗДАТЬ</a>
+        <div class="link">
+            Нет аккаунта? <a href="/">ЗАРЕГИСТРИРОВАТЬСЯ</a>
         </div>
     </div>
 </body>
@@ -582,399 +238,224 @@ LOGIN_PAGE = """
 # ========== ГЛАВНЫЙ САЙТ ==========
 MAIN_SITE = """
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS2 | ИНСПЕКЦИЯ СКИНОВ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Anton&display=swap" rel="stylesheet">
+    <title>CS2 | СКИНЫ</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Montserrat', sans-serif;
+            font-family: Arial, sans-serif;
             background: #0a0a0a;
-            color: #fff;
+            color: white;
         }
-        
-        .cs2-header {
-            background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
-            border-bottom: 3px solid #ff7f50;
-            padding: 15px 40px;
+        .header {
+            background: #1a1a1a;
+            padding: 20px 40px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 10px 30px rgba(255, 99, 71, 0.3);
+            align-items: center;
+            border-bottom: 3px solid #ff7f50;
         }
-        
         .logo {
-            font-family: 'Anton', sans-serif;
-            font-size: 2.5rem;
-            background: linear-gradient(45deg, #ffb347, #ff7f50);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 4px;
+            color: #ff7f50;
+            font-size: 24px;
+            font-weight: bold;
         }
-        
         .user-menu {
             display: flex;
             align-items: center;
             gap: 20px;
         }
-        
         .username {
-            color: #ffb347;
+            color: #ff7f50;
             font-weight: bold;
-            font-size: 1.2rem;
-            border-right: 2px solid #ff7f50;
-            padding-right: 20px;
         }
-        
         .logout-btn {
-            background: linear-gradient(45deg, #ff4757, #ff6b6b);
-            border: none;
-            border-radius: 30px;
-            padding: 10px 25px;
-            color: #fff;
-            font-weight: bold;
-            text-transform: uppercase;
+            background: #ff3333;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
             text-decoration: none;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            transition: all 0.3s;
         }
-        
         .logout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 71, 87, 0.5);
+            background: #cc0000;
         }
-        
         .tabs {
             display: flex;
-            gap: 5px;
-            background: #111;
-            padding: 20px 40px 0 40px;
-            border-bottom: 1px solid #333;
+            gap: 2px;
+            background: #1a1a1a;
+            padding: 20px 20px 0 20px;
         }
-        
         .tab {
-            padding: 15px 30px;
-            background: linear-gradient(180deg, #222, #111);
-            border: 1px solid #333;
-            border-bottom: none;
-            border-radius: 15px 15px 0 0;
+            padding: 12px 24px;
+            background: #333;
             color: #888;
-            font-weight: bold;
-            text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s;
+            border-radius: 10px 10px 0 0;
         }
-        
-        .tab:hover {
-            color: #ffb347;
-            border-color: #ff7f50;
-        }
-        
         .tab.active {
-            background: linear-gradient(180deg, #ff7f50, #ff6347);
-            color: #000;
-            border-color: #ff7f50;
-            transform: translateY(-3px);
-            box-shadow: 0 -5px 20px rgba(255, 99, 71, 0.3);
+            background: #ff7f50;
+            color: black;
+            font-weight: bold;
         }
-        
         .tab-content {
-            padding: 40px;
-            min-height: 70vh;
+            padding: 30px;
+            min-height: 400px;
         }
-        
         .skins-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
-        
         .skin-card {
-            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
-            border: 2px solid #333;
-            border-radius: 30px;
+            background: #1a1a1a;
+            border-radius: 10px;
             overflow: hidden;
-            transition: all 0.3s;
-            position: relative;
+            border: 1px solid #333;
         }
-        
-        .skin-card::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(45deg, #ff7f50, #ffb347, #ff7f50);
-            border-radius: 30px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: -1;
-        }
-        
-        .skin-card:hover::before {
-            opacity: 1;
-        }
-        
-        .skin-card:hover {
-            transform: translateY(-10px) scale(1.02);
-        }
-        
         .skin-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(45deg, #222, #333);
+            height: 150px;
+            background: #333;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 5rem;
-            border-bottom: 2px solid #ff7f50;
+            font-size: 50px;
         }
-        
         .skin-info {
-            padding: 20px;
+            padding: 15px;
         }
-        
         .skin-name {
-            font-family: 'Anton', sans-serif;
-            font-size: 1.5rem;
-            color: #ffb347;
+            color: #ff7f50;
+            font-weight: bold;
             margin-bottom: 10px;
         }
-        
         .skin-price {
-            display: inline-block;
-            background: linear-gradient(45deg, #ff7f50, #ff6347);
-            padding: 8px 20px;
-            border-radius: 30px;
-            color: #000;
+            color: #00ff00;
             font-weight: bold;
         }
-        
-        .skin-rarity {
-            float: right;
-            color: #888;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-        }
-        
         .comments-section {
-            margin-top: 50px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 30px;
-            padding: 30px;
+            margin-top: 40px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
         }
-        
         .comments-title {
-            font-family: 'Anton', sans-serif;
-            font-size: 2rem;
-            color: #ffb347;
+            color: #ff7f50;
+            font-size: 20px;
             margin-bottom: 20px;
         }
-        
-        .comment-form {
-            margin-bottom: 30px;
-        }
-        
         .comment-form textarea {
             width: 100%;
-            background: #111;
-            border: 2px solid #333;
-            border-radius: 20px;
-            padding: 15px;
-            color: #fff;
-            font-size: 1rem;
-            resize: vertical;
-            min-height: 100px;
-            font-family: 'Montserrat', sans-serif;
-        }
-        
-        .comment-form textarea:focus {
-            border-color: #ff7f50;
-            outline: none;
-        }
-        
-        .comment-btn {
-            background: linear-gradient(45deg, #ff7f50, #ff6347);
-            border: none;
-            border-radius: 30px;
-            padding: 12px 30px;
-            color: #000;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-top: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .comment-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 99, 71, 0.5);
-        }
-        
-        .comment {
-            background: #111;
-            border-left: 4px solid #ff7f50;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            animation: commentAppear 0.5s ease;
-        }
-        
-        @keyframes commentAppear {
-            from { transform: translateX(-20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        .comment-author {
-            color: #ffb347;
-            font-weight: bold;
+            padding: 10px;
+            background: #333;
+            border: 1px solid #555;
+            border-radius: 5px;
+            color: white;
+            min-height: 80px;
             margin-bottom: 10px;
         }
-        
-        .comment-text {
-            color: #ccc;
-            line-height: 1.6;
+        .comment-btn {
+            background: #ff7f50;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
         }
-        
+        .comment {
+            background: #333;
+            border-left: 3px solid #ff7f50;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+        .comment-author {
+            color: #ff7f50;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
         .comment-date {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 10px;
-            text-align: right;
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
-    <header class="cs2-header">
+    <div class="header">
         <div class="logo">CS2 SKIN INSPECTOR</div>
         <div class="user-menu">
-            <span class="username">⚡ {{ username }}</span>
-            <a href="/logout" class="logout-btn">ВЫЙТИ</a>
+            <span class="username">{{ username }}</span>
+            <a href="/logout" class="logout-btn">Выйти</a>
         </div>
-    </header>
+    </div>
     
     <div class="tabs">
-        <div class="tab active" onclick="showTab('skins')">🔫 СКИНЫ</div>
-        <div class="tab" onclick="showTab('inspect')">🔍 ИНСПЕКЦИЯ</div>
-        <div class="tab" onclick="showTab('market')">💰 МАРКЕТ</div>
-        <div class="tab" onclick="showTab('stats')">📊 СТАТИСТИКА</div>
+        <div class="tab active" onclick="showTab('skins')">СКИНЫ</div>
+        <div class="tab" onclick="showTab('inspect')">ИНСПЕКЦИЯ</div>
+        <div class="tab" onclick="showTab('market')">МАРКЕТ</div>
+        <div class="tab" onclick="showTab('stats')">СТАТИСТИКА</div>
     </div>
     
     <div class="tab-content" id="skins-tab">
-        <h1 style="font-family: 'Anton', sans-serif; font-size: 3rem; color: #ffb347;">🔥 ПОПУЛЯРНЫЕ СКИНЫ</h1>
-        
+        <h2>Популярные скины</h2>
         <div class="skins-grid">
             <div class="skin-card">
                 <div class="skin-image">🔪</div>
                 <div class="skin-info">
-                    <div class="skin-name">Karambit | Doppler</div>
-                    <span class="skin-price">$1,499.99</span>
-                    <span class="skin-rarity">★ Covert</span>
+                    <div class="skin-name">Karambit Doppler</div>
+                    <div class="skin-price">$1,499.99</div>
                 </div>
             </div>
-            
             <div class="skin-card">
                 <div class="skin-image">🔫</div>
                 <div class="skin-info">
-                    <div class="skin-name">AK-47 | Fire Serpent</div>
-                    <span class="skin-price">$899.99</span>
-                    <span class="skin-rarity">★ Covert</span>
+                    <div class="skin-name">AK-47 Fire Serpent</div>
+                    <div class="skin-price">$899.99</div>
                 </div>
             </div>
-            
             <div class="skin-card">
                 <div class="skin-image">🔫</div>
                 <div class="skin-info">
-                    <div class="skin-name">AWP | Dragon Lore</div>
-                    <span class="skin-price">$2,499.99</span>
-                    <span class="skin-rarity">★ Legendary</span>
-                </div>
-            </div>
-            
-            <div class="skin-card">
-                <div class="skin-image">🔪</div>
-                <div class="skin-info">
-                    <div class="skin-name">M9 Bayonet | Crimson Web</div>
-                    <span class="skin-price">$1,299.99</span>
-                    <span class="skin-rarity">★ Covert</span>
-                </div>
-            </div>
-            
-            <div class="skin-card">
-                <div class="skin-image">🔫</div>
-                <div class="skin-info">
-                    <div class="skin-name">M4A4 | Howl</div>
-                    <span class="skin-price">$1,899.99</span>
-                    <span class="skin-rarity">★ Contraband</span>
-                </div>
-            </div>
-            
-            <div class="skin-card">
-                <div class="skin-image">🔫</div>
-                <div class="skin-info">
-                    <div class="skin-name">Desert Eagle | Blaze</div>
-                    <span class="skin-price">$249.99</span>
-                    <span class="skin-rarity">Classified</span>
+                    <div class="skin-name">AWP Dragon Lore</div>
+                    <div class="skin-price">$2,499.99</div>
                 </div>
             </div>
         </div>
         
         <div class="comments-section">
-            <div class="comments-title">💬 КОММЕНТАРИИ СООБЩЕСТВА</div>
-            
+            <div class="comments-title">Комментарии</div>
             <form class="comment-form" action="/add_comment" method="POST">
-                <textarea name="comment" placeholder="Напиши свое мнение о скинах..." required></textarea>
-                <button type="submit" class="comment-btn">ОТПРАВИТЬ</button>
+                <textarea name="comment" placeholder="Напиши комментарий..." required></textarea>
+                <button type="submit" class="comment-btn">Отправить</button>
             </form>
             
-            <div class="comments-list">
-                {% for comment in comments %}
-                <div class="comment">
-                    <div class="comment-author">{{ comment.username }}</div>
-                    <div class="comment-text">{{ comment.text }}</div>
-                    <div class="comment-date">{{ comment.date }}</div>
-                </div>
-                {% endfor %}
+            {% for comment in comments %}
+            <div class="comment">
+                <div class="comment-author">{{ comment.username }}</div>
+                <div>{{ comment.text }}</div>
+                <div class="comment-date">{{ comment.date }}</div>
             </div>
+            {% endfor %}
         </div>
     </div>
     
-    <div class="tab-content" id="inspect-tab" style="display: none;">
-        <h1 style="font-family: 'Anton', sans-serif; font-size: 3rem; color: #ffb347;">🔍 ИНСПЕКЦИЯ СКИНОВ</h1>
-        <div style="text-align: center; padding: 100px; background: #111; border-radius: 30px; border: 2px dashed #ff7f50;">
-            <div style="font-size: 8rem;">🔫</div>
-            <h2 style="color: #ffb347; margin-top: 20px;">3D ВЬЮЕР СКИНОВ</h2>
-            <p style="color: #888;">Тут можно будет осматривать скины в 3D</p>
-        </div>
+    <div class="tab-content" id="inspect-tab" style="display:none;">
+        <h2>Инспекция скинов</h2>
+        <p>Тут будет 3D просмотр скинов</p>
     </div>
     
-    <div class="tab-content" id="market-tab" style="display: none;">
-        <h1 style="font-family: 'Anton', sans-serif; font-size: 3rem; color: #ffb347;">💰 ТОРГОВАЯ ПЛОЩАДКА</h1>
-        <div style="text-align: center; padding: 100px; background: #111; border-radius: 30px; border: 2px dashed #ff7f50;">
-            <div style="font-size: 8rem;">📊</div>
-            <h2 style="color: #ffb347; margin-top: 20px;">ЦЕНЫ НА СКИНЫ</h2>
-            <p style="color: #888;">Актуальные цены рынка CS2</p>
-        </div>
+    <div class="tab-content" id="market-tab" style="display:none;">
+        <h2>Торговая площадка</h2>
+        <p>Тут будут цены на скины</p>
     </div>
     
-    <div class="tab-content" id="stats-tab" style="display: none;">
-        <h1 style="font-family: 'Anton', sans-serif; font-size: 3rem; color: #ffb347;">📊 СТАТИСТИКА</h1>
-        <div style="text-align: center; padding: 100px; background: #111; border-radius: 30px; border: 2px dashed #ff7f50;">
-            <div style="font-size: 8rem;">📈</div>
-            <h2 style="color: #ffb347; margin-top: 20px;">АНАЛИТИКА СКИНОВ</h2>
-            <p style="color: #888;">Графики цен и статистика</p>
-        </div>
+    <div class="tab-content" id="stats-tab" style="display:none;">
+        <h2>Статистика</h2>
+        <p>Тут будет аналитика</p>
     </div>
     
     <script>
@@ -983,7 +464,6 @@ MAIN_SITE = """
             document.getElementById('inspect-tab').style.display = 'none';
             document.getElementById('market-tab').style.display = 'none';
             document.getElementById('stats-tab').style.display = 'none';
-            
             document.getElementById(tabName + '-tab').style.display = 'block';
             
             document.querySelectorAll('.tab').forEach(tab => {
@@ -999,14 +479,12 @@ MAIN_SITE = """
 # ========== МАРШРУТЫ ==========
 @app.route('/')
 def home():
-    # Если уже залогинен, кидаем сразу на главную
     if 'username' in session:
         return redirect(url_for('main_site'))
     return render_template_string(REGISTER_PAGE, error=None)
 
 @app.route('/login')
 def login_page():
-    # Если уже залогинен, кидаем сразу на главную
     if 'username' in session:
         return redirect(url_for('main_site'))
     return render_template_string(LOGIN_PAGE, error=None)
@@ -1016,28 +494,20 @@ def register():
     username = request.form.get('username')
     password = request.form.get('password')
     
-    # Проверка на пустые поля
     if not username or not password:
         return render_template_string(REGISTER_PAGE, error='Заполни все поля!')
     
-    # Загружаем пользователей
-    try:
-        with open(USERS_FILE, 'r') as f:
-            users = json.load(f)
-    except:
-        users = {}
+    with open(USERS_FILE, 'r') as f:
+        users = json.load(f)
     
-    # Проверяем существует ли ник
     if username in users:
         return render_template_string(REGISTER_PAGE, error='Никнейм уже занят!')
     
     if len(password) < 6:
-        return render_template_string(REGISTER_PAGE, error='Пароль должен быть минимум 6 символов!')
+        return render_template_string(REGISTER_PAGE, error='Пароль минимум 6 символов!')
     
-    # Хешируем пароль
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
     
-    # Сохраняем
     users[username] = {
         'password': hashed_password,
         'joined': datetime.now().strftime('%d.%m.%Y %H:%M')
@@ -1046,7 +516,6 @@ def register():
     with open(USERS_FILE, 'w') as f:
         json.dump(users, f, indent=4)
     
-    # Автоматически входим
     session['username'] = username
     return redirect(url_for('main_site'))
 
@@ -1055,15 +524,11 @@ def login():
     username = request.form.get('username')
     password = request.form.get('password')
     
-    # Проверка на пустые поля
     if not username or not password:
         return render_template_string(LOGIN_PAGE, error='Заполни все поля!')
     
-    try:
-        with open(USERS_FILE, 'r') as f:
-            users = json.load(f)
-    except:
-        users = {}
+    with open(USERS_FILE, 'r') as f:
+        users = json.load(f)
     
     if username not in users:
         return render_template_string(LOGIN_PAGE, error='Никнейм не найден!')
@@ -1078,12 +543,8 @@ def login():
 @app.route('/main')
 @login_required
 def main_site():
-    try:
-        with open(COMMENTS_FILE, 'r') as f:
-            comments = json.load(f)
-    except:
-        comments = []
-    
+    with open(COMMENTS_FILE, 'r') as f:
+        comments = json.load(f)
     return render_template_string(MAIN_SITE, username=session['username'], comments=comments)
 
 @app.route('/add_comment', methods=['POST'])
@@ -1091,20 +552,16 @@ def main_site():
 def add_comment():
     comment_text = request.form.get('comment')
     
-    if comment_text and comment_text.strip():
-        try:
-            with open(COMMENTS_FILE, 'r') as f:
-                comments = json.load(f)
-        except:
-            comments = []
+    if comment_text:
+        with open(COMMENTS_FILE, 'r') as f:
+            comments = json.load(f)
         
         comments.append({
             'username': session['username'],
-            'text': comment_text.strip(),
+            'text': comment_text,
             'date': datetime.now().strftime('%d.%m.%Y %H:%M')
         })
         
-        # Оставляем только последние 50 комментариев
         comments = comments[-50:]
         
         with open(COMMENTS_FILE, 'w') as f:
@@ -1130,19 +587,12 @@ def get_ip():
 
 if __name__ == '__main__':
     ip = get_ip()
-    print('=' * 60)
-    print('🔥 CS2 ИМБА САЙТ ЗАПУЩЕН! 🔥')
-    print('=' * 60)
-    print(f'📍 Локальный адрес: http://localhost:8080')
-    print(f'📱 Для телефона (Wi-Fi): http://{ip}:8080')
-    print('=' * 60)
-    print('✅ ЧТО РАБОТАЕТ:')
-    print('   • Регистрация (ник + пароль)')
-    print('   • Вход в аккаунт')
-    print('   • Выход из аккаунта')
-    print('   • Комментарии')
-    print('   • 4 крутые вкладки')
-    print('=' * 60)
-    print('⚠️ НЕ ЗАКРЫВАЙ это окно - сайт работает!')
-    print('=' * 60)
+    print('=' * 50)
+    print('CS2 САЙТ ЗАПУЩЕН!')
+    print('=' * 50)
+    print(f'Ссылка: http://localhost:8080')
+    print(f'Телефон: http://{ip}:8080')
+    print('=' * 50)
+    print('НЕ ЗАКРЫВАЙ ЭТО ОКНО!')
+    print('=' * 50)
     app.run(host='0.0.0.0', port=8080, debug=True)
