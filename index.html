@@ -1,42 +1,8 @@
-from flask import Flask, request, render_template_string, redirect, url_for, session
-import json
-import os
-import hashlib
-from functools import wraps
-import socket
-from datetime import datetime
-
-app = Flask(__name__)
-app.secret_key = 'cs2-super-secret-key-123456789'
-
-# ========== ФАЙЛЫ ==========
-USERS_FILE = 'cs2_users.json'
-COMMENTS_FILE = 'cs2_comments.json'
-
-# Создаем файлы если нет
-if not os.path.exists(USERS_FILE):
-    with open(USERS_FILE, 'w') as f:
-        json.dump({}, f)
-
-if not os.path.exists(COMMENTS_FILE):
-    with open(COMMENTS_FILE, 'w') as f:
-        json.dump([], f)
-
-# ========== ЗАЩИТА ==========
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'username' not in session:
-            return redirect(url_for('login_page'))
-        return f(*args, **kwargs)
-    return decorated_function
-
-# ========== РЕГИСТРАЦИЯ ==========
-REGISTER_PAGE = """
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS2 | РЕГИСТРАЦИЯ</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -44,10 +10,15 @@ REGISTER_PAGE = """
             font-family: Arial, sans-serif;
             background: #0a0a0a;
             color: white;
+            min-height: 100vh;
+        }
+        /* Страница регистрации */
+        #register-page {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background: #0a0a0a;
         }
         .container {
             background: #1a1a1a;
@@ -69,6 +40,7 @@ REGISTER_PAGE = """
             border-radius: 10px;
             margin-bottom: 20px;
             text-align: center;
+            display: none;
         }
         input {
             width: 100%;
@@ -105,149 +77,22 @@ REGISTER_PAGE = """
         .link a {
             color: #ff7f50;
             text-decoration: none;
+            cursor: pointer;
         }
         .link a:hover {
             text-decoration: underline;
         }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>CS2 РЕГИСТРАЦИЯ</h1>
-        
-        {% if error %}
-        <div class="error">{{ error }}</div>
-        {% endif %}
-        
-        <form action="/register" method="POST">
-            <input type="text" name="username" placeholder="Никнейм" required>
-            <input type="password" name="password" placeholder="Пароль (мин 6 символов)" required>
-            <button type="submit">ЗАРЕГИСТРИРОВАТЬСЯ</button>
-        </form>
-        
-        <div class="link">
-            Уже есть аккаунт? <a href="/login">ВОЙТИ</a>
-        </div>
-    </div>
-</body>
-</html>
-"""
-
-# ========== ВХОД ==========
-LOGIN_PAGE = """
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>CS2 | ВХОД</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: Arial, sans-serif;
-            background: #0a0a0a;
-            color: white;
-            display: flex;
+        /* Страница входа */
+        #login-page {
+            display: none;
             justify-content: center;
             align-items: center;
             height: 100vh;
-        }
-        .container {
-            background: #1a1a1a;
-            padding: 40px;
-            border-radius: 20px;
-            width: 400px;
-            border: 2px solid #ff7f50;
-        }
-        h1 { 
-            color: #ff7f50; 
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 32px;
-        }
-        .error {
-            background: #ff3333;
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        input {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            background: #333;
-            border: 2px solid #555;
-            border-radius: 10px;
-            color: white;
-            font-size: 16px;
-        }
-        input:focus {
-            border-color: #ff7f50;
-            outline: none;
-        }
-        button {
-            width: 100%;
-            padding: 15px;
-            background: #ff7f50;
-            border: none;
-            border-radius: 10px;
-            color: black;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #ff6347;
-        }
-        .link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .link a {
-            color: #ff7f50;
-            text-decoration: none;
-        }
-        .link a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>CS2 ВХОД</h1>
-        
-        {% if error %}
-        <div class="error">{{ error }}</div>
-        {% endif %}
-        
-        <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="Никнейм" required>
-            <input type="password" name="password" placeholder="Пароль" required>
-            <button type="submit">ВОЙТИ</button>
-        </form>
-        
-        <div class="link">
-            Нет аккаунта? <a href="/">ЗАРЕГИСТРИРОВАТЬСЯ</a>
-        </div>
-    </div>
-</body>
-</html>
-"""
-
-# ========== ГЛАВНЫЙ САЙТ ==========
-MAIN_SITE = """
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>CS2 | СКИНЫ</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: Arial, sans-serif;
             background: #0a0a0a;
-            color: white;
+        }
+        /* Главный сайт */
+        #main-site {
+            display: none;
         }
         .header {
             background: #1a1a1a;
@@ -277,9 +122,8 @@ MAIN_SITE = """
             padding: 8px 16px;
             border-radius: 5px;
             text-decoration: none;
-        }
-        .logout-btn:hover {
-            background: #cc0000;
+            border: none;
+            cursor: pointer;
         }
         .tabs {
             display: flex;
@@ -385,80 +229,219 @@ MAIN_SITE = """
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">CS2 SKIN INSPECTOR</div>
-        <div class="user-menu">
-            <span class="username">{{ username }}</span>
-            <a href="/logout" class="logout-btn">Выйти</a>
+    <!-- Страница регистрации -->
+    <div id="register-page">
+        <div class="container">
+            <h1>CS2 РЕГИСТРАЦИЯ</h1>
+            <div class="error" id="register-error"></div>
+            <input type="text" id="reg-username" placeholder="Никнейм" required>
+            <input type="password" id="reg-password" placeholder="Пароль (мин 6 символов)" required>
+            <button onclick="register()">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+            <div class="link">
+                Уже есть аккаунт? <a onclick="showLogin()">ВОЙТИ</a>
+            </div>
         </div>
     </div>
-    
-    <div class="tabs">
-        <div class="tab active" onclick="showTab('skins')">СКИНЫ</div>
-        <div class="tab" onclick="showTab('inspect')">ИНСПЕКЦИЯ</div>
-        <div class="tab" onclick="showTab('market')">МАРКЕТ</div>
-        <div class="tab" onclick="showTab('stats')">СТАТИСТИКА</div>
+
+    <!-- Страница входа -->
+    <div id="login-page">
+        <div class="container">
+            <h1>CS2 ВХОД</h1>
+            <div class="error" id="login-error"></div>
+            <input type="text" id="login-username" placeholder="Никнейм" required>
+            <input type="password" id="login-password" placeholder="Пароль" required>
+            <button onclick="login()">ВОЙТИ</button>
+            <div class="link">
+                Нет аккаунта? <a onclick="showRegister()">ЗАРЕГИСТРИРОВАТЬСЯ</a>
+            </div>
+        </div>
     </div>
-    
-    <div class="tab-content" id="skins-tab">
-        <h2>Популярные скины</h2>
-        <div class="skins-grid">
-            <div class="skin-card">
-                <div class="skin-image">🔪</div>
-                <div class="skin-info">
-                    <div class="skin-name">Karambit Doppler</div>
-                    <div class="skin-price">$1,499.99</div>
-                </div>
-            </div>
-            <div class="skin-card">
-                <div class="skin-image">🔫</div>
-                <div class="skin-info">
-                    <div class="skin-name">AK-47 Fire Serpent</div>
-                    <div class="skin-price">$899.99</div>
-                </div>
-            </div>
-            <div class="skin-card">
-                <div class="skin-image">🔫</div>
-                <div class="skin-info">
-                    <div class="skin-name">AWP Dragon Lore</div>
-                    <div class="skin-price">$2,499.99</div>
-                </div>
+
+    <!-- Главный сайт -->
+    <div id="main-site">
+        <div class="header">
+            <div class="logo">CS2 SKIN INSPECTOR</div>
+            <div class="user-menu">
+                <span class="username" id="current-user"></span>
+                <button class="logout-btn" onclick="logout()">Выйти</button>
             </div>
         </div>
         
-        <div class="comments-section">
-            <div class="comments-title">Комментарии</div>
-            <form class="comment-form" action="/add_comment" method="POST">
-                <textarea name="comment" placeholder="Напиши комментарий..." required></textarea>
-                <button type="submit" class="comment-btn">Отправить</button>
-            </form>
-            
-            {% for comment in comments %}
-            <div class="comment">
-                <div class="comment-author">{{ comment.username }}</div>
-                <div>{{ comment.text }}</div>
-                <div class="comment-date">{{ comment.date }}</div>
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('skins')">СКИНЫ</div>
+            <div class="tab" onclick="showTab('inspect')">ИНСПЕКЦИЯ</div>
+            <div class="tab" onclick="showTab('market')">МАРКЕТ</div>
+            <div class="tab" onclick="showTab('stats')">СТАТИСТИКА</div>
+        </div>
+        
+        <div class="tab-content" id="skins-tab">
+            <h2>Популярные скины</h2>
+            <div class="skins-grid">
+                <div class="skin-card">
+                    <div class="skin-image">🔪</div>
+                    <div class="skin-info">
+                        <div class="skin-name">Karambit Doppler</div>
+                        <div class="skin-price">$1,499.99</div>
+                    </div>
+                </div>
+                <div class="skin-card">
+                    <div class="skin-image">🔫</div>
+                    <div class="skin-info">
+                        <div class="skin-name">AK-47 Fire Serpent</div>
+                        <div class="skin-price">$899.99</div>
+                    </div>
+                </div>
+                <div class="skin-card">
+                    <div class="skin-image">🔫</div>
+                    <div class="skin-info">
+                        <div class="skin-name">AWP Dragon Lore</div>
+                        <div class="skin-price">$2,499.99</div>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
+            
+            <div class="comments-section">
+                <div class="comments-title">Комментарии</div>
+                <div class="comment-form">
+                    <textarea id="new-comment" placeholder="Напиши комментарий..."></textarea>
+                    <button class="comment-btn" onclick="addComment()">Отправить</button>
+                </div>
+                <div id="comments-list"></div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="inspect-tab" style="display:none;">
+            <h2>Инспекция скинов</h2>
+            <p>Тут будет 3D просмотр скинов</p>
+        </div>
+        
+        <div class="tab-content" id="market-tab" style="display:none;">
+            <h2>Торговая площадка</h2>
+            <p>Тут будут цены на скины</p>
+        </div>
+        
+        <div class="tab-content" id="stats-tab" style="display:none;">
+            <h2>Статистика</h2>
+            <p>Тут будет аналитика</p>
         </div>
     </div>
-    
-    <div class="tab-content" id="inspect-tab" style="display:none;">
-        <h2>Инспекция скинов</h2>
-        <p>Тут будет 3D просмотр скинов</p>
-    </div>
-    
-    <div class="tab-content" id="market-tab" style="display:none;">
-        <h2>Торговая площадка</h2>
-        <p>Тут будут цены на скины</p>
-    </div>
-    
-    <div class="tab-content" id="stats-tab" style="display:none;">
-        <h2>Статистика</h2>
-        <p>Тут будет аналитика</p>
-    </div>
-    
+
     <script>
+        // База данных в localStorage
+        let users = JSON.parse(localStorage.getItem('cs2_users')) || {};
+        let comments = JSON.parse(localStorage.getItem('cs2_comments')) || [];
+        let currentUser = localStorage.getItem('currentUser');
+
+        // Показываем нужную страницу при загрузке
+        window.onload = function() {
+            if (currentUser) {
+                showMainSite();
+            } else {
+                showRegister();
+            }
+            displayComments();
+        };
+
+        // Регистрация
+        function register() {
+            let username = document.getElementById('reg-username').value;
+            let password = document.getElementById('reg-password').value;
+            let errorDiv = document.getElementById('register-error');
+
+            if (!username || !password) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Заполни все поля!';
+                return;
+            }
+
+            if (users[username]) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Никнейм уже занят!';
+                return;
+            }
+
+            if (password.length < 6) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Пароль минимум 6 символов!';
+                return;
+            }
+
+            // Сохраняем пользователя (пароль без хеша для простоты)
+            users[username] = {
+                password: password,
+                joined: new Date().toLocaleString()
+            };
+            
+            localStorage.setItem('cs2_users', JSON.stringify(users));
+            localStorage.setItem('currentUser', username);
+            
+            showMainSite();
+        }
+
+        // Вход
+        function login() {
+            let username = document.getElementById('login-username').value;
+            let password = document.getElementById('login-password').value;
+            let errorDiv = document.getElementById('login-error');
+
+            if (!username || !password) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Заполни все поля!';
+                return;
+            }
+
+            if (!users[username]) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Никнейм не найден!';
+                return;
+            }
+
+            if (users[username].password !== password) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Неверный пароль!';
+                return;
+            }
+
+            localStorage.setItem('currentUser', username);
+            showMainSite();
+        }
+
+        // Выход
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            showRegister();
+        }
+
+        // Показать регистрацию
+        function showRegister() {
+            document.getElementById('register-page').style.display = 'flex';
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-site').style.display = 'none';
+            document.getElementById('register-error').style.display = 'none';
+        }
+
+        // Показать вход
+        function showLogin() {
+            document.getElementById('register-page').style.display = 'none';
+            document.getElementById('login-page').style.display = 'flex';
+            document.getElementById('main-site').style.display = 'none';
+            document.getElementById('login-error').style.display = 'none';
+        }
+
+        // Показать главный сайт
+        function showMainSite() {
+            currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) return;
+            
+            document.getElementById('register-page').style.display = 'none';
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-site').style.display = 'block';
+            document.getElementById('current-user').textContent = currentUser;
+            displayComments();
+        }
+
+        // Показать вкладку
         function showTab(tabName) {
             document.getElementById('skins-tab').style.display = 'none';
             document.getElementById('inspect-tab').style.display = 'none';
@@ -471,128 +454,40 @@ MAIN_SITE = """
             });
             event.target.classList.add('active');
         }
+
+        // Добавить комментарий
+        function addComment() {
+            let commentText = document.getElementById('new-comment').value;
+            if (!commentText || !currentUser) return;
+
+            comments.push({
+                username: currentUser,
+                text: commentText,
+                date: new Date().toLocaleString()
+            });
+
+            // Оставляем последние 50
+            if (comments.length > 50) comments = comments.slice(-50);
+            
+            localStorage.setItem('cs2_comments', JSON.stringify(comments));
+            document.getElementById('new-comment').value = '';
+            displayComments();
+        }
+
+        // Показать комментарии
+        function displayComments() {
+            let html = '';
+            comments.slice().reverse().forEach(comment => {
+                html += `
+                    <div class="comment">
+                        <div class="comment-author">${comment.username}</div>
+                        <div>${comment.text}</div>
+                        <div class="comment-date">${comment.date}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('comments-list').innerHTML = html;
+        }
     </script>
 </body>
 </html>
-"""
-
-# ========== МАРШРУТЫ ==========
-@app.route('/')
-def home():
-    if 'username' in session:
-        return redirect(url_for('main_site'))
-    return render_template_string(REGISTER_PAGE, error=None)
-
-@app.route('/login')
-def login_page():
-    if 'username' in session:
-        return redirect(url_for('main_site'))
-    return render_template_string(LOGIN_PAGE, error=None)
-
-@app.route('/register', methods=['POST'])
-def register():
-    username = request.form.get('username')
-    password = request.form.get('password')
-    
-    if not username or not password:
-        return render_template_string(REGISTER_PAGE, error='Заполни все поля!')
-    
-    with open(USERS_FILE, 'r') as f:
-        users = json.load(f)
-    
-    if username in users:
-        return render_template_string(REGISTER_PAGE, error='Никнейм уже занят!')
-    
-    if len(password) < 6:
-        return render_template_string(REGISTER_PAGE, error='Пароль минимум 6 символов!')
-    
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    
-    users[username] = {
-        'password': hashed_password,
-        'joined': datetime.now().strftime('%d.%m.%Y %H:%M')
-    }
-    
-    with open(USERS_FILE, 'w') as f:
-        json.dump(users, f, indent=4)
-    
-    session['username'] = username
-    return redirect(url_for('main_site'))
-
-@app.route('/login', methods=['POST'])
-def login():
-    username = request.form.get('username')
-    password = request.form.get('password')
-    
-    if not username or not password:
-        return render_template_string(LOGIN_PAGE, error='Заполни все поля!')
-    
-    with open(USERS_FILE, 'r') as f:
-        users = json.load(f)
-    
-    if username not in users:
-        return render_template_string(LOGIN_PAGE, error='Никнейм не найден!')
-    
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    if users[username]['password'] != hashed_password:
-        return render_template_string(LOGIN_PAGE, error='Неверный пароль!')
-    
-    session['username'] = username
-    return redirect(url_for('main_site'))
-
-@app.route('/main')
-@login_required
-def main_site():
-    with open(COMMENTS_FILE, 'r') as f:
-        comments = json.load(f)
-    return render_template_string(MAIN_SITE, username=session['username'], comments=comments)
-
-@app.route('/add_comment', methods=['POST'])
-@login_required
-def add_comment():
-    comment_text = request.form.get('comment')
-    
-    if comment_text:
-        with open(COMMENTS_FILE, 'r') as f:
-            comments = json.load(f)
-        
-        comments.append({
-            'username': session['username'],
-            'text': comment_text,
-            'date': datetime.now().strftime('%d.%m.%Y %H:%M')
-        })
-        
-        comments = comments[-50:]
-        
-        with open(COMMENTS_FILE, 'w') as f:
-            json.dump(comments, f, indent=4)
-    
-    return redirect(url_for('main_site'))
-
-@app.route('/logout')
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('home'))
-
-def get_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        s.connect(('8.8.8.8', 80))
-        ip = s.getsockname()[0]
-    except:
-        ip = '127.0.0.1'
-    finally:
-        s.close()
-    return ip
-
-if __name__ == '__main__':
-    ip = get_ip()
-    print('=' * 50)
-    print('CS2 САЙТ ЗАПУЩЕН!')
-    print('=' * 50)
-    print(f'Ссылка: http://localhost:8080')
-    print(f'Телефон: http://{ip}:8080')
-    print('=' * 50)
-    print('НЕ ЗАКРЫВАЙ ЭТО ОКНО!')
-    print('=' * 50)
-    app.run(host='0.0.0.0', port=8080, debug=True)
