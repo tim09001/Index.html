@@ -1,517 +1,1131 @@
-from flask import Flask, request, render_template_string, redirect, url_for
+from flask import Flask, request, render_template_string, redirect, url_for, session
 import json
 import os
+import hashlib
+from functools import wraps
+import socket
 
 app = Flask(__name__)
+app.secret_key = 'cs2-super-secret-key-123'  # Для сессий
 
-# Файл для хранения пользователей
-USERS_FILE = 'users.json'
+# ========== ФАЙЛЫ ДЛЯ ХРАНЕНИЯ ДАННЫХ ==========
+USERS_FILE = 'cs2_users.json'
+COMMENTS_FILE = 'cs2_comments.json'
 
-# Создаем файл если нет
+# Создаем файлы если нет
 if not os.path.exists(USERS_FILE):
     with open(USERS_FILE, 'w') as f:
+        json.dump({}, f)
+
+if not os.path.exists(COMMENTS_FILE):
+    with open(COMMENTS_FILE, 'w') as f:
         json.dump([], f)
 
-# ========== САМА HTML СТРАНИЦА (ВСТРОЕНА В КОД) ==========
-HTML_TEMPLATE = """
+# ========== ДЕКОРАТОР ДЛЯ ЗАЩИТЫ СТРАНИЦ ==========
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in session:
+            return redirect(url_for('login_page'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# ========== СТРАНИЦА РЕГИСТРАЦИИ ==========
+REGISTER_PAGE = """
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мастерская магии | Регистрация</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <title>CS2 | РЕГИСТРАЦИЯ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Anton&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Montserrat', sans-serif;
-            background: #0a0c0f;
+            background: #000;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
             position: relative;
-            color: #e0d6c6;
+            overflow: hidden;
         }
-
+        
+        /* Анимированный фон CS2 */
         body::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: 
-                radial-gradient(1px 1px at 15% 30%, #f3e7c6, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 72% 45%, #c6b38a, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 30% 70%, #af9b77, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 93% 18%, #e6d5b6, rgba(0,0,0,0)),
-                radial-gradient(3px 3px at 10% 92%, #ab906a, rgba(0,0,0,0));
-            background-repeat: repeat;
-            background-size: 200px 200px;
-            opacity: 0.4;
-            pointer-events: none;
-        }
-
-        .grimoire-container {
-            position: relative;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 1100px;
-            background: rgba(18, 22, 28, 0.9);
-            backdrop-filter: blur(8px);
-            border-radius: 32px;
-            border: 1px solid rgba(200, 170, 120, 0.3);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 0 1px #4a3f2e inset, 0 0 30px #342e1e;
-            padding: 40px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            z-index: 10;
+            height: 100%;
+            background: linear-gradient(45deg, #000 0%, #1a1a1a 100%);
+            z-index: 1;
         }
-
-        .mystic-info {
-            flex: 1 1 300px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-right: 2px dashed rgba(180, 140, 80, 0.3);
-            padding-right: 40px;
+        
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://media.discordapp.net/attachments/123/123/cs2-bg.gif') center/cover;
+            opacity: 0.1;
+            z-index: 1;
         }
-
-        .mystic-info h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ebd7b0, #b99e73);
+        
+        /* CS2 Логотип анимированный */
+        .cs2-logo {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-family: 'Anton', sans-serif;
+            font-size: 4rem;
+            background: linear-gradient(45deg, #ffb347, #ff7f50, #ff6347);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 4px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 15px #645029;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            text-shadow: 0 0 30px rgba(255, 99, 71, 0.5);
+            animation: logoPulse 2s infinite;
+            z-index: 10;
         }
-
-        .mystic-info .subtitle {
-            font-size: 1.1rem;
-            color: #a3917a;
-            margin-bottom: 30px;
-            font-style: italic;
-            border-left: 3px solid #ba9f6a;
-            padding-left: 20px;
+        
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
         }
-
-        .artifact-preview {
-            margin: 30px 0;
-        }
-
-        .artifact-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 60px;
-            padding: 10px 20px 10px 10px;
-            border: 1px solid #52472e;
-        }
-
-        .artifact-icon {
-            font-size: 2.5rem;
-            filter: drop-shadow(0 0 5px #e2b870);
-        }
-
-        .artifact-text h3 {
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
-            color: #dabe8b;
-        }
-
-        .artifact-text p {
-            font-size: 0.85rem;
-            color: #95876e;
-        }
-
-        .magic-quote {
-            margin-top: auto;
-            font-size: 0.95rem;
-            background: rgba(44, 38, 28, 0.7);
-            padding: 20px;
+        
+        /* Главный контейнер */
+        .register-container {
+            position: relative;
+            z-index: 100;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 140, 0, 0.5);
             border-radius: 30px;
-            border: 1px solid #6b5a40;
-            box-shadow: inset 0 0 30px #000000;
-            text-align: center;
+            padding: 50px 40px;
+            box-shadow: 0 0 50px rgba(255, 140, 0, 0.3),
+                        0 0 100px rgba(0, 0, 0, 0.5);
+            animation: containerAppear 1s ease;
         }
-
-        .magic-quote span {
+        
+        @keyframes containerAppear {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .register-container h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: 3rem;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #fff, #ffb347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+        
+        .register-container p {
+            color: #888;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            border-bottom: 2px solid rgba(255, 140, 0, 0.3);
+            padding-bottom: 20px;
+        }
+        
+        /* Поля ввода CS2 стиль */
+        .cs2-input {
+            margin-bottom: 25px;
+        }
+        
+        .cs2-input label {
             display: block;
-            margin-top: 10px;
-            color: #c8ab7a;
-        }
-
-        .registration-form {
-            flex: 1 1 350px;
-            background: rgba(30, 26, 20, 0.6);
-            border-radius: 48px;
-            padding: 40px 35px;
-            border: 1px solid #7a6a4d;
-            box-shadow: 0 15px 25px rgba(0,0,0,0.6), inset 0 0 30px #231f17;
-        }
-
-        .form-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .form-header h2 {
-            font-family: 'Cinzel', serif;
-            font-size: 2.2rem;
-            color: #edd6ac;
-            text-shadow: 0 0 10px #917b48;
+            color: #ffb347;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
             letter-spacing: 2px;
         }
-
-        .form-header p {
-            color: #9c8e78;
-            border-bottom: 1px solid #5c513b;
-            padding-bottom: 15px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            color: #bba87f;
-            letter-spacing: 1px;
-        }
-
-        .input-group input {
+        
+        .cs2-input input {
             width: 100%;
-            background: rgba(10, 10, 15, 0.7);
-            border: 1px solid #5f533b;
-            border-radius: 40px;
-            padding: 16px 20px;
-            font-size: 1rem;
-            color: #f2e7d5;
-            outline: none;
-            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            border-radius: 15px;
+            padding: 18px 20px;
+            font-size: 1.1rem;
+            color: #fff;
+            transition: all 0.3s;
             font-family: 'Montserrat', sans-serif;
         }
-
-        .input-group input:focus {
-            border-color: #dbb87c;
-            box-shadow: 0 0 15px #ab8a4d, inset 0 0 5px #4a3e28;
-            background: rgba(20, 18, 16, 0.9);
+        
+        .cs2-input input:focus {
+            border-color: #ff7f50;
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+            outline: none;
+            background: rgba(0, 0, 0, 0.9);
         }
-
-        .input-group input::placeholder {
-            color: #5f543e;
+        
+        .cs2-input input::placeholder {
+            color: #444;
             font-style: italic;
-            font-size: 0.9rem;
         }
-
-        .magic-btn {
+        
+        /* CS2 Кнопка */
+        .cs2-button {
             width: 100%;
-            background: linear-gradient(145deg, #322c1e, #1f1b12);
-            border: 2px solid #b5945a;
-            color: #eedbb9;
-            font-family: 'Cinzel', serif;
-            font-size: 1.5rem;
-            padding: 18px;
-            border-radius: 60px;
-            margin: 30px 0 20px 0;
-            cursor: pointer;
-            font-weight: bold;
+            background: linear-gradient(45deg, #ff7f50, #ff6347);
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            font-family: 'Anton', sans-serif;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            color: #000;
             letter-spacing: 3px;
-            box-shadow: 0 5px 0 #5d4b2b, 0 10px 25px #000000;
-            transition: 0.1s linear;
-            text-shadow: 0 2px 5px #221d12;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
         }
-
-        .magic-btn:hover {
-            background: linear-gradient(145deg, #4c402b, #2d271b);
-            border-color: #ebc580;
-            box-shadow: 0 5px 0 #7b633a, 0 15px 30px #000000;
-            transform: translateY(-2px);
+        
+        .cs2-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
         }
-
-        .magic-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #5d4b2b, 0 10px 25px #000000;
+        
+        .cs2-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 99, 71, 0.6);
         }
-
-        .legal-check {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 15px 0;
-            color: #a29178;
-            font-size: 0.8rem;
+        
+        .cs2-button:hover::before {
+            left: 100%;
         }
-
-        .legal-check input {
-            width: 18px;
-            height: 18px;
-            accent-color: #b49457;
+        
+        .cs2-button:active {
+            transform: translateY(0);
         }
-
+        
+        /* Ссылка на вход */
         .login-link {
             text-align: center;
-            margin-top: 25px;
-            border-top: 1px solid #4d402c;
-            padding-top: 20px;
+            margin-top: 20px;
         }
-
+        
         .login-link a {
-            color: #dbb471;
+            color: #ffb347;
             text-decoration: none;
             font-weight: bold;
-            border-bottom: 1px dashed #74603d;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
         }
-
+        
         .login-link a:hover {
-            color: #fde3b5;
-            border-bottom: 1px solid #c9a455;
+            color: #ff7f50;
+            border-bottom-color: #ff7f50;
         }
-
-        .sigil {
+        
+        /* CS2 Счетчик онлайн */
+        .online-counter {
             position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff7f50;
+            border-radius: 30px;
+            padding: 10px 20px;
+            color: #fff;
+            font-weight: bold;
+            z-index: 10;
+            animation: glow 2s infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px #ff7f50; }
+            50% { box-shadow: 0 0 40px #ff4500; }
+        }
+        
+        .online-counter span {
+            color: #ffb347;
+            margin-left: 5px;
+        }
+        
+        /* Оружие летающее */
+        .weapon {
+            position: absolute;
+            font-size: 3rem;
             opacity: 0.1;
-            font-size: 2rem;
-            user-select: none;
-            pointer-events: none;
+            animation: float 10s infinite linear;
+            z-index: 5;
         }
-
-        @media (max-width: 800px) {
-            .grimoire-container {
-                padding: 20px;
-            }
-            .mystic-info {
-                border-right: none;
-                border-bottom: 2px dashed #584c34;
-                padding-right: 0;
-                padding-bottom: 20px;
-            }
+        
+        @keyframes float {
+            from { transform: translateY(100vh) rotate(0deg); }
+            to { transform: translateY(-100vh) rotate(360deg); }
         }
+        
+        .weapon1 { left: 10%; animation-duration: 15s; }
+        .weapon2 { left: 30%; animation-duration: 20s; }
+        .weapon3 { left: 50%; animation-duration: 12s; }
+        .weapon4 { left: 70%; animation-duration: 18s; }
+        .weapon5 { left: 90%; animation-duration: 14s; }
     </style>
 </head>
 <body>
-    <div class="grimoire-container">
-        <div class="mystic-info">
-            <h1>ARCANUM</h1>
-            <div class="subtitle">Таинственная лавка древних артефактов</div>
-            
-            <div class="artifact-preview">
-                <div class="artifact-item">
-                    <div class="artifact-icon">🏺</div>
-                    <div class="artifact-text">
-                        <h3>Амфора Забвения</h3>
-                        <p>Хранит memories... или нет?</p>
-                    </div>
-                </div>
-                <div class="artifact-item">
-                    <div class="artifact-icon">🔮</div>
-                    <div class="artifact-text">
-                        <h3>Око Дракона</h3>
-                        <p>Видит то, что скрыто</p>
-                    </div>
-                </div>
-                <div class="artifact-item">
-                    <div class="artifact-icon">⚗️</div>
-                    <div class="artifact-text">
-                        <h3>Эликсир Вдохновения</h3>
-                        <p>Скидка 30% для новых адептов</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="magic-quote">
-                «Только избранные могут прикоснуться к древней магии. Стань одним из нас.»
-                <span>✨ Хранитель ключей ✨</span>
-            </div>
+    <div class="cs2-logo">COUNTER-STRIKE 2</div>
+    
+    <div class="online-counter">
+        🔥 ONLINE: <span>24,876</span>
+    </div>
+    
+    <!-- Летающее оружие -->
+    <div class="weapon weapon1">🔫</div>
+    <div class="weapon weapon2">🔪</div>
+    <div class="weapon weapon3">💣</div>
+    <div class="weapon weapon4">🎯</div>
+    <div class="weapon weapon5">🔥</div>
+    
+    <div class="register-container">
+        <h1>ПРИСОЕДИНЯЙСЯ</h1>
+        <p>Создай аккаунт и стань легендой CS2</p>
+        
+        {% if error %}
+        <div style="background: rgba(255,0,0,0.2); border: 2px solid #ff0000; border-radius: 10px; padding: 10px; margin-bottom: 20px; color: #ff6b6b; text-align: center;">
+            ⚠️ {{ error }}
         </div>
-
-        <div class="registration-form">
-            <div class="form-header">
-                <h2>Врата в мир</h2>
-                <p>Заполни свиток посвящения</p>
+        {% endif %}
+        
+        <form action="/register" method="POST">
+            <div class="cs2-input">
+                <label>🔹 ИГРОВОЙ НИКНЕЙМ</label>
+                <input type="text" name="username" placeholder="s1mple, ZyWoo, dev1ce" required>
             </div>
-
-            <form action="/register" method="POST">
-                <div class="input-group">
-                    <label>🔯 Твое тайное имя</label>
-                    <input type="text" name="username" placeholder="например: Моргана или Северус" required>
-                </div>
-                <div class="input-group">
-                    <label>📧 Совиная почта (Email)</label>
-                    <input type="email" name="email" placeholder="raven@owl.com" required>
-                </div>
-                <div class="input-group">
-                    <label>⚔️ Руна (пароль)</label>
-                    <input type="password" name="password" placeholder="Не менее 8 символов" required>
-                </div>
-                
-                <div class="legal-check">
-                    <input type="checkbox" id="magic-agree" required>
-                    <label for="magic-agree">Я согласен(на) с тем, что магия существует, а моя душа переходит под защиту Arcanum.</label>
-                </div>
-
-                <button type="submit" class="magic-btn">Открыть врата</button>
-            </form>
+            
+            <div class="cs2-input">
+                <label>🔹 ПАРОЛЬ</label>
+                <input type="password" name="password" placeholder="минимум 6 символов" required>
+            </div>
+            
+            <button type="submit" class="cs2-button">▶ НАЧАТЬ ИГРУ</button>
+        </form>
+        
+        <div class="login-link">
+            Уже есть аккаунт? <a href="/login">ВОЙТИ</a>
         </div>
     </div>
-
-    <div class="sigil" style="top: 10%; left: 5%;">☾</div>
-    <div class="sigil" style="bottom: 5%; right: 3%;">♁</div>
-    <div class="sigil" style="top: 20%; right: 10%;">☉</div>
 </body>
 </html>
 """
 
-# ========== СТРАНИЦА УСПЕШНОЙ РЕГИСТРАЦИИ ==========
-SUCCESS_TEMPLATE = """
+# ========== СТРАНИЦА ВХОДА ==========
+LOGIN_PAGE = """
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Регистрация успешна!</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS2 | ВХОД</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Anton&display=swap" rel="stylesheet">
     <style>
+        /* Те же стили что и на регистрации */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #0a0c0f;
-            color: #e0d6c6;
             font-family: 'Montserrat', sans-serif;
+            background: #000;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
             position: relative;
+            overflow: hidden;
         }
         body::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(1px 1px at 15% 30%, #f3e7c6, rgba(0,0,0,0));
-            background-size: 200px 200px;
-            opacity: 0.3;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #000 0%, #1a1a1a 100%);
+            z-index: 1;
         }
-        .success-box {
-            background: rgba(30, 26, 20, 0.9);
-            border: 2px solid #b5945a;
-            border-radius: 40px;
-            padding: 50px;
-            max-width: 600px;
-            box-shadow: 0 0 50px #322e1e, inset 0 0 20px #1f1b12;
-            position: relative;
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://media.discordapp.net/attachments/123/123/cs2-bg.gif') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        .cs2-logo {
+            position: absolute;
+            top: 30px; left: 30px;
+            font-family: 'Anton', sans-serif;
+            font-size: 4rem;
+            background: linear-gradient(45deg, #ffb347, #ff7f50, #ff6347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            text-shadow: 0 0 30px rgba(255, 99, 71, 0.5);
+            animation: logoPulse 2s infinite;
             z-index: 10;
-            backdrop-filter: blur(5px);
         }
-        h1 {
-            color: #edd6ac;
-            font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
-            text-shadow: 0 0 15px #917b48;
-            margin-bottom: 20px;
+        @keyframes logoPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .login-container {
+            position: relative;
+            z-index: 100;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 140, 0, 0.5);
+            border-radius: 30px;
+            padding: 50px 40px;
+            box-shadow: 0 0 50px rgba(255, 140, 0, 0.3);
+            animation: containerAppear 1s ease;
         }
-        p {
-            font-size: 1.2rem;
-            margin: 15px 0;
-            color: #c8b595;
+        @keyframes containerAppear {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-        .email-highlight {
-            color: #dbb471;
-            font-weight: bold;
-            border-bottom: 2px dotted #b5945a;
-        }
-        .btn {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 15px 40px;
-            background: linear-gradient(145deg, #322c1e, #1f1b12);
-            border: 2px solid #b5945a;
-            color: #eedbb9;
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
-            border-radius: 60px;
-            text-decoration: none;
-            letter-spacing: 2px;
-            box-shadow: 0 5px 0 #5d4b2b;
-            transition: 0.1s;
-        }
-        .btn:hover {
-            background: linear-gradient(145deg, #4c402b, #2d271b);
-            border-color: #ebc580;
-            transform: translateY(-2px);
-            box-shadow: 0 7px 0 #7b633a;
-        }
-        .btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #5d4b2b;
-        }
-        .magic-sparkle {
+        .login-container h1 {
+            font-family: 'Anton', sans-serif;
             font-size: 3rem;
-            margin-bottom: 10px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #fff, #ffb347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 4px;
         }
+        .login-container p {
+            color: #888;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            border-bottom: 2px solid rgba(255, 140, 0, 0.3);
+            padding-bottom: 20px;
+        }
+        .cs2-input { margin-bottom: 25px; }
+        .cs2-input label {
+            display: block;
+            color: #ffb347;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+        .cs2-input input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            border-radius: 15px;
+            padding: 18px 20px;
+            font-size: 1.1rem;
+            color: #fff;
+            transition: all 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .cs2-input input:focus {
+            border-color: #ff7f50;
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
+            outline: none;
+            background: rgba(0, 0, 0, 0.9);
+        }
+        .cs2-button {
+            width: 100%;
+            background: linear-gradient(45deg, #ff7f50, #ff6347);
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            font-family: 'Anton', sans-serif;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            color: #000;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .cs2-button::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        .cs2-button:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 99, 71, 0.6); }
+        .cs2-button:hover::before { left: 100%; }
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .register-link a {
+            color: #ffb347;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .register-link a:hover { color: #ff7f50; border-bottom-color: #ff7f50; }
+        .online-counter {
+            position: absolute;
+            top: 30px; right: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff7f50;
+            border-radius: 30px;
+            padding: 10px 20px;
+            color: #fff;
+            font-weight: bold;
+            z-index: 10;
+            animation: glow 2s infinite;
+        }
+        @keyframes glow { 0%,100% { box-shadow: 0 0 20px #ff7f50; } 50% { box-shadow: 0 0 40px #ff4500; } }
+        .weapon {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.1;
+            animation: float 10s infinite linear;
+            z-index: 5;
+        }
+        @keyframes float {
+            from { transform: translateY(100vh) rotate(0deg); }
+            to { transform: translateY(-100vh) rotate(360deg); }
+        }
+        .weapon1 { left: 10%; animation-duration: 15s; }
+        .weapon2 { left: 30%; animation-duration: 20s; }
+        .weapon3 { left: 50%; animation-duration: 12s; }
+        .weapon4 { left: 70%; animation-duration: 18s; }
+        .weapon5 { left: 90%; animation-duration: 14s; }
     </style>
 </head>
 <body>
-    <div class="success-box">
-        <div class="magic-sparkle">✨🔮✨</div>
-        <h1>Поздравляю, {username}!</h1>
-        <p>Ты теперь часть магического мира <strong>Arcanum</strong>.</p>
-        <p>Мы отправили письмо с подтверждением на</p>
-        <p class="email-highlight">📧 {email}</p>
-        <p>Проверь совиную почту! 🦉</p>
-        <a href="/" class="btn">Вернуться к вратам</a>
+    <div class="cs2-logo">COUNTER-STRIKE 2</div>
+    
+    <div class="online-counter">
+        🔥 ONLINE: <span>31,452</span>
+    </div>
+    
+    <div class="weapon weapon1">🔫</div>
+    <div class="weapon weapon2">🔪</div>
+    <div class="weapon weapon3">💣</div>
+    <div class="weapon weapon4">🎯</div>
+    <div class="weapon weapon5">🔥</div>
+    
+    <div class="login-container">
+        <h1>СНОВА В СТРОЮ</h1>
+        <p>Войди и продолжай уничтожать</p>
+        
+        {% if error %}
+        <div style="background: rgba(255,0,0,0.2); border: 2px solid #ff0000; border-radius: 10px; padding: 10px; margin-bottom: 20px; color: #ff6b6b; text-align: center;">
+            ⚠️ {{ error }}
+        </div>
+        {% endif %}
+        
+        <form action="/login" method="POST">
+            <div class="cs2-input">
+                <label>🔹 НИКНЕЙМ</label>
+                <input type="text" name="username" placeholder="Твой ник в игре" required>
+            </div>
+            
+            <div class="cs2-input">
+                <label>🔹 ПАРОЛЬ</label>
+                <input type="password" name="password" placeholder="Введи пароль" required>
+            </div>
+            
+            <button type="submit" class="cs2-button">▶ ВОЙТИ</button>
+        </form>
+        
+        <div class="register-link">
+            Нет аккаунта? <a href="/">СОЗДАТЬ</a>
+        </div>
     </div>
 </body>
 </html>
 """
 
-@app.route('/')
-def index():
-    return render_template_string(HTML_TEMPLATE)
+# ========== ГЛАВНЫЙ САЙТ (ПОСЛЕ ВХОДА) ==========
+MAIN_SITE = """
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS2 | ИНСПЕКЦИЯ СКИНОВ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Anton&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+        }
+        
+        /* ИМБОВЫЙ ХЕДЕР */
+        .cs2-header {
+            background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
+            border-bottom: 3px solid #ff7f50;
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(255, 99, 71, 0.3);
+        }
+        
+        .logo {
+            font-family: 'Anton', sans-serif;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ffb347, #ff7f50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 4px;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .username {
+            color: #ffb347;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-right: 2px solid #ff7f50;
+            padding-right: 20px;
+        }
+        
+        .logout-btn {
+            background: linear-gradient(45deg, #ff4757, #ff6b6b);
+            border: none;
+            border-radius: 30px;
+            padding: 10px 25px;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 71, 87, 0.5);
+        }
+        
+        /* ИМБОВЫЕ ВКЛАДКИ */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            background: #111;
+            padding: 20px 40px 0 40px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .tab {
+            padding: 15px 30px;
+            background: linear-gradient(180deg, #222, #111);
+            border: 1px solid #333;
+            border-bottom: none;
+            border-radius: 15px 15px 0 0;
+            color: #888;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab:hover {
+            color: #ffb347;
+            border-color: #ff7f50;
+        }
+        
+        .tab.active {
+            background: linear-gradient(180deg, #ff7f50, #ff6347);
+            color: #000;
+            border-color: #ff7f50;
+            transform: translateY(-3px);
+            box-shadow: 0 -5px 20px rgba(255, 99, 71, 0.3);
+        }
+        
+        .tab-content {
+            padding: 40px;
+            min-height: 70vh;
+        }
+        
+        /* ИМБОВЫЕ КАРТОЧКИ СКИНОВ */
+        .skins-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .skin-card {
+            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+            border: 2px solid #333;
+            border-radius: 30px;
+            overflow: hidden;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .skin-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #ff7f50, #ffb347, #ff7f50);
+            border-radius: 30px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+        
+        .skin-card:hover::before {
+            opacity: 1;
+        }
+        
+        .skin-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+        
+        .skin-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #222, #333);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            border-bottom: 2px solid #ff7f50;
+        }
+        
+        .skin-info {
+            padding: 20px;
+        }
+        
+        .skin-name {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.5rem;
+            color: #ffb347;
+            margin-bottom: 10px;
+        }
+        
+        .skin-price {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff7f50, #ff6347);
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .skin-rarity {
+            float: right;
+            color: #888;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        
+        /* СЕКЦИЯ КОММЕНТАРИЕВ */
+        .comments-section {
+            margin-top: 50px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 30px;
+            padding: 30px;
+        }
+        
+        .comments-title {
+            font-family: 'Anton', sans-serif;
+            font-size: 2rem;
+            color: #ffb347;
+            margin-bottom: 20px;
+        }
+        
+        .comment-form {
+            margin-bottom: 30px;
+        }
+        
+        .comment-form textarea {
+            width: 100%;
+            background: #111;
+            border: 2px solid #333;
+            border-radius: 20px;
+            padding: 15px;
+            color: #fff;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .comment-form textarea:focus {
+            border-color: #ff7f50;
+            outline: none;
+        }
+        
+        .comment-btn {
+            background: linear-gradient(45deg, #ff7f50, #ff6347);
+            border: none;
+            border-radius: 30px;
+            padding: 12px 30px;
+            color: #000;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .comment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 99, 71, 0.5);
+        }
+        
+        .comment {
+            background: #111;
+            border-left: 4px solid #ff7f50;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: commentAppear 0.5s ease;
+        }
+        
+        @keyframes commentAppear {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .comment-author {
+            color: #ffb347;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .comment-text {
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .comment-date {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 10px;
+            text-align: right;
+        }
+        
+        /* АНИМАШКИ */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .floating {
+            animation: float 3s infinite;
+        }
+    </style>
+</head>
+<body>
+    <header class="cs2-header">
+        <div class="logo">CS2 SKIN INSPECTOR</div>
+        <div class="user-menu">
+            <span class="username">⚡ {{ username }}</span>
+            <a href="/logout" class="logout-btn">ВЫЙТИ</a>
+        </div>
+    </header>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('skins')">🔫 СКИНЫ</div>
+        <div class="tab" onclick="showTab('inspect')">🔍 ИНСПЕКЦИЯ</div>
+        <div class="tab" onclick="showTab('market')">💰 МАРКЕТ</div>
+        <div class="tab" onclick="showTab('stats')">📊 СТАТИСТИКА</div>
+    </div>
+    
+    <div class="tab-content" id="skins-tab">
+        <h1 style="font-family: 'Anton', sans-serif; font-size: 3rem; color: #ffb347;">🔥 ПОПУЛЯРНЫЕ СКИНЫ</h1>
+        
+        <div class="skins-grid">
+            <div class="skin-card">
+                <div class="skin-image">🔪</div>
+                <div class="skin-info">
+                    <div class="skin-name">Karambit | Doppler</div>
+                    <span class="skin-price">$1,499.99</span>
+                    <span class="skin-rarity">★ Covert</span>
+                </div>
+            </div>
+            
+            <div class="skin-card">
+                <div class="skin-image">🔫</div>
+                <div class="skin-info">
+                    <div class="skin-name">AK-47 | Fire Serpent</div>
+                    <span class="skin-price">$899.99</span>
+                    <span class="skin-rarity">★ Covert</span>
+                </div>
+            </div>
+            
+            <div class="skin-card">
+                <div class="skin-image">🔫</div>
+                <div class="skin-info">
+                    <div class="skin-name">AWP | Dragon Lore</div>
+                    <span class="skin-price">$2,499.99</span>
+                    <span class="skin-rarity">★ Legendary</span>
+                </div>
+            </div>
+            
+            <div class="skin-card">
+                <div class="skin-image">🔪</div>
+                <div class="skin-info">
+                    <div class="skin-name">M9 Bayonet | Crimson Web</div>
+                    <span class="skin-price">$1,299.99</span>
+                    <span class="skin-rarity">★ Covert</span>
+                </div>
+            </div>
+            
+            <div class="skin-card">
+                <div class="skin-image">🔫</div>
+                <div class="skin-info">
+                    <div class="skin-name">M4A4 | Howl</div>
+                    <span class="skin-price">$1,899.99</span>
+                    <span class="skin-rarity">★ Contraband</span>
+                </div>
+            </div>
+            
+            <div class="skin-card">
+                <div class="skin-image">🔫</div>
+                <div class="skin-info">
+                    <div class="skin-name">Desert Eagle | Blaze</div>
+                    <span class="skin-price">$249.99</span>
+                    <span class="skin-rarity">Classified</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- КОММЕНТАРИИ -->
+        <div class="comments-section">
+            <div class="comments-title">💬 КОММЕНТАРИИ СООБЩЕСТВА</div>
+            
+            <form class="comment-form" action="/add_comment" method="POST">
+                <textarea name="comment" placeholder="Напиши свое мнение о скинах..." required></textarea>
+                <button type="submit" class="comment-btn">ОТПРАВИТЬ</button>
+            </form>
+            
+            <div class="comments-list">
+                {% for comment in comments %}
+                <div class="comment">
+                    <div class="comment-author">{{ comment.username }}</div>
+                    <div class="comment-text">{{ comment.text }}</div>
+                    <div class="comment-date">{{ comment.date }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="tab-content" id="inspect-tab" style="display: none;">
+        <h1 style="font-family: 'Anton', sans-serif; font-size: 3rem; color: #ffb347;">🔍 ИНСПЕКЦИЯ СКИНОВ</h1>
+        <div style="text-align: center; padding: 100px; background: #111; border-radius: 30px; border: 2px dashed #ff7f50;">
+            <div style="font-size: 8rem;">🔫</div>
+            <h2 style="color: #ffb347; margin-top: 20px;">3D ВЬЮЕР СКИНОВ</h2>
+            <p style="color: #888;">Тут можно будет осматривать скины в 3D</p>
+        </div>
+    </div>
+    
+    <div class="tab-content" id="market-tab" style="display: none;">
+        <h1 style="font-family: 'Anton', sans-serif; font-size: 3rem; color: #ffb347;">💰 ТОРГОВАЯ ПЛОЩАДКА</h1>
+        <div style="text-align: center; padding: 100px; background: #111; border-radius: 30px; border: 2px dashed #ff7f50;">
+            <div style="font-size: 8rem;">📊</div>
+            <h2 style="color: #ffb347; margin-top: 20px;">ЦЕНЫ НА СКИНЫ</h2>
+            <p style="color: #888;">Актуальные цены рынка CS2</p>
+        </div>
+    </div>
+    
+    <div class="tab-content" id="stats-tab" style="display: none;">
+        <h1 style="font-family: 'Anton', sans-serif; font-size: 3rem; color: #ffb347;">📊 СТАТИСТИКА</h1>
+        <div style="text-align: center; padding: 100px; background: #111; border-radius: 30px; border: 2px dashed #ff7f50;">
+            <div style="font-size: 8rem;">📈</div>
+            <h2 style="color: #ffb347; margin-top: 20px;">АНАЛИТИКА СКИНОВ</h2>
+            <p style="color: #888;">Графики цен и статистика</p>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabName) {
+            // Скрываем все вкладки
+            document.getElementById('skins-tab').style.display = 'none';
+            document.getElementById('inspect-tab').style.display = 'none';
+            document.getElementById('market-tab').style.display = 'none';
+            document.getElementById('stats-tab').style.display = 'none';
+            
+            // Показываем нужную
+            document.getElementById(tabName + '-tab').style.display = 'block';
+            
+            // Обновляем активный таб
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
+"""
 
-@app.route("/register", methods=["POST"])
+# ========== МАРШРУТЫ ==========
+@app.route('/')
+def home():
+    return render_template_string(REGISTER_PAGE, error=None)
+
+@app.route('/login')
+def login_page():
+    return render_template_string(LOGIN_PAGE, error=None)
+
+@app.route('/register', methods=['POST'])
 def register():
-    # Получаем данные из формы
     username = request.form.get('username')
-    email = request.form.get('email')
     password = request.form.get('password')
     
-    # Сохраняем пользователя
+    # Загружаем пользователей
     with open(USERS_FILE, 'r') as f:
         users = json.load(f)
     
-    new_user = {
-        'username': username,
-        'email': email,
-        'password': password
+    # Проверяем существует ли ник
+    if username in users:
+        return render_template_string(REGISTER_PAGE, error='Никнейм уже занят!')
+    
+    if len(password) < 6:
+        return render_template_string(REGISTER_PAGE, error='Пароль должен быть минимум 6 символов!')
+    
+    # Хешируем пароль
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+    
+    # Сохраняем
+    users[username] = {
+        'password': hashed_password,
+        'joined': 'Только что'
     }
-    users.append(new_user)
     
     with open(USERS_FILE, 'w') as f:
         json.dump(users, f, indent=4)
     
-    # Показываем красивую страницу успеха
-    return render_template_string(SUCCESS_TEMPLATE, username=username, email=email)
+    # Автоматически входим
+    session['username'] = username
+    return redirect(url_for('main_site'))
 
-if __name__ == "__main__":
-    print("✨" * 20)
-    print("🚀 МАГИЧЕСКИЙ ПОРТАЛ ОТКРЫТ!")
-    print("📱 Ссылка для тебя: http://localhost:8080")
-    print("📱 Для телефона: http://192.168.1.91:8080")
-    print("✨" * 20)
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    
+    with open(USERS_FILE, 'r') as f:
+        users = json.load(f)
+    
+    if username not in users:
+        return render_template_string(LOGIN_PAGE, error='Никнейм не найден!')
+    
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+    if users[username]['password'] != hashed_password:
+        return render_template_string(LOGIN_PAGE, error='Неверный пароль!')
+    
+    session['username'] = username
+    return redirect(url_for('main_site'))
+
+@app.route('/main')
+@login_required
+def main_site():
+    # Загружаем комментарии
+    with open(COMMENTS_FILE, 'r') as f:
+        comments = json.load(f)
+    
+    return render_template_string(MAIN_SITE, username=session['username'], comments=comments)
+
+@app.route('/add_comment', methods=['POST'])
+@login_required
+def add_comment():
+    comment_text = request.form.get('comment')
+    
+    if comment_text:
+        with open(COMMENTS_FILE, 'r') as f:
+            comments = json.load(f)
+        
+        from datetime import datetime
+        comments.append({
+            'username': session['username'],
+            'text': comment_text,
+            'date': datetime.now().strftime('%d.%m.%Y %H:%M')
+        })
+        
+        with open(COMMENTS_FILE, 'w') as f:
+            json.dump(comments, f, indent=4)
+    
+    return redirect(url_for('main_site'))
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('home'))
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+    except:
+        ip = '127.0.0.1'
+    finally:
+        s.close()
+    return ip
+
+if __name__ == '__main__':
+    ip = get_ip()
+    print('=' * 60)
+    print('🔥 CS2 ИМБА САЙТ ЗАПУЩЕН! 🔥')
+    print('=' * 60)
+    print(f'📍 Локальный адрес: http://localhost:8080')
+    print(f'📱 Для телефона (Wi-Fi): http://{ip}:8080')
+    print('=' * 60)
+    print('✅ ПОЛНЫЙ ФУНКЦИОНАЛ:')
+    print('   • Регистрация/Вход с базой данных')
+    print('   • Просмотр скинов с ценами')
+    print('   • Комментарии с сохранением')
+    print('   • Защищенные страницы (без входа не зайдешь)')
+    print('   • 4 крутые вкладки')
+    print('=' * 60)
+    print('⚠️ НЕ ЗАКРЫВАЙ это окно - сайт работает!')
+    print('=' * 60)
     app.run(host='0.0.0.0', port=8080, debug=True)
