@@ -3,41 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS2 MARKET | РЕАЛЬНЫЕ ЦЕНЫ</title>
+    <title>CS2 CASE SIMULATOR | ULTIMATE</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
         }
 
         :root {
-            --orange: #ff7f50;
-            --dark: #0a0a0a;
-            --darker: #050505;
-            --light-dark: #1a1a1a;
-            --text: #fff;
-            --green: #00ff00;
-            --red: #ff3333;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --accent: #ff7f50;
+            --accent-dark: #ff6347;
+            --text: #ffffff;
+            --text-dim: #888888;
+            --green: #4caf50;
+            --red: #f44336;
+            --orange: #ff9800;
+            --blue: #2196f3;
+            --purple: #9c27b0;
+            --gold: #ffd700;
+            
+            --covert: #eb4b4b;
+            --classified: #d32ce6;
+            --restricted: #4b69ff;
+            --milspec: #4b69ff;
+            --industrial: #5f98f4;
+            --consumer: #b0c3d9;
         }
 
         body {
-            background: linear-gradient(145deg, var(--darker), var(--dark));
+            background: var(--bg-primary);
             color: var(--text);
             min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,127,80,0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         /* Анимации */
         @keyframes glowPulse {
-            0% { filter: drop-shadow(0 0 5px var(--orange)); }
-            50% { filter: drop-shadow(0 0 20px var(--orange)); }
-            100% { filter: drop-shadow(0 0 5px var(--orange)); }
+            0%, 100% { filter: drop-shadow(0 0 10px var(--accent)); }
+            50% { filter: drop-shadow(0 0 30px var(--accent)); }
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes priceChange {
+            0% { color: var(--green); transform: scale(1.2); }
+            100% { color: var(--text); transform: scale(1); }
         }
 
         /* Страницы авторизации */
@@ -57,32 +105,33 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
         }
 
         .auth-container {
             position: relative;
-            background: rgba(20, 20, 20, 0.98);
+            background: var(--bg-secondary);
             padding: 50px;
             border-radius: 30px;
             width: 450px;
-            border: 3px solid var(--orange);
+            border: 2px solid var(--accent);
             z-index: 1;
             animation: glowPulse 3s infinite;
         }
 
         .auth-container h1 {
-            color: var(--orange);
+            color: var(--accent);
             text-align: center;
             margin-bottom: 30px;
             font-size: 36px;
             text-transform: uppercase;
             letter-spacing: 3px;
+            text-shadow: 0 0 20px var(--accent);
         }
 
         .error {
-            background: linear-gradient(45deg, #ff3333, #cc0000);
+            background: linear-gradient(45deg, var(--red), #cc0000);
             color: white;
             padding: 15px;
             border-radius: 15px;
@@ -96,25 +145,25 @@
             width: 100%;
             padding: 15px;
             margin-bottom: 20px;
-            background: #333;
-            border: 2px solid #555;
+            background: #222;
+            border: 2px solid #333;
             border-radius: 15px;
-            color: white;
+            color: var(--text);
             font-size: 16px;
             transition: all 0.3s;
         }
 
         .auth-input:focus {
-            border-color: var(--orange);
+            border-color: var(--accent);
             outline: none;
             transform: scale(1.02);
-            box-shadow: 0 0 15px var(--orange);
+            box-shadow: 0 0 20px var(--accent);
         }
 
         .auth-btn {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(45deg, var(--orange), #ff6347);
+            background: linear-gradient(45deg, var(--accent), var(--accent-dark));
             border: none;
             border-radius: 15px;
             color: black;
@@ -127,17 +176,17 @@
 
         .auth-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 30px var(--orange);
+            box-shadow: 0 0 30px var(--accent);
         }
 
         .auth-link {
             text-align: center;
             margin-top: 20px;
-            color: #888;
+            color: var(--text-dim);
         }
 
         .auth-link a {
-            color: var(--orange);
+            color: var(--accent);
             text-decoration: none;
             cursor: pointer;
             font-weight: bold;
@@ -152,70 +201,85 @@
         }
 
         .header {
-            background: linear-gradient(90deg, var(--light-dark), #2a2a2a);
-            padding: 20px 40px;
+            background: var(--bg-secondary);
+            padding: 20px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-radius: 20px;
             margin-bottom: 20px;
-            border: 2px solid var(--orange);
+            border: 1px solid #333;
+            border-bottom: 3px solid var(--accent);
             position: sticky;
             top: 10px;
-            z-index: 1000;
+            z-index: 100;
             backdrop-filter: blur(10px);
-            box-shadow: 0 5px 20px rgba(255,127,80,0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
 
         .logo {
-            color: var(--orange);
+            color: var(--accent);
             font-size: 28px;
             font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
         }
 
-        .update-status {
-            background: var(--light-dark);
-            padding: 10px 20px;
-            border-radius: 50px;
+        .logo span {
+            animation: float 3s infinite;
+        }
+
+        .market-status {
+            background: #222;
+            padding: 8px 15px;
+            border-radius: 30px;
             display: flex;
             align-items: center;
             gap: 10px;
-            border: 1px solid var(--orange);
             font-size: 14px;
-            margin-left: 20px;
+            border: 1px solid #333;
         }
 
         .status-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background: var(--green);
             border-radius: 50%;
-            animation: glowPulse 1s infinite;
+            animation: glowPulse 2s infinite;
         }
 
         .user-menu {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
+        }
+
+        .balance {
+            background: linear-gradient(45deg, var(--green), #45a049);
+            color: black;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 18px;
+            border: 1px solid var(--green);
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
         }
 
         .username {
-            color: var(--orange);
+            color: var(--accent);
             font-weight: bold;
-            font-size: 18px;
-            background: #333;
-            padding: 8px 25px;
+            font-size: 16px;
+            background: #222;
+            padding: 8px 20px;
             border-radius: 30px;
-            border: 2px solid var(--orange);
+            border: 1px solid var(--accent);
         }
 
         .logout-btn {
-            background: linear-gradient(45deg, #ff3333, #cc0000);
+            background: linear-gradient(45deg, var(--red), #d32f2f);
             color: white;
-            padding: 8px 25px;
+            padding: 8px 20px;
             border-radius: 30px;
             border: none;
             cursor: pointer;
@@ -225,49 +289,266 @@
 
         .logout-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 15px #ff3333;
+            box-shadow: 0 0 20px var(--red);
         }
 
-        /* Категории */
-        .categories-bar {
-            background: var(--light-dark);
-            padding: 20px;
+        /* Навигация */
+        .nav-bar {
+            background: var(--bg-secondary);
+            padding: 15px;
             border-radius: 20px;
             margin-bottom: 20px;
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
             border: 1px solid #333;
         }
 
-        .category-btn {
+        .nav-btn {
             padding: 12px 25px;
-            background: #333;
-            border: 2px solid #555;
+            background: #222;
+            border: 1px solid #333;
             border-radius: 30px;
-            color: #888;
+            color: var(--text-dim);
             cursor: pointer;
             transition: all 0.3s;
             font-weight: bold;
             font-size: 14px;
             text-transform: uppercase;
+            flex: 1;
         }
 
-        .category-btn:hover {
-            border-color: var(--orange);
-            color: var(--orange);
+        .nav-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
             transform: translateY(-2px);
         }
 
-        .category-btn.active {
-            background: linear-gradient(45deg, var(--orange), #ff6347);
-            border-color: var(--orange);
+        .nav-btn.active {
+            background: linear-gradient(45deg, var(--accent), var(--accent-dark));
+            border-color: var(--accent);
             color: black;
+            box-shadow: 0 0 20px var(--accent);
         }
 
-        /* Фильтры */
-        .filters-panel {
-            background: var(--light-dark);
+        /* Кейсы */
+        .cases-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .case-card {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #333;
+            border-bottom: 3px solid var(--accent);
+            transition: all 0.3s;
+            animation: slideIn 0.5s;
+            position: relative;
+        }
+
+        .case-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(255,127,80,0.2);
+            border-color: var(--accent);
+        }
+
+        .case-card.free {
+            border-bottom-color: var(--green);
+        }
+
+        .case-card.free:hover {
+            box-shadow: 0 20px 30px rgba(76, 175, 80, 0.2);
+        }
+
+        .case-header {
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(45deg, #1a1a1a, #151515);
+        }
+
+        .case-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+            animation: float 3s infinite;
+        }
+
+        .case-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .case-price {
+            font-size: 24px;
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        .case-free-label {
+            font-size: 18px;
+            color: var(--green);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .case-timer {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-top: 5px;
+        }
+
+        .case-stats {
+            padding: 20px;
+            background: #111;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--text-dim);
+        }
+
+        .stat-value {
+            color: var(--text);
+        }
+
+        .case-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, var(--accent), var(--accent-dark));
+            border: none;
+            color: black;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .case-btn:hover:not(:disabled) {
+            background: linear-gradient(45deg, var(--accent-dark), var(--accent));
+            transform: scale(1.02);
+        }
+
+        .case-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .case-btn.free-btn {
+            background: linear-gradient(45deg, var(--green), #45a049);
+        }
+
+        /* Анимация открытия */
+        .opening-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .opening-content {
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        .spinner-container {
+            background: var(--bg-secondary);
+            border: 3px solid var(--accent);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 50px var(--accent);
+        }
+
+        .spinner-track {
+            display: flex;
+            gap: 20px;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .spinner-item {
+            min-width: 200px;
+            animation: spin 0.1s linear infinite;
+        }
+
+        .spinner-item img {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+        }
+
+        .result-content {
+            background: var(--bg-secondary);
+            border: 3px solid var(--accent);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 0 50px var(--accent);
+        }
+
+        .result-content img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            animation: float 3s infinite;
+        }
+
+        .result-name {
+            font-size: 28px;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .result-price {
+            font-size: 36px;
+            color: var(--green);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .result-rarity {
+            font-size: 16px;
+            padding: 8px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .take-btn {
+            background: linear-gradient(45deg, var(--green), #45a049);
+            color: black;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .take-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px var(--green);
+        }
+
+        /* Рынок */
+        .market-filters {
+            background: var(--bg-secondary);
             padding: 20px;
             border-radius: 20px;
             margin-bottom: 20px;
@@ -277,26 +558,21 @@
             border: 1px solid #333;
         }
 
-        .filter-select, .search-input {
+        .market-filter {
             padding: 12px;
-            background: #333;
-            border: 2px solid #555;
+            background: #222;
+            border: 1px solid #333;
             border-radius: 15px;
-            color: white;
+            color: var(--text);
             font-size: 14px;
         }
 
-        .filter-select:focus, .search-input:focus {
-            border-color: var(--orange);
+        .market-filter:focus {
+            border-color: var(--accent);
             outline: none;
         }
 
-        .search-input {
-            width: 100%;
-        }
-
-        /* Сетка скинов */
-        .skins-grid {
+        .market-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
@@ -304,25 +580,23 @@
         }
 
         .skin-card {
-            background: linear-gradient(145deg, var(--light-dark), #151515);
+            background: var(--bg-secondary);
             border-radius: 20px;
             overflow: hidden;
-            border: 2px solid #333;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            position: relative;
-            animation: slideIn 0.5s ease-out;
+            border: 1px solid #333;
+            border-bottom: 3px solid var(--accent);
+            transition: all 0.3s;
+            animation: slideIn 0.5s;
         }
 
         .skin-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            border-color: var(--orange);
-            box-shadow: 0 20px 30px rgba(255,127,80,0.4);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(255,127,80,0.2);
         }
 
         .skin-image {
             height: 200px;
-            background: linear-gradient(45deg, #222, #1a1a1a);
+            background: #111;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -360,13 +634,10 @@
         }
 
         .skin-name {
-            color: var(--orange);
+            color: var(--accent);
             font-weight: bold;
             font-size: 16px;
             margin-bottom: 10px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .skin-price {
@@ -377,27 +648,21 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
         }
 
-        .skin-price-rub {
-            font-size: 14px;
-            color: #888;
-        }
-
-        .skin-change {
+        .skin-price-change {
             font-size: 12px;
             padding: 3px 8px;
             border-radius: 15px;
-            background: rgba(0,0,0,0.3);
+            background: #222;
         }
 
-        .skin-change.positive { color: var(--green); }
-        .skin-change.negative { color: var(--red); }
+        .skin-price-change.up { color: var(--green); }
+        .skin-price-change.down { color: var(--red); }
 
         .skin-float {
             font-size: 12px;
-            color: #888;
+            color: var(--text-dim);
             display: flex;
             gap: 10px;
             margin-top: 10px;
@@ -405,19 +670,252 @@
             border-top: 1px solid #333;
         }
 
-        .steam-link {
+        .buy-btn {
+            width: 100%;
+            padding: 12px;
             margin-top: 10px;
+            background: linear-gradient(45deg, var(--green), #45a049);
+            border: none;
+            border-radius: 15px;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .buy-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--green);
+        }
+
+        .buy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Инвентарь */
+        .inventory-section {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #333;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .inventory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .inventory-title {
+            font-size: 28px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .inventory-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-item {
+            background: #222;
+            padding: 10px 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-bottom: 5px;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .inventory-item {
+            background: #222;
+            border-left: 4px solid var(--accent);
+            border-radius: 15px;
+            padding: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .inventory-item:hover {
+            transform: translateX(-5px);
+            box-shadow: -5px 5px 20px rgba(255,127,80,0.2);
+        }
+
+        .inventory-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+            background: #111;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .inventory-item-name {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .inventory-item-price {
+            color: var(--green);
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .sell-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(45deg, var(--orange), #fb8c00);
+            border: none;
+            border-radius: 10px;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sell-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--orange);
+        }
+
+        .item-date {
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        /* Чат */
+        .chat-section {
+            margin-top: 30px;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #333;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chat-title {
+            font-size: 24px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .online-count {
+            background: #222;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 14px;
+            color: var(--green);
+        }
+
+        .chat-messages {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #111;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+
+        .chat-message {
+            background: #222;
+            border-left: 3px solid var(--accent);
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            animation: slideIn 0.3s;
+        }
+
+        .chat-message-author {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .chat-message-text {
+            font-size: 14px;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+
+        .chat-message-time {
+            font-size: 10px;
+            color: var(--text-dim);
+            text-align: right;
+        }
+
+        .chat-input-area {
             display: flex;
             gap: 10px;
         }
 
-        .steam-btn {
-            background: #2a2a2a;
-            color: #888;
-            padding: 5px 10px;
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            background: #222;
+            border: 1px solid #333;
             border-radius: 15px;
-            font-size: 11px;
-            border: 1px solid #444;
+            color: var(--text);
+            font-size: 14px;
+            resize: none;
+            min-height: 50px;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        .chat-btn {
+            padding: 0 30px;
+            background: linear-gradient(45deg, var(--accent), var(--accent-dark));
+            border: none;
+            border-radius: 15px;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chat-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--accent);
         }
 
         /* Пагинация */
@@ -430,211 +928,19 @@
         }
 
         .page-btn {
-            padding: 10px 18px;
-            background: #333;
-            border: 2px solid #555;
+            padding: 8px 16px;
+            background: #222;
+            border: 1px solid #333;
             border-radius: 10px;
-            color: white;
+            color: var(--text);
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .page-btn:hover, .page-btn.active {
-            border-color: var(--orange);
-            background: var(--orange);
+            border-color: var(--accent);
+            background: var(--accent);
             color: black;
-        }
-
-        /* Модальное окно */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: linear-gradient(145deg, var(--light-dark), #151515);
-            border: 3px solid var(--orange);
-            border-radius: 30px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-            animation: slideIn 0.3s;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--orange);
-        }
-
-        .modal-image {
-            width: 100%;
-            height: 200px;
-            object-fit: contain;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            color: var(--orange);
-            font-size: 24px;
-            margin-bottom: 15px;
-        }
-
-        .modal-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .modal-info-item {
-            background: #333;
-            padding: 10px;
-            border-radius: 15px;
-        }
-
-        .modal-info-label {
-            color: #888;
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-
-        .modal-info-value {
-            color: var(--orange);
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .modal-description {
-            color: #888;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        /* Чат */
-        .chat-section {
-            margin-top: 40px;
-            background: var(--light-dark);
-            border-radius: 20px;
-            padding: 30px;
-            border: 2px solid var(--orange);
-        }
-
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .chat-title {
-            color: var(--orange);
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .online-count {
-            background: #333;
-            padding: 5px 15px;
-            border-radius: 30px;
-            font-size: 14px;
-            color: var(--green);
-        }
-
-        .chat-messages {
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 10px;
-            margin-bottom: 20px;
-            background: #222;
-            border-radius: 15px;
-            padding: 20px;
-        }
-
-        .chat-message {
-            background: #333;
-            border-left: 4px solid var(--orange);
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 15px;
-        }
-
-        .chat-message-author {
-            color: var(--orange);
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .chat-message-text {
-            line-height: 1.6;
-            margin-bottom: 8px;
-        }
-
-        .chat-message-time {
-            color: #888;
-            font-size: 11px;
-        }
-
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 15px;
-            background: #333;
-            border: 2px solid #555;
-            border-radius: 15px;
-            color: white;
-            font-size: 14px;
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        .chat-input:focus {
-            border-color: var(--orange);
-            outline: none;
-        }
-
-        .chat-skin-select {
-            width: 200px;
-            padding: 15px;
-            background: #333;
-            border: 2px solid #555;
-            border-radius: 15px;
-            color: white;
-        }
-
-        .chat-btn {
-            background: linear-gradient(45deg, var(--orange), #ff6347);
-            color: black;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        .chat-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px var(--orange);
         }
 
         /* Уведомления */
@@ -642,76 +948,51 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: linear-gradient(45deg, var(--orange), #ff6347);
+            background: linear-gradient(45deg, var(--accent), var(--accent-dark));
             color: black;
             padding: 15px 30px;
             border-radius: 50px;
             font-weight: bold;
             animation: slideIn 0.5s;
             z-index: 2000;
-            box-shadow: 0 5px 20px rgba(255,127,80,0.5);
+            box-shadow: 0 5px 20px var(--accent);
+        }
+
+        /* Скролл */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-dark);
         }
 
         .loading {
             text-align: center;
             padding: 50px;
             font-size: 18px;
-            color: var(--orange);
-        }
-
-        ::-webkit-scrollbar {
-            width: 12px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--light-dark);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--orange);
-            border-radius: 6px;
+            color: var(--accent);
         }
     </style>
 </head>
 <body>
-    <!-- Модальное окно -->
-    <div id="skinModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal()">&times;</span>
-            <img id="modalImage" class="modal-image" src="" alt="">
-            <div class="modal-title" id="modalTitle"></div>
-            <div class="modal-info">
-                <div class="modal-info-item">
-                    <div class="modal-info-label">Коллекция</div>
-                    <div class="modal-info-value" id="modalCollection"></div>
-                </div>
-                <div class="modal-info-item">
-                    <div class="modal-info-label">Дата выхода</div>
-                    <div class="modal-info-value" id="modalDate"></div>
-                </div>
-                <div class="modal-info-item">
-                    <div class="modal-info-label">Редкость</div>
-                    <div class="modal-info-value" id="modalRarity"></div>
-                </div>
-                <div class="modal-info-item">
-                    <div class="modal-info-label">Float</div>
-                    <div class="modal-info-value" id="modalFloat"></div>
-                </div>
-                <div class="modal-info-item">
-                    <div class="modal-info-label">Паттерн</div>
-                    <div class="modal-info-value" id="modalPattern"></div>
-                </div>
-                <div class="modal-info-item">
-                    <div class="modal-info-label">Износ</div>
-                    <div class="modal-info-value" id="modalWear"></div>
-                </div>
-            </div>
-            <div class="modal-description" id="modalDescription"></div>
+    <!-- Модальное окно открытия -->
+    <div id="openingModal" class="opening-modal">
+        <div class="opening-content" id="openingContent">
+            <!-- Сюда будет вставляться анимация или результат -->
         </div>
     </div>
 
     <!-- Страница регистрации -->
     <div id="register-page" class="auth-page">
         <div class="auth-container">
-            <h1>CS2 MARKET</h1>
+            <h1>CASE SIMULATOR</h1>
             <div class="error" id="register-error"></div>
             <input type="text" id="reg-username" class="auth-input" placeholder="Никнейм">
             <input type="password" id="reg-password" class="auth-input" placeholder="Пароль (мин 6 символов)">
@@ -726,7 +1007,7 @@
     <!-- Страница входа -->
     <div id="login-page" class="auth-page">
         <div class="auth-container">
-            <h1>CS2 MARKET</h1>
+            <h1>CASE SIMULATOR</h1>
             <div class="error" id="login-error"></div>
             <input type="text" id="login-username" class="auth-input" placeholder="Никнейм">
             <input type="password" id="login-password" class="auth-input" placeholder="Пароль">
@@ -741,306 +1022,374 @@
     <div id="main-site">
         <div class="header">
             <div class="logo">
-                <span>🔥</span>
-                CS2 MARKET INSPECTOR
-                <div class="update-status">
+                <span>🎲</span>
+                CS2 CASE SIMULATOR
+                <div class="market-status">
                     <div class="status-dot"></div>
-                    <span id="update-time">РЕАЛЬНЫЕ ЦЕНЫ</span>
+                    <span id="marketUpdate">Рынок обновляется...</span>
                 </div>
             </div>
             <div class="user-menu">
-                <span class="username" id="current-user"></span>
+                <span class="balance" id="userBalance">0 ₽</span>
+                <span class="username" id="currentUser"></span>
                 <button class="logout-btn" onclick="logout()">ВЫЙТИ</button>
             </div>
         </div>
 
-        <!-- Категории -->
-        <div class="categories-bar">
-            <div class="category-btn active" onclick="filterCategory('all', this)">ВСЕ СКИНЫ</div>
-            <div class="category-btn" onclick="filterCategory('knife', this)">🔪 НОЖИ</div>
-            <div class="category-btn" onclick="filterCategory('pistol', this)">🔫 ПИСТОЛЕТЫ</div>
-            <div class="category-btn" onclick="filterCategory('rifle', this)">⚡ ВИНТОВКИ</div>
-            <div class="category-btn" onclick="filterCategory('sniper', this)">🎯 СНАЙПЕРКИ</div>
-            <div class="category-btn" onclick="filterCategory('glove', this)">🧤 ПЕРЧАТКИ</div>
+        <!-- Навигация -->
+        <div class="nav-bar">
+            <button class="nav-btn active" onclick="switchTab('cases', this)">📦 КЕЙСЫ</button>
+            <button class="nav-btn" onclick="switchTab('market', this)">🏪 РЫНОК</button>
+            <button class="nav-btn" onclick="switchTab('inventory', this)">🎒 ИНВЕНТАРЬ</button>
         </div>
 
-        <!-- Фильтры -->
-        <div class="filters-panel">
-            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск скина..." onkeyup="applyFilters()">
-            <select class="filter-select" id="rarityFilter" onchange="applyFilters()">
-                <option value="all">Все редкости</option>
-                <option value="Covert">Covert (Тайное)</option>
-                <option value="Classified">Classified (Заслуженное)</option>
-                <option value="Restricted">Restricted (Запрещенное)</option>
-                <option value="Mil-Spec">Mil-Spec (Армейское)</option>
-            </select>
-            <select class="filter-select" id="sortFilter" onchange="applyFilters()">
-                <option value="price-desc">Цена: по убыванию</option>
-                <option value="price-asc">Цена: по возрастанию</option>
-                <option value="name-asc">Название: А-Я</option>
-                <option value="name-desc">Название: Я-А</option>
-            </select>
-            <select class="filter-select" id="wearFilter" onchange="applyFilters()">
-                <option value="all">Все износы</option>
-                <option value="Factory New">Factory New</option>
-                <option value="Minimal Wear">Minimal Wear</option>
-                <option value="Field-Tested">Field-Tested</option>
-            </select>
+        <!-- Вкладка КЕЙСЫ -->
+        <div id="casesTab" style="display: block;">
+            <div class="cases-section">
+                <!-- Бесплатный кейс -->
+                <div class="case-card free">
+                    <div class="case-header">
+                        <div class="case-icon">🎁</div>
+                        <div class="case-name">FREE CASE</div>
+                        <div class="case-free-label">БЕСПЛАТНО</div>
+                        <div class="case-timer" id="freeCaseTimer">Доступно сейчас</div>
+                    </div>
+                    <div class="case-stats">
+                        <div class="stat-row">
+                            <span>🎯 Шанс ножа:</span>
+                            <span class="stat-value">0.5%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>💰 Средний выигрыш:</span>
+                            <span class="stat-value">150 ₽</span>
+                        </div>
+                    </div>
+                    <button class="case-btn free-btn" id="freeCaseBtn" onclick="openCase('free')">ОТКРЫТЬ БЕСПЛАТНО</button>
+                </div>
+
+                <!-- Dreams & Nightmares Case -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">🌙</div>
+                        <div class="case-name">DREAMS & NIGHTMARES</div>
+                        <div class="case-price">250 ₽</div>
+                    </div>
+                    <div class="case-stats">
+                        <div class="stat-row">
+                            <span>🔴 Covert:</span>
+                            <span class="stat-value">0.5%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🟣 Classified:</span>
+                            <span class="stat-value">2.5%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🔵 Restricted:</span>
+                            <span class="stat-value">7%</span>
+                        </div>
+                    </div>
+                    <button class="case-btn" onclick="openCase('dreams')">ОТКРЫТЬ ЗА 250 ₽</button>
+                </div>
+
+                <!-- CS20 Case -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">🎂</div>
+                        <div class="case-name">CS20 CASE</div>
+                        <div class="case-price">200 ₽</div>
+                    </div>
+                    <div class="case-stats">
+                        <div class="stat-row">
+                            <span>🔴 Covert:</span>
+                            <span class="stat-value">0.5%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🟣 Classified:</span>
+                            <span class="stat-value">2.5%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🔵 Restricted:</span>
+                            <span class="stat-value">7%</span>
+                        </div>
+                    </div>
+                    <button class="case-btn" onclick="openCase('cs20')">ОТКРЫТЬ ЗА 200 ₽</button>
+                </div>
+
+                <!-- Prisma Case -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">💎</div>
+                        <div class="case-name">PRISMA CASE</div>
+                        <div class="case-price">300 ₽</div>
+                    </div>
+                    <div class="case-stats">
+                        <div class="stat-row">
+                            <span>🔴 Ножи:</span>
+                            <span class="stat-value">0.5%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🟣 Classified:</span>
+                            <span class="stat-value">2.5%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🔵 Restricted:</span>
+                            <span class="stat-value">7%</span>
+                        </div>
+                    </div>
+                    <button class="case-btn" onclick="openCase('prisma')">ОТКРЫТЬ ЗА 300 ₽</button>
+                </div>
+
+                <!-- Fracture Case -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">💥</div>
+                        <div class="case-name">FRACTURE CASE</div>
+                        <div class="case-price">280 ₽</div>
+                    </div>
+                    <div class="case-stats">
+                        <div class="stat-row">
+                            <span>🧤 Перчатки:</span>
+                            <span class="stat-value">0.5%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🔴 Covert:</span>
+                            <span class="stat-value">0.5%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🟣 Classified:</span>
+                            <span class="stat-value">2.5%</span>
+                        </div>
+                    </div>
+                    <button class="case-btn" onclick="openCase('fracture')">ОТКРЫТЬ ЗА 280 ₽</button>
+                </div>
+
+                <!-- Chroma Case -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">🌈</div>
+                        <div class="case-name">CHROMA CASE</div>
+                        <div class="case-price">220 ₽</div>
+                    </div>
+                    <div class="case-stats">
+                        <div class="stat-row">
+                            <span>🔴 Covert:</span>
+                            <span class="stat-value">0.5%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🟣 Classified:</span>
+                            <span class="stat-value">2.5%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🔵 Restricted:</span>
+                            <span class="stat-value">7%</span>
+                        </div>
+                    </div>
+                    <button class="case-btn" onclick="openCase('chroma')">ОТКРЫТЬ ЗА 220 ₽</button>
+                </div>
+            </div>
         </div>
 
-        <!-- Сетка скинов -->
-        <div id="skins-grid" class="skins-grid">
-            <div class="loading">🔄 Загрузка реальных цен...</div>
-        </div>
-        
-        <!-- Пагинация -->
-        <div class="pagination" id="pagination"></div>
+        <!-- Вкладка РЫНОК -->
+        <div id="marketTab" style="display: none;">
+            <div class="market-filters">
+                <input type="text" class="market-filter" id="searchInput" placeholder="🔍 Поиск скина..." onkeyup="applyMarketFilters()">
+                <select class="market-filter" id="rarityFilter" onchange="applyMarketFilters()">
+                    <option value="all">Все редкости</option>
+                    <option value="Covert">Covert (Тайное)</option>
+                    <option value="Classified">Classified (Заслуженное)</option>
+                    <option value="Restricted">Restricted (Запрещенное)</option>
+                    <option value="Mil-Spec">Mil-Spec (Армейское)</option>
+                </select>
+                <select class="market-filter" id="categoryFilter" onchange="applyMarketFilters()">
+                    <option value="all">Все категории</option>
+                    <option value="knife">🔪 Ножи</option>
+                    <option value="rifle">🔫 Винтовки</option>
+                    <option value="pistol">🔫 Пистолеты</option>
+                    <option value="sniper">🎯 Снайперки</option>
+                    <option value="glove">🧤 Перчатки</option>
+                </select>
+                <select class="market-filter" id="sortFilter" onchange="applyMarketFilters()">
+                    <option value="price-desc">Цена: по убыванию</option>
+                    <option value="price-asc">Цена: по возрастанию</option>
+                    <option value="name-asc">Название: А-Я</option>
+                    <option value="name-desc">Название: Я-А</option>
+                </select>
+            </div>
 
-        <!-- Глобальный чат -->
+            <div id="marketGrid" class="market-grid"></div>
+            <div class="pagination" id="marketPagination"></div>
+        </div>
+
+        <!-- Вкладка ИНВЕНТАРЬ -->
+        <div id="inventoryTab" style="display: none;">
+            <div class="inventory-section">
+                <div class="inventory-header">
+                    <div class="inventory-title">
+                        🎒 МОЙ ИНВЕНТАРЬ
+                    </div>
+                    <div class="inventory-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Предметов</div>
+                            <div class="stat-number" id="inventoryCount">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Общая стоимость</div>
+                            <div class="stat-number" id="inventoryTotal">0 ₽</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="inventoryGrid" class="inventory-grid"></div>
+            </div>
+        </div>
+
+        <!-- Чат -->
         <div class="chat-section">
             <div class="chat-header">
                 <div class="chat-title">
                     💬 ГЛОБАЛЬНЫЙ ЧАТ
-                    <span class="online-count" id="online-count">0 онлайн</span>
+                    <span class="online-count" id="onlineCount">0 онлайн</span>
                 </div>
             </div>
-            
-            <div class="chat-messages" id="chat-messages"></div>
-            
+            <div class="chat-messages" id="chatMessages"></div>
             <div class="chat-input-area">
-                <textarea class="chat-input" id="chat-input" placeholder="Напиши сообщение..."></textarea>
-                <select class="chat-skin-select" id="chat-skin-select">
-                    <option value="">Без скина</option>
-                </select>
-                <button class="chat-btn" onclick="sendChatMessage()">ОТПРАВИТЬ</button>
+                <textarea class="chat-input" id="chatInput" placeholder="Напиши сообщение... (видят все)"></textarea>
+                <button class="chat-btn" onclick="sendChatMessage()">➤</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ==================== РЕАЛЬНЫЕ ДАННЫЕ СКИНОВ ====================
+        // ==================== БАЗА СКИНОВ CS2 (ВСЕ СУЩЕСТВУЮЩИЕ) ====================
         const CS2_SKINS_DB = [
             // НОЖИ
-            { 
-                id: 1, 
-                name: '★ Karambit | Doppler', 
-                category: 'knife', 
-                rarity: 'Covert', 
-                wear: 'Factory New', 
-                float: 0.00123456, 
-                pattern: 321, 
-                collection: 'Dreams & Nightmares', 
-                releaseDate: '2022-01-20',
-                description: 'Один из самых популярных ножей с уникальным переливом.',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf1fLEcjVL49KJlZG0m_7zO6_ummpD78A_37yUrY-jjQzt_xE-ZTv1IY7GcQ43YF7S_AW3yLvvhMG8vczMzSZkvyUit2qdwUCo'
-            },
-            { 
-                id: 2, 
-                name: '★ M9 Bayonet | Gamma Doppler', 
-                category: 'knife', 
-                rarity: 'Covert', 
-                wear: 'Factory New', 
-                float: 0.00876543, 
-                pattern: 654, 
-                collection: 'Gamma Collection', 
-                releaseDate: '2016-07-01',
-                description: 'Нож с зеленым переливом из серии Gamma.',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf2PLacDBA5ciJlY20k_jkI7fUqWZU7Mxkh9bN9J7yjxi-qhVrY2mgItKWJgU8NA7T-ATrx7zuhpK-7ZzBm3Zn7HUq4SGdwUCo'
-            },
-            { 
-                id: 3, 
-                name: '★ Butterfly Knife | Fade', 
-                category: 'knife', 
-                rarity: 'Covert', 
-                wear: 'Factory New', 
-                float: 0.00987654, 
-                pattern: 123, 
-                collection: 'Chroma Collection', 
-                releaseDate: '2015-01-08',
-                description: 'Нож-бабочка с градиентом от желтого к фиолетовому.',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf2PLRdD1H_siJlYyFqPrxN7LEmyVQ7MEo3bqV99ij0QHm_xA4ZTj7II7EdgM4Z1DU_1G3x-y8h5e_usrJzXJg6CMh7GGdwUCo'
-            },
-            { 
-                id: 4, 
-                name: '★ Bayonet | Lore', 
-                category: 'knife', 
-                rarity: 'Covert', 
-                wear: 'Minimal Wear', 
-                float: 0.12345678, 
-                pattern: 555, 
-                collection: 'Cobblestone Collection', 
-                releaseDate: '2015-07-01',
-                description: 'Штык-нож с золотым узором.',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf1ObcTjxT0966gYWPqPv5Nq_ummpD78A_3L2V9N-kjVHk-hE_Njr0IdPEewM4YV7U8lK2k-3qjJC7us_BmnI17yYit2qdwUCo'
-            },
+            { id: 1, name: '★ Karambit | Doppler', category: 'knife', rarity: 'Covert', wear: 'Factory New', float: 0.00123456, pattern: 321, collection: 'Dreams & Nightmares', basePrice: 2450, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf1fLEcjVL49KJlZG0m_7zO6_ummpD78A_37yUrY-jjQzt_xE-ZTv1IY7GcQ43YF7S_AW3yLvvhMG8vczMzSZkvyUit2qdwUCo' },
+            { id: 2, name: '★ M9 Bayonet | Gamma Doppler', category: 'knife', rarity: 'Covert', wear: 'Factory New', float: 0.00876543, pattern: 654, collection: 'Gamma Collection', basePrice: 2100, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf2PLacDBA5ciJlY20k_jkI7fUqWZU7Mxkh9bN9J7yjxi-qhVrY2mgItKWJgU8NA7T-ATrx7zuhpK-7ZzBm3Zn7HUq4SGdwUCo' },
+            { id: 3, name: '★ Butterfly Knife | Fade', category: 'knife', rarity: 'Covert', wear: 'Factory New', float: 0.00987654, pattern: 123, collection: 'Chroma Collection', basePrice: 1850, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf2PLRdD1H_siJlYyFqPrxN7LEmyVQ7MEo3bqV99ij0QHm_xA4ZTj7II7EdgM4Z1DU_1G3x-y8h5e_usrJzXJg6CMh7GGdwUCo' },
+            { id: 4, name: '★ Bayonet | Lore', category: 'knife', rarity: 'Covert', wear: 'Minimal Wear', float: 0.12345678, pattern: 555, collection: 'Cobblestone Collection', basePrice: 1200, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf1ObcTjxT0966gYWPqPv5Nq_ummpD78A_3L2V9N-kjVHk-hE_Njr0IdPEewM4YV7U8lK2k-3qjJC7us_BmnI17yYit2qdwUCo' },
+            { id: 5, name: '★ Talon Knife | Tiger Tooth', category: 'knife', rarity: 'Covert', wear: 'Factory New', float: 0.02345678, pattern: 777, collection: 'Prisma Collection', basePrice: 1600, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf2PLRdD5G09C5loWYg-TmMbfUqWZU7Mxkh9bL8d2j2wSyqRFuNmGgJI7HcQRoNwvT-VG8l7u6h8Povci1wXNnuSMq4SGdwUCo' },
+            { id: 6, name: '★ Karambit | Tiger Tooth', category: 'knife', rarity: 'Covert', wear: 'Factory New', float: 0.04567891, pattern: 888, collection: 'Chroma Collection', basePrice: 1800, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf1fLEcjVL49KJlZG0m_7zO6_ummpD78A_37yUrY-jjQzt_xE-ZTv1IY7GcQ43YF7S_AW3yLvvhMG8vczMzSZkvyUit2qdwUCo' },
+            { id: 7, name: '★ M9 Bayonet | Doppler', category: 'knife', rarity: 'Covert', wear: 'Factory New', float: 0.05678912, pattern: 999, collection: 'Dreams & Nightmares', basePrice: 2300, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf2PLacDBA5ciJlY20k_jkI7fUqWZU7Mxkh9bN9J7yjxi-qhVrY2mgItKWJgU8NA7T-ATrx7zuhpK-7ZzBm3Zn7HUq4SGdwUCo' },
+            { id: 8, name: '★ Butterfly Knife | Doppler', category: 'knife', rarity: 'Covert', wear: 'Factory New', float: 0.06789123, pattern: 111, collection: 'Gamma Collection', basePrice: 2000, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf2PLRdD1H_siJlYyFqPrxN7LEmyVQ7MEo3bqV99ij0QHm_xA4ZTj7II7EdgM4Z1DU_1G3x-y8h5e_usrJzXJg6CMh7GGdwUCo' },
+            { id: 9, name: '★ Karambit | Fade', category: 'knife', rarity: 'Covert', wear: 'Factory New', float: 0.07891234, pattern: 222, collection: 'Prisma Collection', basePrice: 2200, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf1fLEcjVL49KJlZG0m_7zO6_ummpD78A_37yUrY-jjQzt_xE-ZTv1IY7GcQ43YF7S_AW3yLvvhMG8vczMzSZkvyUit2qdwUCo' },
+            { id: 10, name: '★ M9 Bayonet | Fade', category: 'knife', rarity: 'Covert', wear: 'Factory New', float: 0.08912345, pattern: 333, collection: 'Chroma Collection', basePrice: 1900, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf2PLacDBA5ciJlY20k_jkI7fUqWZU7Mxkh9bN9J7yjxi-qhVrY2mgItKWJgU8NA7T-ATrx7zuhpK-7ZzBm3Zn7HUq4SGdwUCo' },
 
             // ВИНТОВКИ
-            { 
-                id: 5, 
-                name: 'AK-47 | Fire Serpent', 
-                category: 'rifle', 
-                rarity: 'Covert', 
-                wear: 'Minimal Wear', 
-                float: 0.12345678, 
-                pattern: 123, 
-                collection: 'Bravo Collection', 
-                releaseDate: '2013-09-19',
-                description: 'Легендарный AK-47 с огненным змеем.',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEojbjW8d7zjQO2_0M4YGGgIdDDdwQ6aVnSrFa2k-7qh5PqvJTMz3kwvSAn7GGdwUCo'
-            },
-            { 
-                id: 6, 
-                name: 'M4A4 | Howl', 
-                category: 'rifle', 
-                rarity: 'Contraband', 
-                wear: 'Field-Tested', 
-                float: 0.32345678, 
-                pattern: 888, 
-                collection: 'Howl Collection', 
-                releaseDate: '2014-05-01',
-                description: 'Уникальный скин, статус "Контрабанда".',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09-3nYy0k_jmI7fUqWZU7Mxkh9aYoN2kjVLsrxVtZGqgItWcJwQ6NQnX8li2l7vuhpK7uZ_BnSYwuSB27SGdwUCo'
-            },
-            { 
-                id: 7, 
-                name: 'AWP | Dragon Lore', 
-                category: 'sniper', 
-                rarity: 'Covert', 
-                wear: 'Battle-Scarred', 
-                float: 0.52345678, 
-                pattern: 666, 
-                collection: 'Cobblestone Collection', 
-                releaseDate: '2015-07-01',
-                description: 'Самый известный скин на AWP с драконом.',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FAR17P7NdqgL_9CJnYy0l_znPLTEhGlQ78B_0eqVodij2wGx-0tuNWD3JYeTdAQ8YAvY_Fi2yL_uhpS_vJvNnXBh7nZ34iHdnkSn'
-            },
-            { 
-                id: 8, 
-                name: 'M4A1-S | Hyper Beast', 
-                category: 'rifle', 
-                rarity: 'Covert', 
-                wear: 'Minimal Wear', 
-                float: 0.22345678, 
-                pattern: 432, 
-                collection: 'Chroma 2 Collection', 
-                releaseDate: '2015-04-15',
-                description: 'Яркий скин в стиле граффити.',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09K5nYy0k_jmI7fUqWZU7Mxkh9aY89z02lXsrkFtZm3wI4LFdAI2NFnX8li2l7vuhpK7u5ydzHswuXQn7SGdwUCo'
-            },
+            { id: 11, name: 'AK-47 | Fire Serpent', category: 'rifle', rarity: 'Covert', wear: 'Minimal Wear', float: 0.12345678, pattern: 123, collection: 'Bravo Collection', basePrice: 850, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEojbjW8d7zjQO2_0M4YGGgIdDDdwQ6aVnSrFa2k-7qh5PqvJTMz3kwvSAn7GGdwUCo' },
+            { id: 12, name: 'M4A4 | Howl', category: 'rifle', rarity: 'Contraband', wear: 'Field-Tested', float: 0.32345678, pattern: 888, collection: 'Howl Collection', basePrice: 2100, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09-3nYy0k_jmI7fUqWZU7Mxkh9aYoN2kjVLsrxVtZGqgItWcJwQ6NQnX8li2l7vuhpK7uZ_BnSYwuSB27SGdwUCo' },
+            { id: 13, name: 'AWP | Dragon Lore', category: 'sniper', rarity: 'Covert', wear: 'Battle-Scarred', float: 0.52345678, pattern: 666, collection: 'Cobblestone Collection', basePrice: 2800, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FAR17P7NdqgL_9CJnYy0l_znPLTEhGlQ78B_0eqVodij2wGx-0tuNWD3JYeTdAQ8YAvY_Fi2yL_uhpS_vJvNnXBh7nZ34iHdnkSn' },
+            { id: 14, name: 'M4A1-S | Hyper Beast', category: 'rifle', rarity: 'Covert', wear: 'Minimal Wear', float: 0.22345678, pattern: 432, collection: 'Chroma 2 Collection', basePrice: 150, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09K5nYy0k_jmI7fUqWZU7Mxkh9aY89z02lXsrkFtZm3wI4LFdAI2NFnX8li2l7vuhpK7u5ydzHswuXQn7SGdwUCo' },
+            { id: 15, name: 'AK-47 | The Empress', category: 'rifle', rarity: 'Covert', wear: 'Factory New', float: 0.03456789, pattern: 567, collection: 'Spectrum Collection', basePrice: 320, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhhwszJemkV09-5lpKKqPrxN7LEmyVQ7MEojbjW8d7zjQO2_0M4YGGgIdDDdwQ6aVnSrFa2k-7qh5PqvJTMz3kwvSAn7GGdwUCo' },
+            { id: 16, name: 'AK-47 | Vulcan', category: 'rifle', rarity: 'Covert', wear: 'Field-Tested', float: 0.23456789, pattern: 333, collection: 'Gods and Monsters Collection', basePrice: 450, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEojbjW8d7zjQO2_0M4YGGgIdDDdwQ6aVnSrFa2k-7qh5PqvJTMz3kwvSAn7GGdwUCo' },
+            { id: 17, name: 'M4A1-S | Printstream', category: 'rifle', rarity: 'Covert', wear: 'Factory New', float: 0.01234567, pattern: 777, collection: 'Control Collection', basePrice: 380, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09K5nYy0k_jmI7fUqWZU7Mxkh9aY89z02lXsrkFtZm3wI4LFdAI2NFnX8li2l7vuhpK7u5ydzHswuXQn7SGdwUCo' },
+            { id: 18, name: 'AWP | Gungnir', category: 'sniper', rarity: 'Covert', wear: 'Factory New', float: 0.03456789, pattern: 999, collection: 'Fracture Collection', basePrice: 3200, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FAR17P7NdqgL_9CJnYy0l_znPLTEhGlQ78B_0eqVodij2wGx-0tuNWD3JYeTdAQ8YAvY_Fi2yL_uhpS_vJvNnXBh7nZ34iHdnkSn' },
+            { id: 19, name: 'AWP | Medusa', category: 'sniper', rarity: 'Covert', wear: 'Minimal Wear', float: 0.12345678, pattern: 111, collection: 'Gods and Monsters Collection', basePrice: 2500, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FAR17P7NdqgL_9CJnYy0l_znPLTEhGlQ78B_0eqVodij2wGx-0tuNWD3JYeTdAQ8YAvY_Fi2yL_uhpS_vJvNnXBh7nZ34iHdnkSn' },
+            { id: 20, name: 'AK-47 | Bloodsport', category: 'rifle', rarity: 'Covert', wear: 'Field-Tested', float: 0.22345678, pattern: 222, collection: 'Spectrum 2 Collection', basePrice: 180, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhhwszJemkV09-5lpKKqPrxN7LEmyVQ7MEojbjW8d7zjQO2_0M4YGGgIdDDdwQ6aVnSrFa2k-7qh5PqvJTMz3kwvSAn7GGdwUCo' },
+            { id: 21, name: 'M4A4 | Neo-Noir', category: 'rifle', rarity: 'Covert', wear: 'Minimal Wear', float: 0.15678901, pattern: 555, collection: 'Danger Zone Collection', basePrice: 130, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09K5nYy0k_jmI7fUqWZU7Mxkh9aY89z02lXsrkFtZm3wI4LFdAI2NFnX8li2l7vuhpK7u5ydzHswuXQn7SGdwUCo' },
+            { id: 22, name: 'M4A1-S | Mecha Industries', category: 'rifle', rarity: 'Classified', wear: 'Factory New', float: 0.04567891, pattern: 666, collection: 'Operation Hydra Collection', basePrice: 95, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09K5nYy0k_jmI7fUqWZU7Mxkh9aY89z02lXsrkFtZm3wI4LFdAI2NFnX8li2l7vuhpK7u5ydzHswuXQn7SGdwUCo' },
 
             // ПИСТОЛЕТЫ
-            { 
-                id: 9, 
-                name: 'Desert Eagle | Hand Cannon', 
-                category: 'pistol', 
-                rarity: 'Classified', 
-                wear: 'Field-Tested', 
-                float: 0.22345678, 
-                pattern: 432, 
-                collection: 'The Rising Sun Collection', 
-                releaseDate: '2015-09-01',
-                description: 'Деагл с драконом в азиатском стиле.',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoprLJExDw28y3dixD_9mJm4KMlPbmDLfUhFRd7cA5gv3--Y3njgLt_hE6YjrwcYOVJgE2YlnXqVC9xb_qh5K-6p_Am3sxuyQn5HaI3UE'
-            },
-            { 
-                id: 10, 
-                name: 'USP-S | Kill Confirmed', 
-                category: 'pistol', 
-                rarity: 'Covert', 
-                wear: 'Minimal Wear', 
-                float: 0.18765432, 
-                pattern: 222, 
-                collection: 'Shadow Collection', 
-                releaseDate: '2015-09-01',
-                description: 'USP с рисунком "кровавый след".',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ09-jq5WYh8jkI7fUqWZU7Mxkh9aY89ms2wzh_0JsNmCgI9eWcwY3YwvXqQK2yOy6h5W86p7BznZkvnJ27SGdwUCo'
-            },
+            { id: 23, name: 'Desert Eagle | Hand Cannon', category: 'pistol', rarity: 'Classified', wear: 'Field-Tested', float: 0.22345678, pattern: 432, collection: 'The Rising Sun Collection', basePrice: 90, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoprLJExDw28y3dixD_9mJm4KMlPbmDLfUhFRd7cA5gv3--Y3njgLt_hE6YjrwcYOVJgE2YlnXqVC9xb_qh5K-6p_Am3sxuyQn5HaI3UE' },
+            { id: 24, name: 'USP-S | Kill Confirmed', category: 'pistol', rarity: 'Covert', wear: 'Minimal Wear', float: 0.18765432, pattern: 222, collection: 'Shadow Collection', basePrice: 120, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ09-jq5WYh8jkI7fUqWZU7Mxkh9aY89ms2wzh_0JsNmCgI9eWcwY3YwvXqQK2yOy6h5W86p7BznZkvnJ27SGdwUCo' },
+            { id: 25, name: 'Glock-18 | Water Elemental', category: 'pistol', rarity: 'Classified', wear: 'Factory New', float: 0.04567891, pattern: 111, collection: 'Water Collection', basePrice: 45, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposfpkIgLfwOmbYQJR7dS3moSKm_7zO6_ummpD78A_3r-Y9tisjFHmrkY_Mjv0I9eWcQc9ZF3T8lC2lL29gZC17szOnnRjsyQit2qdwUCo' },
+            { id: 26, name: 'Desert Eagle | Blaze', category: 'pistol', rarity: 'Classified', wear: 'Factory New', float: 0.02345678, pattern: 444, collection: 'Nuke Collection', basePrice: 80, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoprLJExDw28y3dixD_9mJm4KMlPbmDLfUhFRd7cA5gv3--Y3njgLt_hE6YjrwcYOVJgE2YlnXqVC9xb_qh5K-6p_Am3sxuyQn5HaI3UE' },
+            { id: 27, name: 'USP-S | Cortex', category: 'pistol', rarity: 'Classified', wear: 'Factory New', float: 0.01234567, pattern: 888, collection: 'Spectrum Collection', basePrice: 65, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ09-jq5WYh8jkI7fUqWZU7Mxkh9aY89ms2wzh_0JsNmCgI9eWcwY3YwvXqQK2yOy6h5W86p7BznZkvnJ27SGdwUCo' },
+            { id: 28, name: 'P250 | See Ya Later', category: 'pistol', rarity: 'Classified', wear: 'Factory New', float: 0.03456789, pattern: 123, collection: 'Operation Broken Fang Collection', basePrice: 55, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpop7HxfDhzY8-JdQJV_9m7kI-KhfjmMrXUqWZU7Mxkh9bN9J7yjxi-qhVrY2mgItKWJgU8NA7T-ATrx7zuhpK-7ZzBm3Zn7HUq4SGdwUCo' },
+            { id: 29, name: 'Five-SeveN | Angry Mob', category: 'pistol', rarity: 'Classified', wear: 'Factory New', float: 0.04567891, pattern: 234, collection: 'The Spectrum Collection', basePrice: 40, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposLOzLhRlxfbGTj5X09q_goWYkuHxPYbhqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
+            { id: 30, name: 'Tec-9 | Fuel Injector', category: 'pistol', rarity: 'Classified', wear: 'Factory New', float: 0.02345678, pattern: 345, collection: 'Operation Wildfire Collection', basePrice: 35, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoorDcTjpv2MzNgYjJkoKWg5LkhmblNqjZqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
 
             // ПЕРЧАТКИ
-            { 
-                id: 11, 
-                name: 'Sport Gloves | Vice', 
-                category: 'glove', 
-                rarity: 'Extraordinary', 
-                wear: 'Factory New', 
-                float: 0.03456789, 
-                pattern: 777, 
-                collection: 'Sport and Field Collection', 
-                releaseDate: '2019-11-18',
-                description: 'Розовые перчатки в стиле 80-х.',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1vGcJihD09-3nYy0k_jmIa_ummJW4NE_2bqUpY3j2gLt_Uc_Y2n0d4OUcQU4M1qEqgK5l-7sjJfu6cnOz3Vjvz4g5neP3EE'
-            },
-            { 
-                id: 12, 
-                name: 'Driver Gloves | Crimson Web', 
-                category: 'glove', 
-                rarity: 'Extraordinary', 
-                wear: 'Field-Tested', 
-                float: 0.34567890, 
-                pattern: 444, 
-                collection: 'Driver Gloves Collection', 
-                releaseDate: '2017-05-01',
-                description: 'Красные перчатки с паутиной.',
-                image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1OqVJzJV7dOJlY20k_jkI7fUqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo'
-            }
+            { id: 31, name: 'Sport Gloves | Vice', category: 'glove', rarity: 'Extraordinary', wear: 'Factory New', float: 0.03456789, pattern: 777, collection: 'Sport and Field Collection', basePrice: 3200, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1vGcJihD09-3nYy0k_jmIa_ummJW4NE_2bqUpY3j2gLt_Uc_Y2n0d4OUcQU4M1qEqgK5l-7sjJfu6cnOz3Vjvz4g5neP3EE' },
+            { id: 32, name: 'Driver Gloves | Crimson Web', category: 'glove', rarity: 'Extraordinary', wear: 'Field-Tested', float: 0.34567890, pattern: 444, collection: 'Driver Gloves Collection', basePrice: 950, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1OqVJzJV7dOJlY20k_jkI7fUqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
+            { id: 33, name: 'Hand Wraps | Cobalt Skulls', category: 'glove', rarity: 'Extraordinary', wear: 'Minimal Wear', float: 0.12345678, pattern: 666, collection: 'Hand Wraps Collection', basePrice: 650, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1OfGczhC09-3nYy0k_jmI7fUqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
+            { id: 34, name: 'Specialist Gloves | Emerald Web', category: 'glove', rarity: 'Extraordinary', wear: 'Factory New', float: 0.02345678, pattern: 888, collection: 'Specialist Gloves Collection', basePrice: 2800, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1vGcJihD09-3nYy0k_jmI7fUqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
+            { id: 35, name: 'Moto Gloves | Smoke Out', category: 'glove', rarity: 'Extraordinary', wear: 'Field-Tested', float: 0.23456789, pattern: 123, collection: 'The Prisma Collection', basePrice: 450, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1vGcJihD09-3nYy0k_jmI7fUqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
+            { id: 36, name: 'Bloodhound Gloves | Bronzed', category: 'glove', rarity: 'Extraordinary', wear: 'Minimal Wear', float: 0.15678901, pattern: 234, collection: 'Operation Hydra Collection', basePrice: 380, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1vGcJihD09-3nYy0k_jmI7fUqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
+            { id: 37, name: 'Hydra Gloves | Case Hardened', category: 'glove', rarity: 'Extraordinary', wear: 'Field-Tested', float: 0.34567890, pattern: 345, collection: 'Operation Hydra Collection', basePrice: 1200, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1vGcJihD09-3nYy0k_jmI7fUqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
+            { id: 38, name: 'Sport Gloves | Omega', category: 'glove', rarity: 'Extraordinary', wear: 'Factory New', float: 0.04567891, pattern: 456, collection: 'Sport and Field Collection', basePrice: 1800, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1vGcJihD09-3nYy0k_jmIa_ummJW4NE_2bqUpY3j2gLt_Uc_Y2n0d4OUcQU4M1qEqgK5l-7sjJfu6cnOz3Vjvz4g5neP3EE' },
+            { id: 39, name: 'Driver Gloves | King Snake', category: 'glove', rarity: 'Extraordinary', wear: 'Minimal Wear', float: 0.12345678, pattern: 567, collection: 'Driver Gloves Collection', basePrice: 1100, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1OqVJzJV7dOJlY20k_jkI7fUqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
+            { id: 40, name: 'Hand Wraps | Leather', category: 'glove', rarity: 'Extraordinary', wear: 'Field-Tested', float: 0.23456789, pattern: 678, collection: 'Hand Wraps Collection', basePrice: 280, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbFLeTJf1OfGczhC09-3nYy0k_jmI7fUqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
+
+            // ПП
+            { id: 41, name: 'P90 | Death by Kitty', category: 'smg', rarity: 'Classified', wear: 'Minimal Wear', float: 0.25678901, pattern: 777, collection: 'Cat Collection', basePrice: 280, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpopuP1FAR17OORIQJF_tC3kI-Kg_7zO6_ummpD78A_3rqUoN2j2gHk_xE-Z2rxd46UcAE5Z1zW81C7lL_th5G-6Zufm3JlvCQit2qdwUCo' },
+            { id: 42, name: 'MP9 | Wild Lily', category: 'smg', rarity: 'Restricted', wear: 'Factory New', float: 0.03456789, pattern: 555, collection: 'Dreams & Nightmares', basePrice: 45, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou6r8FAZt7OfAczVL-NOzq4mNlvPnI7fUqWZU7Mxkh9bN8JmhjVHlqkI6Zz2gJdKdJg42YFrY-1Ttl73sg8e-u57AzHBg7nF37SGdwUCo' },
+            { id: 43, name: 'MAC-10 | Whitefish', category: 'smg', rarity: 'Industrial', wear: 'Factory New', float: 0.02345678, pattern: 333, collection: 'Fish Collection', basePrice: 15, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou7umeldf0Ob3fDxBvYyJhI-Kg_jmI7fUqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
+            { id: 44, name: 'MP7 | Bloodsport', category: 'smg', rarity: 'Classified', wear: 'Factory New', float: 0.04567891, pattern: 111, collection: 'Spectrum 2 Collection', basePrice: 65, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou6r8FAZt7OfAczVL-NOzq4mNlvPnI7fUqWZU7Mxkh9bN8JmhjVHlqkI6Zz2gJdKdJg42YFrY-1Ttl73sg8e-u57AzHBg7nF37SGdwUCo' },
+            { id: 45, name: 'PP-Bizon | Judgement of Anubis', category: 'smg', rarity: 'Classified', wear: 'Factory New', float: 0.05678901, pattern: 222, collection: 'Operation Hydra Collection', basePrice: 40, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou7umeldf0Ob3fDxBvYyJhI-Kg_jmI7fUqWZU7Mxkh9bN8YmnjAyw-0VrZTqmI4WUcQQ9YVnQ-Vi2l7vuhpK7u8jBmnViuCQq7SGdwUCo' },
+
+            // ТЯЖЕЛОЕ
+            { id: 46, name: 'Negev | Lionfish', category: 'heavy', rarity: 'Industrial', wear: 'Factory New', float: 0.07894561, pattern: 888, collection: 'Lion Collection', basePrice: 12, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpouLWzKjhz0szYJTwV09uknYaOm_7zO6_ummpD78A_2LGWrI_xjFXjr0ttN2ymJNCRdgY7NF3X_AO2kO_phZe9uJvJn3Fh6yYit2qdwUCo' },
+            { id: 47, name: 'MAG-7 | Foresight', category: 'heavy', rarity: 'Restricted', wear: 'Factory New', float: 0.01234567, pattern: 777, collection: 'Future Collection', basePrice: 28, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou7uifDhjxszFcDoV09eklY2On_bmI7fUqWZU7Mxkh9bN9p2njFHkqUVtYzunJIDDdwM8NQ3Z-VK3yLvsh5G-75ybm3FiuHIl7SGdwUCo' },
+            { id: 48, name: 'XM1014 | Wings', category: 'heavy', rarity: 'Mil-Spec', wear: 'Factory New', float: 0.03456789, pattern: 444, collection: 'Wing Collection', basePrice: 18, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgporrf0e1Y07PDdTiVPvYznwL-AhvLLP7LWnn9u5MRjjeyR9N2njRrj80U_YWmhLNCVJwQ8YlDWq1Xrw-fqhsS5uZnOz3RhuHMk5SXMlAohxg' },
+            { id: 49, name: 'Nova | Hyper Beast', category: 'heavy', rarity: 'Classified', wear: 'Factory New', float: 0.02345678, pattern: 555, collection: 'Chroma 2 Collection', basePrice: 35, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpouLWzKjhz0szYJTwV09uknYaOm_7zO6_ummpD78A_2LGWrI_xjFXjr0ttN2ymJNCRdgY7NF3X_AO2kO_phZe9uJvJn3Fh6yYit2qdwUCo' },
+            { id: 50, name: 'M249 | Spectre', category: 'heavy', rarity: 'Mil-Spec', wear: 'Factory New', float: 0.04567891, pattern: 666, collection: 'Spectrum Collection', basePrice: 15, image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpouLWzKjhz0szYJTwV09uknYaOm_7zO6_ummpD78A_2LGWrI_xjFXjr0ttN2ymJNCRdgY7NF3X_AO2kO_phZe9uJvJn3Fh6yYit2qdwUCo' }
         ];
 
-        // ==================== ПЕРЕМЕННЫЕ ====================
-        let users = JSON.parse(localStorage.getItem('cs2_market_users')) || {};
-        let chatMessages = JSON.parse(localStorage.getItem('cs2_market_chat')) || [];
+        // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+        let users = JSON.parse(localStorage.getItem('cs2_ultimate_users')) || {};
+        let chatMessages = JSON.parse(localStorage.getItem('cs2_ultimate_chat')) || [];
+        let marketPrices = JSON.parse(localStorage.getItem('cs2_ultimate_prices')) || {};
+        let freeCaseTimer = JSON.parse(localStorage.getItem('cs2_free_case_timer')) || { lastOpen: 0 };
         let currentUser = localStorage.getItem('currentUser');
         let currentPage = 1;
         let itemsPerPage = 12;
-        let currentCategory = 'all';
-        let filteredSkins = [...CS2_SKINS_DB];
-        let USD_TO_RUB = 98.5;
+        let filteredSkins = [];
+        let currentTab = 'cases';
 
-        // ==================== КУРС ВАЛЮТ ====================
-        async function updateExchangeRate() {
-            try {
-                let response = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
-                let data = await response.json();
-                USD_TO_RUB = data.Valute.USD.Value;
-                document.getElementById('update-time').innerHTML = `💰 $1 = ${USD_TO_RUB.toFixed(2)} ₽`;
-            } catch (e) {
-                document.getElementById('update-time').innerHTML = `💰 $1 = ${USD_TO_RUB.toFixed(2)} ₽`;
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        function init() {
+            if (Object.keys(marketPrices).length === 0) {
+                CS2_SKINS_DB.forEach(skin => {
+                    marketPrices[skin.id] = skin.basePrice;
+                });
+            }
+            saveMarketPrices();
+            updateFreeCaseTimer();
+        }
+
+        function saveMarketPrices() {
+            localStorage.setItem('cs2_ultimate_prices', JSON.stringify(marketPrices));
+        }
+
+        function updateMarketPrices() {
+            CS2_SKINS_DB.forEach(skin => {
+                let currentPrice = marketPrices[skin.id] || skin.basePrice;
+                let change = (Math.random() * 0.1) - 0.05;
+                let newPrice = currentPrice * (1 + change);
+                
+                let minPrice = skin.basePrice * 0.3;
+                let maxPrice = skin.basePrice * 3;
+                
+                if (newPrice < minPrice) newPrice = minPrice;
+                if (newPrice > maxPrice) newPrice = maxPrice;
+                
+                marketPrices[skin.id] = Math.round(newPrice * 100) / 100;
+            });
+            
+            saveMarketPrices();
+            document.getElementById('marketUpdate').innerHTML = `Рынок обновлен ${new Date().toLocaleTimeString()}`;
+            
+            if (currentTab === 'market') {
+                applyMarketFilters();
             }
         }
 
-        // ==================== РЕАЛЬНЫЕ ЦЕНЫ ====================
-        function generateRealPrices() {
-            CS2_SKINS_DB.forEach(skin => {
-                let basePrice;
-                switch(skin.category) {
-                    case 'knife': basePrice = 800 + Math.random() * 2000; break;
-                    case 'sniper': basePrice = 300 + Math.random() * 1500; break;
-                    case 'rifle': basePrice = 150 + Math.random() * 1000; break;
-                    case 'pistol': basePrice = 50 + Math.random() * 400; break;
-                    case 'glove': basePrice = 500 + Math.random() * 2000; break;
-                    default: basePrice = 100 + Math.random() * 300;
-                }
-                
-                switch(skin.rarity) {
-                    case 'Covert': basePrice *= 2.5; break;
-                    case 'Classified': basePrice *= 1.5; break;
-                    case 'Restricted': basePrice *= 1.2; break;
-                    case 'Contraband': basePrice *= 8; break;
-                    case 'Extraordinary': basePrice *= 3.5; break;
-                }
-                
-                switch(skin.wear) {
-                    case 'Factory New': basePrice *= 2.0; break;
-                    case 'Minimal Wear': basePrice *= 1.4; break;
-                    case 'Field-Tested': basePrice *= 1.0; break;
-                }
-                
-                skin.usdPrice = Math.round(basePrice * 100) / 100;
-                skin.priceRUB = Math.round(skin.usdPrice * USD_TO_RUB * 100) / 100;
-                skin.lastUpdate = new Date().toLocaleTimeString();
-            });
+        function updateFreeCaseTimer() {
+            let now = Date.now();
+            let lastOpen = freeCaseTimer.lastOpen || 0;
+            let timeLeft = 300000 - (now - lastOpen); // 5 минут = 300000 мс
             
-            showNotification('✅ Цены обновлены');
-            applyFilters();
+            let btn = document.getElementById('freeCaseBtn');
+            let timer = document.getElementById('freeCaseTimer');
+            
+            if (timeLeft <= 0) {
+                btn.disabled = false;
+                timer.innerHTML = '✅ Доступно сейчас!';
+            } else {
+                btn.disabled = true;
+                let minutes = Math.floor(timeLeft / 60000);
+                let seconds = Math.floor((timeLeft % 60000) / 1000);
+                timer.innerHTML = `⏳ Доступно через: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
         }
 
         // ==================== АВТОРИЗАЦИЯ ====================
@@ -1071,11 +1420,17 @@
                 return;
             }
 
-            users[username] = { password: password, joined: new Date().toLocaleString() };
-            localStorage.setItem('cs2_market_users', JSON.stringify(users));
+            users[username] = {
+                password: password,
+                joined: new Date().toLocaleString(),
+                balance: 5000,
+                inventory: []
+            };
+            
+            localStorage.setItem('cs2_ultimate_users', JSON.stringify(users));
             localStorage.setItem('currentUser', username);
             showMainSite();
-            showNotification('✅ Аккаунт создан!');
+            showNotification('✅ Аккаунт создан! Баланс: 5000 ₽');
         }
 
         function login() {
@@ -1141,40 +1496,240 @@
             document.getElementById('register-page').style.display = 'none';
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('main-site').style.display = 'block';
-            document.getElementById('current-user').textContent = currentUser;
+            document.getElementById('currentUser').textContent = currentUser;
+            
+            updateUserBalance();
+            init();
+            displayInventory();
+            displayChatMessages();
+            switchTab('cases', document.querySelector('.nav-btn'));
+            
+            setInterval(updateMarketPrices, 60000);
+            setInterval(updateFreeCaseTimer, 1000);
+            setInterval(updateOnlineCount, 30000);
         }
 
-        // ==================== ФИЛЬТРАЦИЯ ====================
-        function filterCategory(category, element) {
-            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+        function updateUserBalance() {
+            if (currentUser && users[currentUser]) {
+                document.getElementById('userBalance').innerHTML = users[currentUser].balance.toLocaleString() + ' ₽';
+            }
+        }
+
+        // ==================== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ====================
+        function switchTab(tab, element) {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
             element.classList.add('active');
-            currentCategory = category;
-            currentPage = 1;
-            applyFilters();
+            
+            currentTab = tab;
+            
+            document.getElementById('casesTab').style.display = tab === 'cases' ? 'block' : 'none';
+            document.getElementById('marketTab').style.display = tab === 'market' ? 'block' : 'none';
+            document.getElementById('inventoryTab').style.display = tab === 'inventory' ? 'block' : 'none';
+            
+            if (tab === 'market') {
+                applyMarketFilters();
+            } else if (tab === 'inventory') {
+                displayInventory();
+            }
         }
 
-        function searchSkins() {
-            currentPage = 1;
-            applyFilters();
+        // ==================== ОТКРЫТИЕ КЕЙСОВ ====================
+        function openCase(caseType) {
+            if (!currentUser) return;
+            
+            let prices = {
+                'free': 0,
+                'dreams': 250,
+                'cs20': 200,
+                'prisma': 300,
+                'fracture': 280,
+                'chroma': 220
+            };
+            
+            let price = prices[caseType] || 0;
+            
+            if (caseType === 'free') {
+                let now = Date.now();
+                let lastOpen = freeCaseTimer.lastOpen || 0;
+                if (now - lastOpen < 300000) {
+                    showNotification('⏳ Бесплатный кейс еще не доступен!');
+                    return;
+                }
+            }
+            
+            if (users[currentUser].balance < price) {
+                showNotification('❌ Недостаточно средств!');
+                return;
+            }
+            
+            // Списываем деньги
+            if (price > 0) {
+                users[currentUser].balance -= price;
+                localStorage.setItem('cs2_ultimate_users', JSON.stringify(users));
+                updateUserBalance();
+            }
+            
+            // Получаем случайный скин
+            let wonSkin = getRandomSkinByCase(caseType);
+            
+            // Показываем анимацию
+            showOpeningAnimation(wonSkin);
         }
 
-        function applyFilters() {
+        function getRandomSkinByCase(caseType) {
+            let rand = Math.random() * 100;
+            
+            // Шансы как в реальном CS2
+            if (rand < 0.5) { // 0.5% - ножи/перчатки
+                if (caseType === 'prisma') {
+                    let knives = CS2_SKINS_DB.filter(s => s.category === 'knife');
+                    return knives[Math.floor(Math.random() * knives.length)];
+                } else if (caseType === 'fracture') {
+                    let gloves = CS2_SKINS_DB.filter(s => s.category === 'glove');
+                    return gloves[Math.floor(Math.random() * gloves.length)];
+                } else {
+                    let rare = CS2_SKINS_DB.filter(s => s.rarity === 'Covert' || s.rarity === 'Extraordinary');
+                    return rare[Math.floor(Math.random() * rare.length)];
+                }
+            } else if (rand < 3) { // 2.5% - Covert
+                let covert = CS2_SKINS_DB.filter(s => s.rarity === 'Covert');
+                return covert[Math.floor(Math.random() * covert.length)];
+            } else if (rand < 10) { // 7% - Classified
+                let classified = CS2_SKINS_DB.filter(s => s.rarity === 'Classified');
+                return classified[Math.floor(Math.random() * classified.length)];
+            } else if (rand < 25) { // 15% - Restricted
+                let restricted = CS2_SKINS_DB.filter(s => s.rarity === 'Restricted');
+                return restricted[Math.floor(Math.random() * restricted.length)];
+            } else { // 75% - остальное
+                let milspec = CS2_SKINS_DB.filter(s => s.rarity === 'Mil-Spec' || s.rarity === 'Industrial' || s.rarity === 'Consumer');
+                return milspec[Math.floor(Math.random() * milspec.length)];
+            }
+        }
+
+        function showOpeningAnimation(wonSkin) {
+            let modal = document.getElementById('openingModal');
+            let content = document.getElementById('openingContent');
+            
+            // Создаем массив для анимации
+            let animationSkins = [];
+            for (let i = 0; i < 20; i++) {
+                let randomSkin = CS2_SKINS_DB[Math.floor(Math.random() * CS2_SKINS_DB.length)];
+                animationSkins.push(randomSkin);
+            }
+            animationSkins.push(wonSkin);
+            
+            let currentIndex = 0;
+            
+            content.innerHTML = `
+                <div class="spinner-container">
+                    <div class="spinner-track" id="spinnerTrack"></div>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+            
+            let interval = setInterval(() => {
+                if (currentIndex < animationSkins.length) {
+                    let track = document.getElementById('spinnerTrack');
+                    if (track) {
+                        let skin = animationSkins[currentIndex];
+                        track.innerHTML = `
+                            <div class="spinner-item">
+                                <img src="${skin.image}" alt="">
+                                <div>${skin.name}</div>
+                            </div>
+                        `;
+                    }
+                    currentIndex++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        showResult(wonSkin);
+                    }, 500);
+                }
+            }, 100);
+        }
+
+        function showResult(skin) {
+            let price = marketPrices[skin.id] || skin.basePrice;
+            let rarityColor = '#b0c3d9';
+            
+            switch(skin.rarity) {
+                case 'Covert': rarityColor = '#eb4b4b'; break;
+                case 'Classified': rarityColor = '#d32ce6'; break;
+                case 'Restricted': rarityColor = '#8847ff'; break;
+                case 'Contraband': rarityColor = '#ffd700'; break;
+                case 'Extraordinary': rarityColor = '#ff7f50'; break;
+            }
+            
+            let content = document.getElementById('openingContent');
+            content.innerHTML = `
+                <div class="result-content">
+                    <img src="${skin.image}" alt="">
+                    <div class="result-name">${skin.name}</div>
+                    <div class="result-rarity" style="background: ${rarityColor}; color: black;">${skin.rarity}</div>
+                    <div class="result-price">💰 ${price.toFixed(2)} ₽</div>
+                    <button class="take-btn" onclick="takeSkin(${skin.id})">ЗАБРАТЬ В ИНВЕНТАРЬ</button>
+                </div>
+            `;
+        }
+
+        function takeSkin(skinId) {
+            if (!currentUser) return;
+            
+            let skin = CS2_SKINS_DB.find(s => s.id === skinId);
+            if (!skin) return;
+            
+            let price = marketPrices[skin.id] || skin.basePrice;
+            
+            if (!users[currentUser].inventory) {
+                users[currentUser].inventory = [];
+            }
+            
+            users[currentUser].inventory.push({
+                id: skin.id,
+                name: skin.name,
+                image: skin.image,
+                price: price,
+                acquired: new Date().toLocaleString()
+            });
+            
+            // Обновляем таймер бесплатного кейса
+            if (price === 0) {
+                freeCaseTimer.lastOpen = Date.now();
+                localStorage.setItem('cs2_free_case_timer', JSON.stringify(freeCaseTimer));
+            }
+            
+            localStorage.setItem('cs2_ultimate_users', JSON.stringify(users));
+            
+            document.getElementById('openingModal').style.display = 'none';
+            showNotification(`✅ ${skin.name} добавлен в инвентарь!`);
+            
+            if (currentTab === 'inventory') {
+                displayInventory();
+            }
+        }
+
+        // ==================== РЫНОК ====================
+        function applyMarketFilters() {
             let searchTerm = document.getElementById('searchInput').value.toLowerCase();
             let rarity = document.getElementById('rarityFilter').value;
-            let wear = document.getElementById('wearFilter').value;
+            let category = document.getElementById('categoryFilter').value;
             let sort = document.getElementById('sortFilter').value;
 
             filteredSkins = CS2_SKINS_DB.filter(skin => {
-                if (currentCategory !== 'all' && skin.category !== currentCategory) return false;
+                if (category !== 'all' && skin.category !== category) return false;
                 if (rarity !== 'all' && skin.rarity !== rarity) return false;
-                if (wear !== 'all' && skin.wear !== wear) return false;
                 if (searchTerm && !skin.name.toLowerCase().includes(searchTerm)) return false;
                 return true;
             });
 
             filteredSkins.sort((a, b) => {
-                let priceA = a.usdPrice || 0;
-                let priceB = b.usdPrice || 0;
+                let priceA = marketPrices[a.id] || a.basePrice;
+                let priceB = marketPrices[b.id] || b.basePrice;
+                
                 switch(sort) {
                     case 'price-desc': return priceB - priceA;
                     case 'price-asc': return priceA - priceB;
@@ -1184,23 +1739,22 @@
                 }
             });
 
-            displaySkins();
+            displayMarket();
         }
 
-        function displaySkins() {
+        function displayMarket() {
             let start = (currentPage - 1) * itemsPerPage;
             let end = start + itemsPerPage;
             let pageSkins = filteredSkins.slice(start, end);
             
             if (pageSkins.length === 0) {
-                document.getElementById('skins-grid').innerHTML = '<div style="text-align:center; padding:50px; color:#888;">😢 Ничего не найдено</div>';
+                document.getElementById('marketGrid').innerHTML = '<div style="text-align:center; padding:50px; color:#888;">😢 Ничего не найдено</div>';
                 return;
             }
             
             let html = '';
             pageSkins.forEach(skin => {
-                let priceUSD = skin.usdPrice || 100;
-                let priceRUB = skin.priceRUB || (priceUSD * USD_TO_RUB);
+                let price = marketPrices[skin.id] || skin.basePrice;
                 let change = ((Math.random() * 6) - 3).toFixed(1);
                 
                 let rarityColor = '#b0c3d9';
@@ -1213,7 +1767,7 @@
                 }
 
                 html += `
-                    <div class="skin-card" onclick="openSkinModal(${skin.id})">
+                    <div class="skin-card">
                         <div class="skin-image">
                             <img src="${skin.image}" alt="${skin.name}" loading="lazy">
                             <div class="skin-rarity" style="border-color: ${rarityColor}; color: ${rarityColor}">${skin.rarity}</div>
@@ -1221,95 +1775,140 @@
                         <div class="skin-info">
                             <div class="skin-name">${skin.name}</div>
                             <div class="skin-price">
-                                $${priceUSD.toFixed(2)}
-                                <span class="skin-price-rub">≈ ${priceRUB.toLocaleString('ru-RU', {maximumFractionDigits: 0})} ₽</span>
-                                <span class="skin-change ${parseFloat(change) >= 0 ? 'positive' : 'negative'}">
+                                ${price.toFixed(2)} ₽
+                                <span class="skin-price-change ${parseFloat(change) >= 0 ? 'up' : 'down'}">
                                     ${change}%
                                 </span>
                             </div>
                             <div class="skin-float">
-                                <span>Float: ${skin.float.toFixed(8)}</span>
-                                <span>#${skin.pattern}</span>
-                                <span>${skin.wear}</span>
+                                <span>${skin.collection}</span>
                             </div>
-                            <div class="steam-link">
-                                <span class="steam-btn">📦 ${skin.collection}</span>
-                                <span class="steam-btn">🔄 ${skin.lastUpdate || ''}</span>
-                            </div>
+                            <button class="buy-btn" onclick="buySkin(${skin.id})" ${users[currentUser]?.balance < price ? 'disabled' : ''}>
+                                КУПИТЬ ЗА ${price.toFixed(2)} ₽
+                            </button>
                         </div>
                     </div>
                 `;
             });
 
-            document.getElementById('skins-grid').innerHTML = html;
-            updatePagination();
+            document.getElementById('marketGrid').innerHTML = html;
+            updateMarketPagination();
         }
 
-        // ==================== МОДАЛЬНОЕ ОКНО ====================
-        function openSkinModal(skinId) {
+        function buySkin(skinId) {
+            if (!currentUser) return;
+            
             let skin = CS2_SKINS_DB.find(s => s.id === skinId);
             if (!skin) return;
             
-            document.getElementById('modalImage').src = skin.image;
-            document.getElementById('modalTitle').textContent = skin.name;
-            document.getElementById('modalCollection').textContent = skin.collection || '—';
-            document.getElementById('modalDate').textContent = skin.releaseDate ? new Date(skin.releaseDate).toLocaleDateString('ru-RU') : '—';
-            document.getElementById('modalRarity').textContent = skin.rarity || '—';
-            document.getElementById('modalFloat').textContent = skin.float ? skin.float.toFixed(8) : '—';
-            document.getElementById('modalPattern').textContent = skin.pattern || '—';
-            document.getElementById('modalWear').textContent = skin.wear || '—';
-            document.getElementById('modalDescription').textContent = skin.description || 'Нет описания';
+            let price = marketPrices[skinId] || skin.basePrice;
             
-            document.getElementById('skinModal').style.display = 'flex';
+            if (users[currentUser].balance < price) {
+                showNotification('❌ Недостаточно средств!');
+                return;
+            }
+            
+            users[currentUser].balance -= price;
+            
+            if (!users[currentUser].inventory) {
+                users[currentUser].inventory = [];
+            }
+            
+            users[currentUser].inventory.push({
+                id: skin.id,
+                name: skin.name,
+                image: skin.image,
+                price: price,
+                acquired: new Date().toLocaleString()
+            });
+            
+            localStorage.setItem('cs2_ultimate_users', JSON.stringify(users));
+            updateUserBalance();
+            showNotification(`✅ ${skin.name} куплен за ${price.toFixed(2)} ₽`);
+            
+            if (currentTab === 'inventory') {
+                displayInventory();
+            }
         }
 
-        function closeModal() {
-            document.getElementById('skinModal').style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            let modal = document.getElementById('skinModal');
-            if (event.target === modal) modal.style.display = 'none';
-        }
-
-        function updatePagination() {
+        function updateMarketPagination() {
             let totalPages = Math.ceil(filteredSkins.length / itemsPerPage);
             if (totalPages <= 1) {
-                document.getElementById('pagination').innerHTML = '';
+                document.getElementById('marketPagination').innerHTML = '';
                 return;
             }
             
             let html = '';
             for (let i = 1; i <= totalPages; i++) {
                 if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
-                    html += `<div class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</div>`;
+                    html += `<div class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToMarketPage(${i})">${i}</div>`;
                 } else if (i === currentPage - 3 || i === currentPage + 3) {
                     html += `<div class="page-btn">...</div>`;
                 }
             }
-            document.getElementById('pagination').innerHTML = html;
+            document.getElementById('marketPagination').innerHTML = html;
         }
 
-        function goToPage(page) {
+        function goToMarketPage(page) {
             currentPage = page;
-            displaySkins();
+            displayMarket();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ==================== ЧАТ ====================
-        function fillSkinSelect() {
-            let select = document.getElementById('chat-skin-select');
-            CS2_SKINS_DB.forEach(skin => {
-                let option = document.createElement('option');
-                option.value = skin.name;
-                option.textContent = skin.name.substring(0, 40);
-                select.appendChild(option);
+        // ==================== ИНВЕНТАРЬ ====================
+        function displayInventory() {
+            if (!currentUser) return;
+            
+            let inventory = users[currentUser].inventory || [];
+            document.getElementById('inventoryCount').innerHTML = inventory.length;
+            
+            let totalValue = inventory.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('inventoryTotal').innerHTML = totalValue.toFixed(2) + ' ₽';
+            
+            if (inventory.length === 0) {
+                document.getElementById('inventoryGrid').innerHTML = '<div style="text-align:center; padding:40px; color:#888;">🎒 Инвентарь пуст. Открой кейс или купи скин на рынке!</div>';
+                return;
+            }
+            
+            let html = '';
+            inventory.forEach((item, index) => {
+                let sellPrice = Math.round(item.price * 0.7);
+                
+                html += `
+                    <div class="inventory-item" onclick="sellSkin(${index})">
+                        <img src="${item.image}" alt="">
+                        <div class="inventory-item-name">${item.name}</div>
+                        <div class="inventory-item-price">💰 ${sellPrice} ₽</div>
+                        <button class="sell-btn" onclick="event.stopPropagation(); sellSkin(${index})">ПРОДАТЬ ЗА ${sellPrice} ₽</button>
+                        <div class="item-date">🕒 ${item.acquired}</div>
+                    </div>
+                `;
             });
+            
+            document.getElementById('inventoryGrid').innerHTML = html;
         }
 
+        function sellSkin(index) {
+            if (!currentUser) return;
+            
+            let inventory = users[currentUser].inventory;
+            if (!inventory || index >= inventory.length) return;
+            
+            let item = inventory[index];
+            let sellPrice = Math.round(item.price * 0.7);
+            
+            users[currentUser].balance += sellPrice;
+            users[currentUser].inventory.splice(index, 1);
+            
+            localStorage.setItem('cs2_ultimate_users', JSON.stringify(users));
+            updateUserBalance();
+            displayInventory();
+            showNotification(`💰 ${item.name} продан за ${sellPrice} ₽`);
+        }
+
+        // ==================== ЧАТ ====================
         function sendChatMessage() {
-            let text = document.getElementById('chat-input').value.trim();
-            let selectedSkin = document.getElementById('chat-skin-select').value;
+            let text = document.getElementById('chatInput').value.trim();
             
             if (!text || !currentUser) return;
 
@@ -1317,15 +1916,14 @@
                 id: Date.now(),
                 username: currentUser,
                 text: text,
-                skin: selectedSkin,
                 time: new Date().toLocaleTimeString(),
                 date: new Date().toLocaleDateString()
             });
 
             if (chatMessages.length > 200) chatMessages = chatMessages.slice(0, 200);
             
-            localStorage.setItem('cs2_market_chat', JSON.stringify(chatMessages));
-            document.getElementById('chat-input').value = '';
+            localStorage.setItem('cs2_ultimate_chat', JSON.stringify(chatMessages));
+            document.getElementById('chatInput').value = '';
             displayChatMessages();
             showNotification('💬 Сообщение отправлено');
         }
@@ -1340,16 +1938,13 @@
                         <div class="chat-message">
                             <div class="chat-message-author">👤 ${escapeHtml(msg.username)}</div>
                             <div class="chat-message-text">${escapeHtml(msg.text)}</div>
-                            <div class="chat-message-time">
-                                <span>🕒 ${msg.time} ${msg.date}</span>
-                                ${msg.skin ? `<span style="color:var(--orange)">🔫 ${escapeHtml(msg.skin)}</span>` : ''}
-                            </div>
+                            <div class="chat-message-time">🕒 ${msg.time} ${msg.date}</div>
                         </div>
                     `;
                 });
             }
-            document.getElementById('chat-messages').innerHTML = html;
-            document.getElementById('chat-messages').scrollTop = 0;
+            document.getElementById('chatMessages').innerHTML = html;
+            document.getElementById('chatMessages').scrollTop = 0;
         }
 
         function escapeHtml(text) {
@@ -1360,25 +1955,24 @@
 
         function updateOnlineCount() {
             let online = Math.floor(Math.random() * 500) + 800;
-            document.getElementById('online-count').innerHTML = `${online.toLocaleString()} онлайн`;
+            document.getElementById('onlineCount').innerHTML = `${online.toLocaleString()} онлайн`;
         }
 
-        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-        window.onload = async function() {
-            await updateExchangeRate();
-            
+        // Закрытие модалки по клику вне
+        window.onclick = function(event) {
+            let modal = document.getElementById('openingModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Инициализация при загрузке
+        window.onload = function() {
             if (currentUser) {
                 showMainSite();
             } else {
                 showRegister();
             }
-            
-            generateRealPrices();
-            fillSkinSelect();
-            displayChatMessages();
-            
-            setInterval(generateRealPrices, 60000);
-            setInterval(updateOnlineCount, 30000);
         };
     </script>
 </body>
