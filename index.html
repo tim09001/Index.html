@@ -4,9 +4,10 @@ import os
 import hashlib
 from functools import wraps
 import socket
+from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'cs2-super-secret-key-123'  # Для сессий
+app.secret_key = 'cs2-super-secret-key-123456789'
 
 # ========== ФАЙЛЫ ДЛЯ ХРАНЕНИЯ ДАННЫХ ==========
 USERS_FILE = 'cs2_users.json'
@@ -57,7 +58,6 @@ REGISTER_PAGE = """
             overflow: hidden;
         }
         
-        /* Анимированный фон CS2 */
         body::before {
             content: '';
             position: absolute;
@@ -76,12 +76,11 @@ REGISTER_PAGE = """
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('https://media.discordapp.net/attachments/123/123/cs2-bg.gif') center/cover;
-            opacity: 0.1;
+            background: radial-gradient(circle at 50% 50%, #ff7f50 0%, transparent 70%);
+            opacity: 0.05;
             z-index: 1;
         }
         
-        /* CS2 Логотип анимированный */
         .cs2-logo {
             position: absolute;
             top: 30px;
@@ -103,7 +102,6 @@ REGISTER_PAGE = """
             50% { transform: scale(1.05); opacity: 0.9; }
         }
         
-        /* Главный контейнер */
         .register-container {
             position: relative;
             z-index: 100;
@@ -111,12 +109,11 @@ REGISTER_PAGE = """
             max-width: 500px;
             background: rgba(20, 20, 30, 0.95);
             backdrop-filter: blur(15px);
-            border: 2px solid rgba(255, 140, 0, 0.5);
+            border: 2px solid #ff7f50;
             border-radius: 30px;
             padding: 50px 40px;
-            box-shadow: 0 0 50px rgba(255, 140, 0, 0.3),
-                        0 0 100px rgba(0, 0, 0, 0.5);
-            animation: containerAppear 1s ease;
+            box-shadow: 0 0 50px rgba(255, 140, 0, 0.5);
+            animation: containerAppear 0.5s ease;
         }
         
         @keyframes containerAppear {
@@ -141,11 +138,21 @@ REGISTER_PAGE = """
             text-align: center;
             margin-bottom: 40px;
             font-size: 1.1rem;
-            border-bottom: 2px solid rgba(255, 140, 0, 0.3);
+            border-bottom: 2px solid #ff7f50;
             padding-bottom: 20px;
         }
         
-        /* Поля ввода CS2 стиль */
+        .error-message {
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+            text-align: center;
+            font-weight: bold;
+        }
+        
         .cs2-input {
             margin-bottom: 25px;
         }
@@ -163,7 +170,7 @@ REGISTER_PAGE = """
         .cs2-input input {
             width: 100%;
             background: rgba(0, 0, 0, 0.7);
-            border: 2px solid rgba(255, 140, 0, 0.3);
+            border: 2px solid #333;
             border-radius: 15px;
             padding: 18px 20px;
             font-size: 1.1rem;
@@ -184,7 +191,6 @@ REGISTER_PAGE = """
             font-style: italic;
         }
         
-        /* CS2 Кнопка */
         .cs2-button {
             width: 100%;
             background: linear-gradient(45deg, #ff7f50, #ff6347);
@@ -227,7 +233,6 @@ REGISTER_PAGE = """
             transform: translateY(0);
         }
         
-        /* Ссылка на вход */
         .login-link {
             text-align: center;
             margin-top: 20px;
@@ -247,7 +252,6 @@ REGISTER_PAGE = """
             border-bottom-color: #ff7f50;
         }
         
-        /* CS2 Счетчик онлайн */
         .online-counter {
             position: absolute;
             top: 30px;
@@ -267,12 +271,6 @@ REGISTER_PAGE = """
             50% { box-shadow: 0 0 40px #ff4500; }
         }
         
-        .online-counter span {
-            color: #ffb347;
-            margin-left: 5px;
-        }
-        
-        /* Оружие летающее */
         .weapon {
             position: absolute;
             font-size: 3rem;
@@ -300,7 +298,6 @@ REGISTER_PAGE = """
         🔥 ONLINE: <span>24,876</span>
     </div>
     
-    <!-- Летающее оружие -->
     <div class="weapon weapon1">🔫</div>
     <div class="weapon weapon2">🔪</div>
     <div class="weapon weapon3">💣</div>
@@ -312,7 +309,7 @@ REGISTER_PAGE = """
         <p>Создай аккаунт и стань легендой CS2</p>
         
         {% if error %}
-        <div style="background: rgba(255,0,0,0.2); border: 2px solid #ff0000; border-radius: 10px; padding: 10px; margin-bottom: 20px; color: #ff6b6b; text-align: center;">
+        <div class="error-message">
             ⚠️ {{ error }}
         </div>
         {% endif %}
@@ -328,7 +325,7 @@ REGISTER_PAGE = """
                 <input type="password" name="password" placeholder="минимум 6 символов" required>
             </div>
             
-            <button type="submit" class="cs2-button">▶ НАЧАТЬ ИГРУ</button>
+            <button type="submit" class="cs2-button">▶ ЗАРЕГИСТРИРОВАТЬСЯ</button>
         </form>
         
         <div class="login-link">
@@ -349,7 +346,6 @@ LOGIN_PAGE = """
     <title>CS2 | ВХОД</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Anton&display=swap" rel="stylesheet">
     <style>
-        /* Те же стили что и на регистрации */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Montserrat', sans-serif;
@@ -372,8 +368,8 @@ LOGIN_PAGE = """
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://media.discordapp.net/attachments/123/123/cs2-bg.gif') center/cover;
-            opacity: 0.1;
+            background: radial-gradient(circle at 50% 50%, #ff7f50 0%, transparent 70%);
+            opacity: 0.05;
             z-index: 1;
         }
         .cs2-logo {
@@ -398,11 +394,11 @@ LOGIN_PAGE = """
             max-width: 500px;
             background: rgba(20, 20, 30, 0.95);
             backdrop-filter: blur(15px);
-            border: 2px solid rgba(255, 140, 0, 0.5);
+            border: 2px solid #ff7f50;
             border-radius: 30px;
             padding: 50px 40px;
-            box-shadow: 0 0 50px rgba(255, 140, 0, 0.3);
-            animation: containerAppear 1s ease;
+            box-shadow: 0 0 50px rgba(255, 140, 0, 0.5);
+            animation: containerAppear 0.5s ease;
         }
         @keyframes containerAppear {
             from { transform: translateY(50px); opacity: 0; }
@@ -424,8 +420,18 @@ LOGIN_PAGE = """
             text-align: center;
             margin-bottom: 40px;
             font-size: 1.1rem;
-            border-bottom: 2px solid rgba(255, 140, 0, 0.3);
+            border-bottom: 2px solid #ff7f50;
             padding-bottom: 20px;
+        }
+        .error-message {
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+            text-align: center;
+            font-weight: bold;
         }
         .cs2-input { margin-bottom: 25px; }
         .cs2-input label {
@@ -440,7 +446,7 @@ LOGIN_PAGE = """
         .cs2-input input {
             width: 100%;
             background: rgba(0, 0, 0, 0.7);
-            border: 2px solid rgba(255, 140, 0, 0.3);
+            border: 2px solid #333;
             border-radius: 15px;
             padding: 18px 20px;
             font-size: 1.1rem;
@@ -479,7 +485,10 @@ LOGIN_PAGE = """
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             transition: left 0.5s;
         }
-        .cs2-button:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 99, 71, 0.6); }
+        .cs2-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 99, 71, 0.6);
+        }
         .cs2-button:hover::before { left: 100%; }
         .register-link {
             text-align: center;
@@ -543,7 +552,7 @@ LOGIN_PAGE = """
         <p>Войди и продолжай уничтожать</p>
         
         {% if error %}
-        <div style="background: rgba(255,0,0,0.2); border: 2px solid #ff0000; border-radius: 10px; padding: 10px; margin-bottom: 20px; color: #ff6b6b; text-align: center;">
+        <div class="error-message">
             ⚠️ {{ error }}
         </div>
         {% endif %}
@@ -570,7 +579,7 @@ LOGIN_PAGE = """
 </html>
 """
 
-# ========== ГЛАВНЫЙ САЙТ (ПОСЛЕ ВХОДА) ==========
+# ========== ГЛАВНЫЙ САЙТ ==========
 MAIN_SITE = """
 <!DOCTYPE html>
 <html lang="ru">
@@ -592,7 +601,6 @@ MAIN_SITE = """
             color: #fff;
         }
         
-        /* ИМБОВЫЙ ХЕДЕР */
         .cs2-header {
             background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
             border-bottom: 3px solid #ff7f50;
@@ -648,7 +656,6 @@ MAIN_SITE = """
             box-shadow: 0 5px 20px rgba(255, 71, 87, 0.5);
         }
         
-        /* ИМБОВЫЕ ВКЛАДКИ */
         .tabs {
             display: flex;
             gap: 5px;
@@ -668,8 +675,6 @@ MAIN_SITE = """
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
         }
         
         .tab:hover {
@@ -690,7 +695,6 @@ MAIN_SITE = """
             min-height: 70vh;
         }
         
-        /* ИМБОВЫЕ КАРТОЧКИ СКИНОВ */
         .skins-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -764,7 +768,6 @@ MAIN_SITE = """
             font-size: 0.8rem;
         }
         
-        /* СЕКЦИЯ КОММЕНТАРИЕВ */
         .comments-section {
             margin-top: 50px;
             background: rgba(0,0,0,0.5);
@@ -793,6 +796,7 @@ MAIN_SITE = """
             font-size: 1rem;
             resize: vertical;
             min-height: 100px;
+            font-family: 'Montserrat', sans-serif;
         }
         
         .comment-form textarea:focus {
@@ -848,16 +852,6 @@ MAIN_SITE = """
             color: #666;
             margin-top: 10px;
             text-align: right;
-        }
-        
-        /* АНИМАШКИ */
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .floating {
-            animation: float 3s infinite;
         }
     </style>
 </head>
@@ -936,7 +930,6 @@ MAIN_SITE = """
             </div>
         </div>
         
-        <!-- КОММЕНТАРИИ -->
         <div class="comments-section">
             <div class="comments-title">💬 КОММЕНТАРИИ СООБЩЕСТВА</div>
             
@@ -986,16 +979,13 @@ MAIN_SITE = """
     
     <script>
         function showTab(tabName) {
-            // Скрываем все вкладки
             document.getElementById('skins-tab').style.display = 'none';
             document.getElementById('inspect-tab').style.display = 'none';
             document.getElementById('market-tab').style.display = 'none';
             document.getElementById('stats-tab').style.display = 'none';
             
-            // Показываем нужную
             document.getElementById(tabName + '-tab').style.display = 'block';
             
-            // Обновляем активный таб
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -1009,10 +999,16 @@ MAIN_SITE = """
 # ========== МАРШРУТЫ ==========
 @app.route('/')
 def home():
+    # Если уже залогинен, кидаем сразу на главную
+    if 'username' in session:
+        return redirect(url_for('main_site'))
     return render_template_string(REGISTER_PAGE, error=None)
 
 @app.route('/login')
 def login_page():
+    # Если уже залогинен, кидаем сразу на главную
+    if 'username' in session:
+        return redirect(url_for('main_site'))
     return render_template_string(LOGIN_PAGE, error=None)
 
 @app.route('/register', methods=['POST'])
@@ -1020,9 +1016,16 @@ def register():
     username = request.form.get('username')
     password = request.form.get('password')
     
+    # Проверка на пустые поля
+    if not username or not password:
+        return render_template_string(REGISTER_PAGE, error='Заполни все поля!')
+    
     # Загружаем пользователей
-    with open(USERS_FILE, 'r') as f:
-        users = json.load(f)
+    try:
+        with open(USERS_FILE, 'r') as f:
+            users = json.load(f)
+    except:
+        users = {}
     
     # Проверяем существует ли ник
     if username in users:
@@ -1037,7 +1040,7 @@ def register():
     # Сохраняем
     users[username] = {
         'password': hashed_password,
-        'joined': 'Только что'
+        'joined': datetime.now().strftime('%d.%m.%Y %H:%M')
     }
     
     with open(USERS_FILE, 'w') as f:
@@ -1052,8 +1055,15 @@ def login():
     username = request.form.get('username')
     password = request.form.get('password')
     
-    with open(USERS_FILE, 'r') as f:
-        users = json.load(f)
+    # Проверка на пустые поля
+    if not username or not password:
+        return render_template_string(LOGIN_PAGE, error='Заполни все поля!')
+    
+    try:
+        with open(USERS_FILE, 'r') as f:
+            users = json.load(f)
+    except:
+        users = {}
     
     if username not in users:
         return render_template_string(LOGIN_PAGE, error='Никнейм не найден!')
@@ -1068,9 +1078,11 @@ def login():
 @app.route('/main')
 @login_required
 def main_site():
-    # Загружаем комментарии
-    with open(COMMENTS_FILE, 'r') as f:
-        comments = json.load(f)
+    try:
+        with open(COMMENTS_FILE, 'r') as f:
+            comments = json.load(f)
+    except:
+        comments = []
     
     return render_template_string(MAIN_SITE, username=session['username'], comments=comments)
 
@@ -1079,16 +1091,21 @@ def main_site():
 def add_comment():
     comment_text = request.form.get('comment')
     
-    if comment_text:
-        with open(COMMENTS_FILE, 'r') as f:
-            comments = json.load(f)
+    if comment_text and comment_text.strip():
+        try:
+            with open(COMMENTS_FILE, 'r') as f:
+                comments = json.load(f)
+        except:
+            comments = []
         
-        from datetime import datetime
         comments.append({
             'username': session['username'],
-            'text': comment_text,
+            'text': comment_text.strip(),
             'date': datetime.now().strftime('%d.%m.%Y %H:%M')
         })
+        
+        # Оставляем только последние 50 комментариев
+        comments = comments[-50:]
         
         with open(COMMENTS_FILE, 'w') as f:
             json.dump(comments, f, indent=4)
@@ -1119,11 +1136,11 @@ if __name__ == '__main__':
     print(f'📍 Локальный адрес: http://localhost:8080')
     print(f'📱 Для телефона (Wi-Fi): http://{ip}:8080')
     print('=' * 60)
-    print('✅ ПОЛНЫЙ ФУНКЦИОНАЛ:')
-    print('   • Регистрация/Вход с базой данных')
-    print('   • Просмотр скинов с ценами')
-    print('   • Комментарии с сохранением')
-    print('   • Защищенные страницы (без входа не зайдешь)')
+    print('✅ ЧТО РАБОТАЕТ:')
+    print('   • Регистрация (ник + пароль)')
+    print('   • Вход в аккаунт')
+    print('   • Выход из аккаунта')
+    print('   • Комментарии')
     print('   • 4 крутые вкладки')
     print('=' * 60)
     print('⚠️ НЕ ЗАКРЫВАЙ это окно - сайт работает!')
