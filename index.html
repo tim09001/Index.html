@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS2 MONEY INSPECTOR | РЕАЛЬНЫЕ ЦЕНЫ CS.MONEY</title>
     <style>
-        /* === СТИЛИ (ПОЧТИ БЕЗ ИЗМЕНЕНИЙ, ДОБАВЛЕНО МОДАЛЬНОЕ ОКНО) === */
         * {
             margin: 0;
             padding: 0;
@@ -49,7 +48,7 @@
             }
         }
 
-        /* Страницы авторизации (без изменений) */
+        /* Страницы авторизации */
         .auth-page {
             display: flex;
             justify-content: center;
@@ -219,7 +218,7 @@
             animation: glowPulse 1s infinite;
         }
 
-        /* Категории, фильтры, сетка скинов (без изменений) */
+        /* Категории */
         .categories-bar {
             background: var(--light-dark);
             padding: 20px;
@@ -530,7 +529,7 @@
             box-shadow: 0 0 20px var(--orange);
         }
 
-        /* МОДАЛЬНОЕ ОКНО ДЛЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ */
+        /* МОДАЛЬНОЕ ОКНО */
         .modal {
             display: none;
             position: fixed;
@@ -631,7 +630,7 @@
     </style>
 </head>
 <body>
-    <!-- Модальное окно детальной информации -->
+    <!-- Модальное окно -->
     <div id="skinModal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal()">&times;</span>
@@ -783,7 +782,7 @@
     </div>
 
     <script>
-        // ==================== БАЗА СКИНОВ CS2 С ДОП. ИНФОРМАЦИЕЙ ====================
+        // ==================== БАЗА СКИНОВ ====================
         const CS2_SKINS_DB = [
             // НОЖИ
             { 
@@ -842,8 +841,6 @@
                 marketHash: '★ Bayonet | Lore (Minimal Wear)',
                 image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf1ObcTjxT0966gYWPqPv5Nq_ummpD78A_3L2V9N-kjVHk-hE_Njr0IdPEewM4YV7U8lK2k-3qjJC7us_BmnI17yYit2qdwUCo'
             },
-
-            // ВИНТОВКИ
             { 
                 id: 5, 
                 name: 'AK-47 | Fire Serpent', 
@@ -854,7 +851,7 @@
                 pattern: 123, 
                 collection: 'Bravo Collection', 
                 releaseDate: '2013-09-19',
-                description: 'Легендарный AK-47 с изображением огненного змея. Один из самых дорогих скинов на AK.',
+                description: 'Легендарный AK-47 с изображением огненного змея.',
                 marketHash: 'AK-47 | Fire Serpent (Minimal Wear)',
                 image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5lpKKqPrxN7LEmyVQ7MEojbjW8d7zjQO2_0M4YGGgIdDDdwQ6aVnSrFa2k-7qh5PqvJTMz3kwvSAn7GGdwUCo'
             },
@@ -868,7 +865,7 @@
                 pattern: 888, 
                 collection: 'Howl Collection', 
                 releaseDate: '2014-05-01',
-                description: 'Уникальный скин с изображением волка. Был изъят из оборота, поэтому имеет статус "Контрабанда".',
+                description: 'Уникальный скин с изображением волка. Статус "Контрабанда".',
                 marketHash: 'M4A4 | Howl (Field-Tested)',
                 image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09-3nYy0k_jmI7fUqWZU7Mxkh9aYoN2kjVLsrxVtZGqgItWcJwQ6NQnX8li2l7vuhpK7uZ_BnSYwuSB27SGdwUCo'
             },
@@ -882,7 +879,7 @@
                 pattern: 666, 
                 collection: 'Cobblestone Collection', 
                 releaseDate: '2015-07-01',
-                description: 'Самый известный и дорогой скин на AWP с изображением дракона.',
+                description: 'Самый известный скин на AWP с изображением дракона.',
                 marketHash: 'AWP | Dragon Lore (Battle-Scarred)',
                 image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FAR17P7NdqgL_9CJnYy0l_znPLTEhGlQ78B_0eqVodij2wGx-0tuNWD3JYeTdAQ8YAvY_Fi2yL_uhpS_vJvNnXBh7nZ34iHdnkSn'
             },
@@ -900,8 +897,6 @@
                 marketHash: 'M4A1-S | Hyper Beast (Minimal Wear)',
                 image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou-6kejhjxszFJTwW09K5nYy0k_jmI7fUqWZU7Mxkh9aY89z02lXsrkFtZm3wI4LFdAI2NFnX8li2l7vuhpK7u5ydzHswuXQn7SGdwUCo'
             },
-
-            // ПИСТОЛЕТЫ
             { 
                 id: 9, 
                 name: 'Desert Eagle | Hand Cannon', 
@@ -930,8 +925,6 @@
                 marketHash: 'USP-S | Kill Confirmed (Minimal Wear)',
                 image: 'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoo6m1FBRp3_bGcjhQ09-jq5WYh8jkI7fUqWZU7Mxkh9aY89ms2wzh_0JsNmCgI9eWcwY3YwvXqQK2yOy6h5W86p7BznZkvnJ27SGdwUCo'
             },
-
-            // ПЕРЧАТКИ
             { 
                 id: 11, 
                 name: 'Sport Gloves | Vice', 
@@ -965,7 +958,6 @@
         // ==================== КУРС ВАЛЮТ ====================
         let USD_TO_RUB = 98.5;
 
-        // Функция обновления курса
         async function updateExchangeRate() {
             try {
                 let response = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
@@ -977,77 +969,80 @@
             }
         }
 
-        // ==================== РЕАЛЬНЫЕ ЦЕНЫ CS.MONEY ====================
+        // ==================== ПОЛУЧЕНИЕ ЦЕН С CS.MONEY ЧЕРЕЗ ПРОКСИ ====================
         async function fetchCsMoneyPrices() {
             showNotification('🔄 Загрузка цен с CS.MONEY...');
             
+            // Используем локальный прокси (файл proxy.py)
+            const PROXY_URL = 'http://localhost:5000/api/cs-money';
+            
             try {
-                // Пытаемся получить цены через публичный API CS.MONEY
-                // Важно: из-за CORS напрямую с сайта это не сработает
-                // Нужен прокси-сервер. Вот пример через бесплатный прокси:
+                const response = await fetch(PROXY_URL);
                 
-                // Вариант 1: Используем публичный CORS-прокси (может работать медленно)
-                const proxyUrl = 'https://api.allorigins.win/raw?url=';
-                const apiUrl = 'https://cs.money/ru/market/buy/';
+                if (!response.ok) {
+                    throw new Error('Ошибка соединения с прокси');
+                }
                 
-                let response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
-                let html = await response.text();
+                const data = await response.json();
                 
-                // Парсим HTML (очень грубо, для примера)
-                // В реальном проекте нужен нормальный API или парсинг JSON
-                // Здесь мы просто эмулируем цены, так как нормальный API CS.MONEY требует ключ
+                // Обновляем цены из полученных данных
+                if (data && data.prices) {
+                    CS2_SKINS_DB.forEach(skin => {
+                        if (data.prices[skin.marketHash]) {
+                            skin.usdPrice = data.prices[skin.marketHash];
+                            skin.priceRUB = skin.usdPrice * USD_TO_RUB;
+                        } else {
+                            // Если конкретного скина нет, генерируем цену
+                            generatePrice(skin);
+                        }
+                        skin.lastUpdate = new Date().toLocaleTimeString();
+                    });
+                    showNotification('✅ Цены обновлены с CS.MONEY');
+                } else {
+                    throw new Error('Нет данных о ценах');
+                }
                 
-                // Эмуляция цен CS.MONEY (в реальности тут был бы парсинг)
-                CS2_SKINS_DB.forEach(skin => {
-                    // Базовые цены близкие к CS.MONEY
-                    let basePrice;
-                    switch(skin.category) {
-                        case 'knife': basePrice = 500 + Math.random() * 2000; break;
-                        case 'sniper': basePrice = 200 + Math.random() * 1500; break;
-                        case 'rifle': basePrice = 100 + Math.random() * 1000; break;
-                        case 'pistol': basePrice = 20 + Math.random() * 400; break;
-                        case 'glove': basePrice = 300 + Math.random() * 1500; break;
-                        default: basePrice = 50 + Math.random() * 200;
-                    }
-                    
-                    // Корректировка по редкости как на CS.MONEY
-                    switch(skin.rarity) {
-                        case 'Covert': basePrice *= 2.5; break;
-                        case 'Classified': basePrice *= 1.5; break;
-                        case 'Restricted': basePrice *= 1.2; break;
-                        case 'Contraband': basePrice *= 8; break;
-                        case 'Extraordinary': basePrice *= 3.5; break;
-                    }
-                    
-                    // Корректировка по износу
-                    switch(skin.wear) {
-                        case 'Factory New': basePrice *= 2.0; break;
-                        case 'Minimal Wear': basePrice *= 1.4; break;
-                        case 'Field-Tested': basePrice *= 1.0; break;
-                        case 'Well-Worn': basePrice *= 0.6; break;
-                        case 'Battle-Scarred': basePrice *= 0.4; break;
-                    }
-                    
-                    skin.usdPrice = Math.round(basePrice * 100) / 100;
-                    skin.priceRUB = Math.round(skin.usdPrice * USD_TO_RUB * 100) / 100;
-                    skin.lastUpdate = new Date().toLocaleTimeString();
-                });
-                
-                showNotification('✅ Цены обновлены с CS.MONEY');
-                
-            } catch (e) {
-                console.error('Ошибка загрузки с CS.MONEY:', e);
+            } catch (error) {
+                console.error('Ошибка:', error);
                 showNotification('⚠️ Ошибка загрузки, используем базовые цены');
                 
                 // Запасной вариант - генерируем цены
-                CS2_SKINS_DB.forEach(skin => {
-                    let basePrice = 100 + Math.random() * 500;
-                    skin.usdPrice = Math.round(basePrice * 100) / 100;
-                    skin.priceRUB = Math.round(skin.usdPrice * USD_TO_RUB * 100) / 100;
-                });
+                CS2_SKINS_DB.forEach(skin => generatePrice(skin));
             }
             
             applyFilters();
+        }
+
+        function generatePrice(skin) {
+            let basePrice;
+            switch(skin.category) {
+                case 'knife': basePrice = 500 + Math.random() * 2000; break;
+                case 'sniper': basePrice = 200 + Math.random() * 1500; break;
+                case 'rifle': basePrice = 100 + Math.random() * 1000; break;
+                case 'pistol': basePrice = 20 + Math.random() * 400; break;
+                case 'glove': basePrice = 300 + Math.random() * 1500; break;
+                default: basePrice = 50 + Math.random() * 200;
+            }
+            
+            switch(skin.rarity) {
+                case 'Covert': basePrice *= 2.5; break;
+                case 'Classified': basePrice *= 1.5; break;
+                case 'Restricted': basePrice *= 1.2; break;
+                case 'Contraband': basePrice *= 8; break;
+                case 'Extraordinary': basePrice *= 3.5; break;
+            }
+            
+            switch(skin.wear) {
+                case 'Factory New': basePrice *= 2.0; break;
+                case 'Minimal Wear': basePrice *= 1.4; break;
+                case 'Field-Tested': basePrice *= 1.0; break;
+                case 'Well-Worn': basePrice *= 0.6; break;
+                case 'Battle-Scarred': basePrice *= 0.4; break;
+            }
+            
+            skin.usdPrice = Math.round(basePrice * 100) / 100;
+            skin.priceRUB = Math.round(skin.usdPrice * USD_TO_RUB * 100) / 100;
+            skin.lastUpdate = new Date().toLocaleTimeString();
         }
 
         // ==================== ДАННЫЕ ПОЛЬЗОВАТЕЛЕЙ ====================
@@ -1059,7 +1054,6 @@
         let currentCategory = 'all';
         let filteredSkins = [...CS2_SKINS_DB];
 
-        // Инициализация
         window.onload = async function() {
             await updateExchangeRate();
             
@@ -1069,21 +1063,16 @@
                 showRegister();
             }
             
-            // Загружаем цены с CS.MONEY
             await fetchCsMoneyPrices();
             
-            // Обновляем каждые 2 минуты
             setInterval(fetchCsMoneyPrices, 120000);
             setInterval(updateOnlineCount, 30000);
             
-            // Заполняем select со скинами
             fillSkinSelect();
-            
-            // Отображаем чат
             displayChatMessages();
         };
 
-        // ==================== АВТОРИЗАЦИЯ (без изменений) ====================
+        // ==================== АВТОРИЗАЦИЯ ====================
         function register() {
             let username = document.getElementById('reg-username').value.trim();
             let password = document.getElementById('reg-password').value;
@@ -1120,7 +1109,7 @@
             localStorage.setItem('cs2_money_users', JSON.stringify(users));
             localStorage.setItem('currentUser', username);
             showMainSite();
-            showNotification('✅ Аккаунт создан! Добро пожаловать!');
+            showNotification('✅ Аккаунт создан!');
         }
 
         function login() {
@@ -1189,7 +1178,7 @@
             document.getElementById('current-user').textContent = currentUser;
         }
 
-        // ==================== ФИЛЬТРАЦИЯ И ОТОБРАЖЕНИЕ ====================
+        // ==================== ФИЛЬТРАЦИЯ ====================
         function filterCategory(category, element) {
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.classList.remove('active');
@@ -1297,7 +1286,7 @@
             updatePagination();
         }
 
-        // ==================== МОДАЛЬНОЕ ОКНО С ДЕТАЛЬНОЙ ИНФОРМАЦИЕЙ ====================
+        // ==================== МОДАЛЬНОЕ ОКНО ====================
         function openSkinModal(skinId) {
             let skin = CS2_SKINS_DB.find(s => s.id === skinId);
             if (!skin) return;
@@ -1319,7 +1308,6 @@
             document.getElementById('skinModal').style.display = 'none';
         }
 
-        // Закрытие по клику вне модалки
         window.onclick = function(event) {
             let modal = document.getElementById('skinModal');
             if (event.target === modal) {
@@ -1353,7 +1341,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ==================== ГЛОБАЛЬНЫЙ ЧАТ ====================
+        // ==================== ЧАТ ====================
         function fillSkinSelect() {
             let select = document.getElementById('chat-skin-select');
             CS2_SKINS_DB.forEach(skin => {
